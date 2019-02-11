@@ -9,6 +9,15 @@ import propra2.database.UserRepository;
 import propra2.model.Product;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import propra2.database.UserRepository;
+import propra2.model.User;
+
+import java.util.Optional;
 
 @Controller
 public class SharingIsCaringController {
@@ -28,5 +37,17 @@ public class SharingIsCaringController {
     @PostMapping
     Product getProductInformationById(Long id){
         return productRepository.findById(id).get();
+    }
+
+
+    @GetMapping("/profile/{customerId}")
+    public User getUserDataById(@PathVariable Long customerId){
+        Optional<User> user = userRepository.findById(customerId);
+        return user.get();
+    } 
+  
+    @PostMapping("/profile/{customerId}")
+    public void updateUserData(@PathVariable Long customerId, @RequestBody User user){
+        userRepository.save(user);
     }
 }
