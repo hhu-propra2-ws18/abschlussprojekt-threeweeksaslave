@@ -40,6 +40,13 @@ public class SharingIsCaringController {
     }
 
 
+    @PostMapping("/") 
+    public boolean userExists(final String username){
+        if(userRepository.findByUsername(username).isPresent())
+            return true;
+    throw new IllegalArgumentException();
+    }
+
     @GetMapping("/profile/{customerId}")
     public User getUserDataById(@PathVariable Long customerId){
         Optional<User> user = userRepository.findById(customerId);
