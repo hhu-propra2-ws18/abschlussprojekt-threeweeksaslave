@@ -1,0 +1,42 @@
+version: "3.1"
+services:
+  proxy:
+    image: nginx:1.15-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./proxy/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./proxy/conf/domain.conf:/etc/nginx/domain.conf:ro
+    depends_on:
+      - projekt
+      - sharingIsCaring
+
+  # ========================================
+  # Falls Sie das Person-SCS implementieren,
+  # überschreiben Sie diesen Teil
+  sharingIsCaring:
+    build: ./sharingIsCaring
+
+  sharingIsCaringDb:
+   image: mariadb
+   restart: always
+   volumes:
+     - ./sharingIsCaring:/src/main/resources/mysql
+
+   environment:
+     - POSTGRES_PASSWORD=secret
+     - POSTGRES_DB=propra
+     - POSTGRES_USER=mysql
+
+
+  # ========================================
+  # Falls Sie das Projekt-SCS implementieren,
+  # überschreiben Sie diesen Teil
+#  projekt:
+ #   image: hashicorp/http-echo
+ #   command: -listen=:8080 -text="Hello from projekt"
+#
+#  projektdb:
+#    image: hashicorp/http-echo
+#    command: -listen=:3306 -text="I am just a dummy"
+  # ========================================
