@@ -1,4 +1,4 @@
-package propra2;
+package propra2.Controller;
 
 
 import org.springframework.stereotype.Controller;
