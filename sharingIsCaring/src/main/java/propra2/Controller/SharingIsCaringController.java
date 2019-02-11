@@ -9,14 +9,16 @@ import propra2.database.UserRepository;
 import propra2.model.Product;
 import propra2.model.User;
 import propra2.database.ProductRepository;
-import propra2.database.UserRepository;
-
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import propra2.database.ProductRepository;
 import propra2.database.UserRepository;
+import propra2.model.Product;
+import propra2.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -50,7 +52,7 @@ public class SharingIsCaringController {
         return resultList;
     }
 
-    @PostMapping("product/{id}")
+    @PostMapping("/product/{id}")
     Product getProductInformationById(Long id){
         return productRepository.findById(id).get();
     }
