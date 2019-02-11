@@ -1,3 +1,5 @@
+package propra2.model;
+
 import lombok.Data;
 
 import javax.persistence.Entity;
