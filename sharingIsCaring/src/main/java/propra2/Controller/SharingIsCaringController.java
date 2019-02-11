@@ -28,13 +28,13 @@ public class SharingIsCaringController {
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping
-    List<Product> searchForProducts(String productName){
-        List<Product> resultList = productRepository.findByTitle(productName);
+    @PostMapping("/product/{name}")
+    List<Product> searchForProducts(String name){
+        List<Product> resultList = productRepository.findByTitle(name);
         return resultList;
     }
 
-    @PostMapping
+    @PostMapping("product/{id}")
     Product getProductInformationById(Long id){
         return productRepository.findById(id).get();
     }
