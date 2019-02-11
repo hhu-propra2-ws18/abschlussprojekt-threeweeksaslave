@@ -3,6 +3,12 @@ package propra2.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import propra2.database.ProductRepository;
+import propra2.database.UserRepository;
+import propra2.model.Product;
+
+import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -17,9 +23,21 @@ import java.util.Optional;
 public class SharingIsCaringController {
 
     @Autowired
-    UserRepository userRepository;
-    @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @PostMapping
+    List<Product> searchForProducts(String productName){
+        List<Product> resultList = productRepository.findByTitle(productName);
+        return resultList;
+    }
+
+    @PostMapping
+    Product getProductInformationById(Long id){
+        return productRepository.findById(id).get();
+    }
 
 
     @GetMapping("/profile/{customerId}")
@@ -32,5 +50,4 @@ public class SharingIsCaringController {
     public void updateUserData(@PathVariable Long customerId, @RequestBody User user){
         userRepository.save(user);
     }
-
 }
