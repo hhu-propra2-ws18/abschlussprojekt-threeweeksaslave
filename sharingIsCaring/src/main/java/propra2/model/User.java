@@ -17,7 +17,11 @@ public class User {
     private String username;
     private String mail;
     private String proPay;
-    private List<Product> productsToRent;
-    private List<Product> rentedProducts;
+    private List<Product> productsToLend;
+    private List<Product> borrowedProducts;
+
+    public void addProductToLend(Product newProduct){
+    	this.productsToLend.add(newProduct);
+	}
 
 }
