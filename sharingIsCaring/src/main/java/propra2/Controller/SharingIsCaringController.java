@@ -38,13 +38,14 @@ public class SharingIsCaringController {
     }
 
     @PostMapping("/product")
-    String createProduct(Product newProduct){
+    String createProduct(Product newProduct) {
         User owner = userRepository.findById(newProduct.getOwnerId()).get();
         owner.addProductToLend(newProduct);
         userRepository.save(owner);
         productRepository.save(newProduct);
 
         return "";
+    }
 
     @PostMapping("/product/{name}")
     List<Product> searchForProducts(String name){
