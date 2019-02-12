@@ -17,9 +17,10 @@ public class Customer {
 
     private String username;
     private String mail;
+    @Lob
     private ProPayAccount proPay;
     private String role;
-
+    @Lob
     private List<Long> borrowedProductIds;
 
     void addBorrowedProduct(Product newProduct){
