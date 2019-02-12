@@ -24,5 +24,5 @@ public class Product {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_customerId")
-	Customer customer;
+	Customer owner;
 }

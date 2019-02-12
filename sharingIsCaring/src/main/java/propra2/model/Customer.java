@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 @Table (name = "customer")
 @Entity (name = "Customer")
+
 public class Customer {
 
     @Id
@@ -17,6 +18,7 @@ public class Customer {
     private String username;
     private String mail;
     private String proPay;
+    private String role;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> productsToLend;
