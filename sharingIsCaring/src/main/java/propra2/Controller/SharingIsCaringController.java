@@ -4,6 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import propra2.handler.OrderProcessHandler;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import propra2.Security.CustomerValidator;
+
 import propra2.model.Customer;
 import propra2.model.OrderProcess;
 import propra2.repositories.CustomerRepository;
@@ -11,9 +16,6 @@ import propra2.model.Product;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
@@ -22,7 +24,7 @@ public class SharingIsCaringController {
 
     @Autowired
     ProductRepository productRepository;
-    
+
     @Autowired
     CustomerRepository customerRepository;
 
@@ -35,16 +37,32 @@ public class SharingIsCaringController {
         orderProcessHandler = new OrderProcessHandler();
     }
 
+    private CustomerValidator customerValidator;
+
+    @Autowired
+    OrderProcessRepository orderProcessRepository;
+
+    @GetMapping("/registration")
+    public String registration(Model model) {
+        model.addAttribute("customerForm", new Customer());
+        return "registration";
+    }
 
     @PostMapping("/registration")
-    String createUser(Customer newCustomer){
+    public String createUser(@ModelAttribute("customerForm") Customer newCustomer, BindingResult bindingResult, Model model) {
+        customerValidator.validate(newCustomer, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "registration";
+        }
+      
         customerRepository.save(newCustomer);
-        return "";
+        return "login";
     }
 
     @PostMapping("/product")
     String createProduct(Product newProduct) {
-        if(newProduct.allValuesSet()){
+        if (newProduct.allValuesSet()) {
             productRepository.save(newProduct);
         }
 
@@ -52,37 +70,58 @@ public class SharingIsCaringController {
     }
 
     @PostMapping("/product/{name}")
-    List<Product> searchForProducts(String name){
+    List<Product> searchForProducts(String name) {
         List<Product> resultList = productRepository.findByTitle(name);
         return resultList;
     }
 
     @PostMapping("/product/{id}")
-    Product getProductInformationById(Long id){
+    Product getProductInformationById(Long id) {
         return productRepository.findById(id).get();
     }
 
 
-    @PostMapping("/") 
-    public boolean userExists(final String username){
-        if(customerRepository.findByUsername(username).isPresent())
+    @PostMapping("/")
+    public boolean userExists(final String username) {
+        if (customerRepository.findByUsername(username).isPresent())
             return true;
-    throw new IllegalArgumentException();
+        throw new IllegalArgumentException();
     }
 
     @GetMapping("/profile/{customerId}")
-    public Customer getUserDataById(@PathVariable Long customerId){
+    public Customer getUserDataById(@PathVariable Long customerId) {
         Optional<Customer> user = customerRepository.findById(customerId);
         return user.get();
-    } 
-  
-    @PostMapping("/profile/{customerId}")
-    public void updateUserData(@PathVariable Long customerId, @RequestBody Customer customer){
-        customerRepository.save(customer);
     }
 
+    @PostMapping("/profile/{customerId}")
+    public void updateUserData(@PathVariable Long customerId, @RequestBody Customer customer) {
+        customerRepository.save(customer);
+    }
+  
     @PostMapping("/orderProcess/{id}")
     public void updateOrderProcess(@PathVariable Long id, @RequestBody OrderProcess orderProcess){
         orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository);
+    }
+  
+    @GetMapping("/profile/offers/{customerId}")
+    public List<Product> getOffers(@PathVariable Long customerId) {
+        List<Product> products = productRepository.findByOwnerId(customerId);
+        return products;
+    }
+
+    @GetMapping("/profile/orders/{customerId}")
+    public List<Product> getOrders(@PathVariable Long customerId) {
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        List<Product> products = productRepository.findAllByProductId(customer.get().getBorrowedProductIds());
+        return products;
+    }
+
+    @PostMapping("/orderProcess")
+    public String addOrderProcess(OrderProcess newOrderProcess){
+        if(newOrderProcess.allValuesSet()) {
+            orderProcessRepository.save(newOrderProcess);
+        }
+        return "";
     }
 }
