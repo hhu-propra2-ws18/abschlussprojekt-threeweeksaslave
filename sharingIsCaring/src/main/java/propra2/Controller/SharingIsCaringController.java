@@ -99,7 +99,7 @@ public class SharingIsCaringController {
   
     @PostMapping("/orderProcess/{id}")
     public void updateOrderProcess(@PathVariable Long id, @RequestBody OrderProcess orderProcess){
-        orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository);
+        orderProcessHandler.updateOrderProcess(id, orderProcess, orderProcessRepository);
     }
   
     @GetMapping("/profile/offers/{customerId}")
