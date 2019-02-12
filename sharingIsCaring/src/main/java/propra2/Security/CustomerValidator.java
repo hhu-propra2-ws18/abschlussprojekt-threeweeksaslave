@@ -11,7 +11,7 @@ import propra2.repositories.CustomerRepository;
 @Component
 public class CustomerValidator implements Validator {
     @Autowired
-    private CustomerRepository customerRepo;
+    CustomerRepository customerRepo;
 
     @Override
     public boolean supports(Class<?> aClass) {
