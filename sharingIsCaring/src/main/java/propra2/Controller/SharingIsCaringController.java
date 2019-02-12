@@ -47,10 +47,9 @@ public class SharingIsCaringController {
 
     @PostMapping("/product")
     String createProduct(Product newProduct) {
-        Customer owner = customerRepository.findById(newProduct.getOwner().getCustomerId()).get();
-        owner.addProductToLend(newProduct);
-        customerRepository.save(owner);
-        productRepository.save(newProduct);
+        if(newProduct.allValuesSet()){
+            productRepository.save(newProduct);
+        }
 
         return "";
     }
