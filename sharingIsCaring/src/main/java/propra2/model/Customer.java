@@ -17,7 +17,7 @@ public class Customer {
 
     private String username;
     private String mail;
-    private String proPay;
+    private ProPayAccount proPay;
     private String role;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
