@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Table (name = "customer")
-@Entity (name = "User")
+@Entity (name = "Customer")
 public class Customer {
 
     @Id

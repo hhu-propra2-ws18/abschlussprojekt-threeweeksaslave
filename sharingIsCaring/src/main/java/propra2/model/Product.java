@@ -5,9 +5,9 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity (name = "Product")
-@Table(name = "product")
 @Data
+@Table(name = "product")
+@Entity (name = "Product")
 public class Product {
 	@GeneratedValue
 	@Id
@@ -23,6 +23,6 @@ public class Product {
 	int dailyFee;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_customerId")
+	@JoinColumn(name = "customer_customerId")
 	Customer customer;
 }
