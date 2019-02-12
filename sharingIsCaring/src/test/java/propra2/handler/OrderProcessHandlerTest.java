@@ -29,7 +29,6 @@ public class OrderProcessHandlerTest {
         orderProcessHandler = new OrderProcessHandler();
     }
 
-    @Ignore
     @Test
     public void updateOrderProcessTest(){
         OrderProcess orderProcess = new OrderProcess();
