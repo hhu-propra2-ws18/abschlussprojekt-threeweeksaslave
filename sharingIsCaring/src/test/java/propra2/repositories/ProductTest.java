@@ -1,4 +1,4 @@
-package propra2.model;
+package propra2.repositories;
 
 public class ProductTest {
 }
