@@ -11,6 +11,7 @@ import propra2.model.Customer;
 import propra2.model.OrderProcess;
 import propra2.repositories.CustomerRepository;
 import propra2.model.Product;
+import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
 import java.util.List;
 
@@ -27,6 +28,9 @@ public class SharingIsCaringController {
 
     @Autowired
     private CustomerValidator customerValidator;
+
+    @Autowired
+    OrderProcessRepository orderProcessRepository;
 
     @GetMapping("/registration")
     public String registration(Model model) {
@@ -96,6 +100,14 @@ public class SharingIsCaringController {
         Optional<Customer> customer = customerRepository.findById(customerId);
         List<Product> products = productRepository.findAllByProductId(customer.get().getBorrowedProductIds());
         return products;
+    }
+
+    @PostMapping("/orderProcess")
+    public String addOrderProcess(OrderProcess newOrderProcess){
+        if(newOrderProcess.allValuesSet()) {
+            orderProcessRepository.save(newOrderProcess);
+        }
+        return "";
     }
 
 
