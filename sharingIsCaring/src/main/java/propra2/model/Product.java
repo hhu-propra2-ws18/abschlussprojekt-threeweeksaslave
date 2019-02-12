@@ -19,10 +19,21 @@ public class Product {
 	boolean available;
 	Date borrowedUntil;
 
-	int deposit;
-	int dailyFee;
+	Integer deposit;
+	Integer dailyFee;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_customerId")
-	Customer customer;
+	Long ownerId;
+
+	public boolean allValuesSet() {
+		if(this.getTitle() == null||
+		   this.getBorrowedUntil() == null ||
+		   this.getId() == null ||
+		   this.getBorrowedUntil() == null ||
+		   this.getDailyFee() == null) {
+
+			return false;
+		}
+		return true;
+
+	}
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Table (name = "customer")
-@Entity (name = "User")
+@Entity (name = "Customer")
 public class Customer {
 
     @Id
@@ -18,15 +18,10 @@ public class Customer {
     private String mail;
     private String proPay;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> productsToLend;
+    private List<Long> borrowedProductIds;
 
-
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> borrowedProducts;
-
-    public void addProductToLend(Product newProduct){
-    	this.productsToLend.add(newProduct);
+    void addBorrowedProduct(Product newProduct){
+        borrowedProductIds.add(newProduct.getId());
     }
 
 }
