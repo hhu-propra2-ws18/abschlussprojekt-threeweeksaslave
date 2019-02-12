@@ -33,14 +33,12 @@ public class SharingIsCaringController {
 
     private OrderProcessHandler orderProcessHandler;
 
+    private CustomerValidator customerValidator;
+
     public SharingIsCaringController() {
         orderProcessHandler = new OrderProcessHandler();
     }
 
-    private CustomerValidator customerValidator;
-
-    @Autowired
-    OrderProcessRepository orderProcessRepository;
 
     @GetMapping("/registration")
     public String registration(Model model) {
