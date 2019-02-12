@@ -1,12 +1,14 @@
 package propra2.Controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import propra2.handler.OrderProcessHandler;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import propra2.Security.CustomerValidator;
+
 import propra2.model.Customer;
 import propra2.model.OrderProcess;
 import propra2.repositories.CustomerRepository;
@@ -27,10 +29,16 @@ public class SharingIsCaringController {
     CustomerRepository customerRepository;
 
     @Autowired
+    OrderProcessRepository orderProcessRepository;
+
+    private OrderProcessHandler orderProcessHandler;
+
     private CustomerValidator customerValidator;
 
-    @Autowired
-    OrderProcessRepository orderProcessRepository;
+    public SharingIsCaringController() {
+        orderProcessHandler = new OrderProcessHandler();
+    }
+
 
     @GetMapping("/registration")
     public String registration(Model model) {
@@ -88,7 +96,12 @@ public class SharingIsCaringController {
     public void updateUserData(@PathVariable Long customerId, @RequestBody Customer customer) {
         customerRepository.save(customer);
     }
-
+  
+    @PostMapping("/orderProcess/{id}")
+    public void updateOrderProcess(@PathVariable Long id, @RequestBody OrderProcess orderProcess){
+        orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository);
+    }
+  
     @GetMapping("/profile/offers/{customerId}")
     public List<Product> getOffers(@PathVariable Long customerId) {
         List<Product> products = productRepository.findByOwnerId(customerId);
@@ -98,7 +111,7 @@ public class SharingIsCaringController {
     @GetMapping("/profile/orders/{customerId}")
     public List<Product> getOrders(@PathVariable Long customerId) {
         Optional<Customer> customer = customerRepository.findById(customerId);
-        List<Product> products = productRepository.findAllByProductId(customer.get().getBorrowedProductIds());
+        List<Product> products = productRepository.findAllById(customer.get().getBorrowedProductIds());
         return products;
     }
 
@@ -109,6 +122,4 @@ public class SharingIsCaringController {
         }
         return "";
     }
-
-
 }
