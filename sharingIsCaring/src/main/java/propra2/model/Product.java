@@ -5,9 +5,9 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity (name = "Product")
-@Table(name = "product")
 @Data
+@Table(name = "product")
+@Entity (name = "Product")
 public class Product {
 	@GeneratedValue
 	@Id
@@ -34,6 +34,5 @@ public class Product {
 			return false;
 		}
 		return true;
-
-	}
+}
 }
