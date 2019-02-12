@@ -25,9 +25,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> borrowedProducts;
 
-    private List<Product> productsToLend;
-    private List<Product> borrowedProducts;
-
     public void addProductToLend(Product newProduct){
     	this.productsToLend.add(newProduct);
     }
