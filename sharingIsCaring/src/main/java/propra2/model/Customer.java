@@ -6,9 +6,9 @@ import javax.persistence.*;
 import java.util.List;
 
 @Data
-@Table (name = "user")
+@Table (name = "customer")
 @Entity (name = "User")
-public class User {
+public class Customer {
 
     @Id
     @GeneratedValue
@@ -18,14 +18,11 @@ public class User {
     private String mail;
     private String proPay;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> productsToLend;
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> borrowedProducts;
-
-    private List<Product> productsToLend;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> borrowedProducts;
 
     public void addProductToLend(Product newProduct){

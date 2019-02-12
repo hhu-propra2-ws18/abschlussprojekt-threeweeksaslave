@@ -4,9 +4,9 @@ package propra2.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import propra2.repositories.UserRepository;
+import propra2.model.Customer;
+import propra2.repositories.CustomerRepository;
 import propra2.model.Product;
-import propra2.model.User;
 import propra2.repositories.ProductRepository;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,20 +22,20 @@ public class SharingIsCaringController {
     ProductRepository productRepository;
     
     @Autowired
-    UserRepository userRepository;
+    CustomerRepository customerRepository;
 
 
     @PostMapping("/registration")
-    String createUser(User newUser){
-        userRepository.save(newUser);
+    String createUser(Customer newCustomer){
+        customerRepository.save(newCustomer);
         return "";
     }
 
     @PostMapping("/product")
     String createProduct(Product newProduct) {
-        User owner = userRepository.findById(newProduct.getUser().getCustomerId()).get();
+        Customer owner = customerRepository.findById(newProduct.getCustomer().getCustomerId()).get();
         owner.addProductToLend(newProduct);
-        userRepository.save(owner);
+        customerRepository.save(owner);
         productRepository.save(newProduct);
 
         return "";
@@ -55,19 +55,19 @@ public class SharingIsCaringController {
 
     @PostMapping("/") 
     public boolean userExists(final String username){
-        if(userRepository.findByUsername(username).isPresent())
+        if(customerRepository.findByUsername(username).isPresent())
             return true;
     throw new IllegalArgumentException();
     }
 
     @GetMapping("/profile/{customerId}")
-    public User getUserDataById(@PathVariable Long customerId){
-        Optional<User> user = userRepository.findById(customerId);
+    public Customer getUserDataById(@PathVariable Long customerId){
+        Optional<Customer> user = customerRepository.findById(customerId);
         return user.get();
     } 
   
     @PostMapping("/profile/{customerId}")
-    public void updateUserData(@PathVariable Long customerId, @RequestBody User user){
-        userRepository.save(user);
+    public void updateUserData(@PathVariable Long customerId, @RequestBody Customer customer){
+        customerRepository.save(customer);
     }
 }
