@@ -18,4 +18,15 @@ public class OrderProcess {
     Long requestId;
 
     OrderProcessStatus status;
+
+    public boolean allValuesSet() {
+        if(this.getId() == null||
+                this.getOwnerId() == null ||
+                this.getRequestId() == null ||
+                this.getStatus() == null) {
+
+            return false;
+        }
+        return true;
+    }
 }

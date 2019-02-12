@@ -20,14 +20,14 @@ public class CustomerRepositoryTest {
     @Test
     public void userRepositoryTestFindById() {
         Customer customer = new Customer();
-        customer.setCustomerId(1L);
-        customer.setUsername("userName");
+        customer.setCustomerId(2L);
+        customer.setUsername("userName2");
 
         customerRepository.save(customer);
 
-        Optional<Customer> userOptional = customerRepository.findById(1L);
+        Optional<Customer> userOptional = customerRepository.findById(2L);
 
-        Assertions.assertThat(userOptional.get().getUsername()).isEqualTo("userName");
+        Assertions.assertThat(userOptional.get().getUsername()).isEqualTo("userName2");
 
         customerRepository.delete(userOptional.get());
     }
