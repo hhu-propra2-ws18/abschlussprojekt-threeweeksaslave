@@ -1,4 +1,4 @@
-package propra2.database;
+package propra2.repositories;
 
 import propra2.model.User;
 import org.springframework.data.repository.CrudRepository;

@@ -2,12 +2,11 @@ package propra2.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
-@Entity
+@Entity (name = "Product")
+@Table(name = "product")
 @Data
 public class Product {
 	@GeneratedValue
@@ -23,5 +22,7 @@ public class Product {
 	int deposit;
 	int dailyFee;
 
-	Long ownerId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_customerId")
+	User user;
 }
