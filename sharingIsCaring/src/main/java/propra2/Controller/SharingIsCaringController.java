@@ -3,16 +3,16 @@ package propra2.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import propra2.Security.CustomerValidator;
 import propra2.model.Customer;
 import propra2.model.OrderProcess;
 import propra2.repositories.CustomerRepository;
 import propra2.model.Product;
 import propra2.repositories.ProductRepository;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
@@ -25,11 +25,25 @@ public class SharingIsCaringController {
     @Autowired
     CustomerRepository customerRepository;
 
+    @Autowired
+    private CustomerValidator customerValidator;
+
+    @GetMapping("/registration")
+    public String registration(Model model) {
+        model.addAttribute("customerForm", new Customer());
+        return "registration";
+    }
 
     @PostMapping("/registration")
-    String createUser(Customer newCustomer) {
+    public String createUser(@ModelAttribute("customerForm") Customer newCustomer, BindingResult bindingResult, Model model) {
+        customerValidator.validate(newCustomer, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "registration";
+        }
+      
         customerRepository.save(newCustomer);
-        return "";
+        return "login";
     }
 
     @PostMapping("/product")
