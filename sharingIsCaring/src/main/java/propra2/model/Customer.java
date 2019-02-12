@@ -20,6 +20,7 @@ public class Customer {
     private ProPayAccount proPay;
     private String role;
 
+    @Lob
     private List<Long> borrowedProductIds;
 
     void addBorrowedProduct(Product newProduct){
