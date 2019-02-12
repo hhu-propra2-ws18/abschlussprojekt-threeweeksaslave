@@ -111,7 +111,7 @@ public class SharingIsCaringController {
     @GetMapping("/profile/orders/{customerId}")
     public List<Product> getOrders(@PathVariable Long customerId) {
         Optional<Customer> customer = customerRepository.findById(customerId);
-        List<Product> products = productRepository.findAllByProductId(customer.get().getBorrowedProductIds());
+        List<Product> products = productRepository.findAllById(customer.get().getBorrowedProductIds());
         return products;
     }
 

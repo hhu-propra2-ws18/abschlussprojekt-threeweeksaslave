@@ -9,12 +9,15 @@ public class OrderProcessHandler {
         switch (orderProcess.getStatus()) {
             case DENIED:
                 orderProcessRepository.save(orderProcess);
+                break;
             case ACCEPTED:
                 orderProcessRepository.save(orderProcess);
                 //TODO: Propay Kautionsbetrag blocken
+                break;
             case FINISHED:
                 orderProcessRepository.save(orderProcess);
                 //TODO: Konfliktlöser/ProPay Betrag abbuchen
+                break;
             default:
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
         }
