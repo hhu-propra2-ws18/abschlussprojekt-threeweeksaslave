@@ -23,6 +23,6 @@ public class Product {
 	int dailyFee;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_customerId")
-	Customer customer;
+	@JoinColumn(name = "customer_customerId")
+	Customer owner;
 }
