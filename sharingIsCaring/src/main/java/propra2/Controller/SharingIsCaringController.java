@@ -11,6 +11,7 @@ import propra2.Security.CustomerValidator;
 
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
+import propra2.handler.UserHandler;
 import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
 import propra2.database.Product;
@@ -33,12 +34,14 @@ public class SharingIsCaringController {
     OrderProcessRepository orderProcessRepository;
 
     private OrderProcessHandler orderProcessHandler;
+    private UserHandler userHandler;
 
     @Autowired
     private CustomerValidator customerValidator;
 
     public SharingIsCaringController() {
         orderProcessHandler = new OrderProcessHandler();
+        userHandler = new UserHandler();
     }
 
 
@@ -64,6 +67,8 @@ public class SharingIsCaringController {
         Customer customer = new Customer();
         customer.setMail(user.getEmailAddress());
         customer.setUsername(user.getUserName());
+
+        customer.setProPay(userHandler.getProPayAccount(user.getUserName()));
 
         customerRepository.save(customer);
         return "login";
