@@ -8,8 +8,9 @@
 <body>
 <div layout:fragment="content">
 
+    <form method="post"><
     <center>
-    <section id="intro">
+    <form id="intro">
         <h2>Registration</h2>
         <table>
             <tr>
@@ -33,7 +34,7 @@
                     password:
                 </td>
                 <td>
-                    <input type="text" name="password" th:value="${password}" value="password">
+                    <input type="password" name="password" th:value="${password}" value="password">
                 </td>
             </tr>
             <tr>
@@ -41,12 +42,13 @@
                     confirm password:
                 </td>
                 <td>
-                    <input type="text" name="confirmPassword" th:value="${passwordConfirm}" value="confirmPassword">
+                    <input type="password" name="confirmPassword" th:value="${passwordConfirm}" value="confirmPassword">
                 </td>
             </tr>
         </table>
         <br/>
         <button type="submit">Submit</button>
+    </form>
 
     </section>
     </center>
