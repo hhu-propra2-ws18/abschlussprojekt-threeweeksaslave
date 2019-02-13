@@ -1,40 +1,19 @@
-
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en" layout:decorate="~{base}">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="home.css">
+    <meta charset="UTF-8">
     <title>Home</title>
+
+
 </head>
 <body>
-
-<header>
-    <a class="ribbon" tabindex="-1" title="zurück zur Startseite!" href="home.html">
-        <h1 id="logo">Sharing is Caring</h1>
-        <p>Ing. Three Weeks a Sklave GmbH</span></p>
-    </a>
-</header>
-
-<main>
-
-    <nav id="navigation">
-        <ul>
-            <li><a aria-current="page">Home</a></li>
-            <li><a href="/profile">Profile</a></li>
-            <li><a href="/products">view Products</a></li>
-            <li><a href="/product">add Product</a>
-            <li><a href="/messages">messages</a></li>
-        </ul>
-    </nav>
-
+<div layout:fragment="content">
     <section id="intro">
         <h2>Welcome <span>to Sharing is Caring</span></h2>
         <p>
             Teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeext
         </p>
     </section>
-
 
     <section class="spalte">
         <h2>Motivation</h2>
@@ -52,16 +31,7 @@
         </p>
     </section>
 
-</main>
-
-<footer class="grid">
-    <ul id="footer-nav">
-    </ul>
-    <p>
-        Design: ThreeWeeksASlave<br>
-        technische Umsetzung: ThreeWeeksASlave
-    </p>
-</footer>
+</div>
 
 </body>
 </html>

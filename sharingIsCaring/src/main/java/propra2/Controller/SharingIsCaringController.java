@@ -40,6 +40,11 @@ public class SharingIsCaringController {
         orderProcessHandler = new OrderProcessHandler();
     }
 
+    @GetMapping("/")
+    public String home(){
+        return "home";
+    }
+
 
     @GetMapping("/registration")
     public String registration(Model model) {
