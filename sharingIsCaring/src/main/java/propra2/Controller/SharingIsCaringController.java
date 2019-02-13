@@ -75,7 +75,7 @@ public class SharingIsCaringController {
         if (newProduct.allValuesSet()) {
             productRepository.save(newProduct);
         }
-        return "redirect:http://localhost:8080/";
+        return "redirect:http://localhost:8080/home";
     }
 
     @PostMapping("/product/{name}")
@@ -109,6 +109,15 @@ public class SharingIsCaringController {
         Optional<Customer> customer = customerRepository.findById(customerId);
         model.addAttribute("user", customer.get());
         return "profileUpdate";
+    }
+
+    @GetMapping("/profile/request({id}")
+    public String showRequests(final Model model, @PathVariable final Long id) {
+        List<OrderProcess> owner = orderProcessRepository.findAllByOwnerId(id);
+        List<OrderProcess> borrower = orderProcessRepository.findAllByRequestId(id);
+        model.addAttribute("owner", owner);
+        model.addAttribute("borrower", borrower);
+        return "requests";
     }
 
     @PostMapping("/profile/change/{customerId}")
