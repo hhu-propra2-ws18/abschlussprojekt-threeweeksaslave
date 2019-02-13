@@ -10,6 +10,8 @@ import propra2.Controller.SharingIsCaringController;
 import propra2.model.Customer;
 import propra2.model.Product;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,20 +43,51 @@ public class ProductRepositoryTest {
         owner.setCustomerId(1L);
 
         Product product1 = new Product();
-        product1.setId(40L);
+        product1.setId(2L);
         product1.setTitle("product1");
         product1.setOwnerId(1L);
 
         Product product2 = new Product();
-        product2.setId(70L);
+        product2.setId(3L);
         product2.setTitle("product2");
-        product2.setOwnerId(90L);
-
+        product2.setOwnerId(4L);
 
         productRepository.save(product1);
         productRepository.save(product2);
 
         List<Product> products = productRepository.findByOwnerId(1L);
         Assertions.assertThat(products.size()).isEqualTo(1);
+
+        productRepository.delete(product1);
+        productRepository.delete(product2);
+    }
+
+    @Test
+    public void productRepositoryTestFindAllById() {
+
+        Product product1 = new Product();
+        product1.setId(20L);
+        product1.setTitle("product1");
+
+        Product product2 = new Product();
+        product2.setId(60L);
+        product2.setTitle("product2");
+
+        Product product3 = new Product();
+        product3.setId(90L);
+        product3.setTitle("product3");
+
+        productRepository.save(product1);
+        productRepository.save(product2);
+        productRepository.save(product3);
+
+        List<Long> ids = Arrays.asList(20L, 90L);
+
+        List<Product> products = productRepository.findAllById(ids);
+        Assertions.assertThat(products.size()).isEqualTo(2);
+
+        productRepository.delete(product1);
+        productRepository.delete(product2);
+        productRepository.delete(product3);
     }
 }
