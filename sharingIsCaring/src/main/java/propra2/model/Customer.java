@@ -16,6 +16,7 @@ public class Customer {
     private Long customerId;
 
     private String username;
+    private String password;
     private String mail;
   
     @Lob
@@ -28,5 +29,4 @@ public class Customer {
     void addBorrowedProduct(Product newProduct){
         borrowedProductIds.add(newProduct.getId());
     }
-
 }
