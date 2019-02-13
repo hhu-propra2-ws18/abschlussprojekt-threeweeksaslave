@@ -111,7 +111,7 @@ public class SharingIsCaringController {
         return "profileUpdate";
     }
 
-    @GetMapping("/profile/request({id}")
+    @GetMapping("/profile/request/{id}")
     public String showRequests(final Model model, @PathVariable final Long id) {
         List<OrderProcess> owner = orderProcessRepository.findAllByOwnerId(id);
         List<OrderProcess> borrower = orderProcessRepository.findAllByRequestId(id);

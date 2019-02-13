@@ -14,7 +14,7 @@ public class OrderProcess {
     @Id
     Long id;
 
-    Product product;
+    //Product product;
     Long ownerId;
     Long requestId;
 
