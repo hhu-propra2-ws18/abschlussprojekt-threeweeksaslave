@@ -27,4 +27,32 @@ public class OrderProcessRepositoryTest {
         orderProcessRepository.save(orderProcess);
         Assert.assertEquals(1, orderProcessRepository.findAll().size());
     }
+
+    @Test
+    public void findAllByOwnerIdForOneProcess(){
+        OrderProcess orderProcess1 = new OrderProcess();
+        orderProcess1.setOwnerId(30L);
+
+        OrderProcess orderProcess2 = new OrderProcess();
+        orderProcess2.setOwnerId(60L);
+
+        orderProcessRepository.save(orderProcess1);
+        orderProcessRepository.save(orderProcess2);
+
+        Assert.assertEquals(1, orderProcessRepository.findAllByOwnerId(30L).size());
+    }
+
+    @Test
+    public void findAllByRequestIdForOneProcess(){
+        OrderProcess orderProcess1 = new OrderProcess();
+        orderProcess1.setRequestId(50L);
+
+        OrderProcess orderProcess2 = new OrderProcess();
+        orderProcess2.setRequestId(80L);
+
+        orderProcessRepository.save(orderProcess1);
+        orderProcessRepository.save(orderProcess2);
+
+        Assert.assertEquals(1, orderProcessRepository.findAllByRequestId(80L).size());
+    }
 }
