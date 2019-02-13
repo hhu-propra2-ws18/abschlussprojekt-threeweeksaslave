@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" layout:decorate="~{baseLogin}" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Start</title>
+    <title>Index</title>
 </head>
 <body>
-    <a href="/registration" role="button">Create Account</a>
-    <a href="/home" role="button">Login</a>
+<div layout:fragment="content">
+    <center>
+        <a href="/registration" role="button">Create Account</a>
+        <a href="/login" role="button">Login</a>
+    </center>
+
+</div>
 </body>
 </html>

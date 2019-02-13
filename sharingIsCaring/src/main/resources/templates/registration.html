@@ -1,23 +1,14 @@
-
-<!DOCTYPE html>
-<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
+<!doctype html>
+<html lang="en" layout:decorate="~{baseLogin}" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="home.css">
-    <title>Home</title>
+    <title>Index</title>
 </head>
+
 <body>
+<div layout:fragment="content">
 
-<header>
-    <a class="ribbon" tabindex="-1" title="zurück zur Startseite!" href="">
-        <h1 id="logo">Sharing is Caring</h1>
-        <p>Ing. Three Weeks a Sklave GmbH</span></p>
-    </a>
-</header>
-
-<main>
-
+    <center>
     <section id="intro">
         <h2>Registration</h2>
         <table>
@@ -58,8 +49,10 @@
         <button type="submit">Submit</button>
 
     </section>
+    </center>
+</div>
 
-</main>
+</body>
 
 <footer class="grid">
     <ul id="footer-nav">
