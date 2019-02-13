@@ -17,6 +17,8 @@ public class Customer {
 
     private String username;
     private String password;
+    @Transient
+    private String retypePassword;
     private String mail;
 
     @Lob
