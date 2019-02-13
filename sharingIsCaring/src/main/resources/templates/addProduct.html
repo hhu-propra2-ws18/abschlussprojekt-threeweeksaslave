@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="home.css">
+    <title>Home</title>
+</head>
+<body>
+
+<header>
+    <a class="ribbon" tabindex="-1" title="zurück zur Startseite!" href="home.html">
+        <h1 id="logo">Sharing is Caring</h1>
+        <p>Ing. Three Weeks a Sklave GmbH</span></p>
+    </a>
+</header>
+
+<main>
+
+    <nav id="navigation">
+        <ul>
+            <li><a aria-current="page">Home</a></li>
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/products">view Products</a></li>
+            <li><a href="/product">add Product</a>
+            <li><a href="/messages">messages</a></li>
+        </ul>
+    </nav>
+
+      <section id="intro">
+          <h2>Please <span>enter your product information</span></h2>
+          <table>
+              <tr>
+                  <td> Title:</td>
+                  <td><input name="title" th:value="${product?.title}" type="text"></td>
+              </tr>
+              <tr>
+                  <td> Description:</td>
+                  <td><input name="description" th:value="${product?.description}" type="text"></td>
+              </tr>
+              <tr>
+                  <td> Deposit:</td>
+                  <td><input name="deposit" th:value="${product?.deposit}" type="number"></td>
+              </tr>
+              <tr>
+                  <td> Daily Fee:</td>
+                  <td><input name="dailyFee" th:value="${product?.dailyFee}" type="number"></td>
+              </tr>
+          </table>
+          <br>
+          <button type="submit" class="btn btn-default btn-sm">New Product!</button>
+
+          </form>
+
+
+      </section>
+
+        </main>
+
+        <footer class="grid">
+            <ul id="footer-nav">
+            </ul>
+            <p>
+                Design: ThreeWeeksASlave<br>
+                technische Umsetzung: ThreeWeeksASlave
+            </p>
+        </footer>
+
+        </body>
+        </html>
