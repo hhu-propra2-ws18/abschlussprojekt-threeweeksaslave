@@ -33,6 +33,7 @@ public class SharingIsCaringController {
 
     private OrderProcessHandler orderProcessHandler;
 
+    @Autowired
     private CustomerValidator customerValidator;
 
     public SharingIsCaringController() {
