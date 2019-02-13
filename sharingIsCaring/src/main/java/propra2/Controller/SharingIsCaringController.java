@@ -59,13 +59,17 @@ public class SharingIsCaringController {
         return "login";
     }
 
+    @GetMapping("/product")
+    public String showCreatePerson() {
+        return "addProduct";
+    }
+
     @PostMapping("/product")
-    String createProduct(Product newProduct) {
+    public String createProduct(final Product newProduct) {
         if (newProduct.allValuesSet()) {
             productRepository.save(newProduct);
         }
-
-        return "";
+        return "redirect:http://localhost:8080/";
     }
 
     @PostMapping("/product/{name}")

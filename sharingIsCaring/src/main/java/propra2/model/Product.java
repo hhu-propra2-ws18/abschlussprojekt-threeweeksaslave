@@ -26,10 +26,10 @@ public class Product {
 
 	public boolean allValuesSet() {
 		if(this.getTitle() == null||
-		   this.getBorrowedUntil() == null ||
-		   this.getId() == null ||
-		   this.getBorrowedUntil() == null ||
-		   this.getDailyFee() == null) {
+				this.getId() == null ||
+				this.getDeposit() == null ||
+				//this.getBorrowedUntil() == null ||
+				this.getDailyFee() == null) {
 
 			return false;
 		}
