@@ -24,6 +24,7 @@ public class PersonService implements UserDetailsService {
             Customer u = user.get();
             UserDetails userdetails = User.builder()
                     .username(u.getUsername())
+                    .password(u.getPassword())
                     .authorities(u.getRole())
                     .build();
             return userdetails;
