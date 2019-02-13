@@ -1,6 +1,7 @@
-package propra2.model;
+package propra2.database;
 
 import lombok.Data;
+import propra2.model.OrderProcessStatus;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -5,7 +5,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-import propra2.model.Customer;
+import propra2.database.Customer;
+import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
 
 @Component
@@ -20,22 +21,31 @@ public class CustomerValidator implements Validator {
 
     @Override
     public void validate(Object o, Errors errors) {
-        Customer user = (Customer) o;
+        UserRegistration user = (UserRegistration) o;
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "NotEmpty");
-        if (user.getUsername().length() < 6 || user.getUsername().length() > 32) {
-            errors.rejectValue("username", "Size.userForm.username");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userName", "NotEmpty");
+        if (user.getUserName().length() < 6 || user.getUserName().length() > 32) {
+            errors.rejectValue("userName", "Size.userForm.userName");
         }
-        if (customerRepo.findByUsername(user.getUsername()).isPresent()) {
-            errors.rejectValue("username", "Duplicate.userForm.username");
+        if (customerRepo.findByUsername(user.getUserName()).isPresent()) {
+            errors.rejectValue("userName", "Duplicate.userForm.userName");
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "mail", "NotEmpty");
-        if (user.getMail().length() < 6 || user.getMail().length() > 32) {
-            errors.rejectValue("mail", "Size.userForm.mail");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddress", "NotEmpty");
+        if (user.getEmailAddress().length() < 6 || user.getEmailAddress().length() > 32) {
+            errors.rejectValue("emailAddress", "Size.userForm.emailAddress");
         }
-        if (customerRepo.findByMail(user.getMail()).isPresent()) {
-            errors.rejectValue("mail", "Duplicate.userForm.mail");
+        if (customerRepo.findByMail(user.getEmailAddress()).isPresent()) {
+            errors.rejectValue("emailAddress", "Duplicate.userForm.emailAddress");
+        }
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirm", "NotEmpty");
+        if(user.getPassword().length() < 6 || user.getPassword().length() > 32) {
+            errors.rejectValue("password", "Size.userForm.password");
+        }
+        if(!user.getPassword().equals(user.getPasswordConfirm())){
+            errors.rejectValue("passwordConfirm", "Diff.userForm.passwordConfirm");
         }
     }
 }

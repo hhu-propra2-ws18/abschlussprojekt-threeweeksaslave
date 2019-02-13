@@ -1,6 +1,6 @@
 package propra2.handler;
 
-import propra2.model.OrderProcess;
+import propra2.database.OrderProcess;
 import propra2.repositories.OrderProcessRepository;
 
 public class OrderProcessHandler {

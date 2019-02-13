@@ -1,4 +1,4 @@
-package propra2.model;
+package propra2.database;
 
 import lombok.Data;
 

@@ -1,6 +1,8 @@
-package propra2.model;
+package propra2.database;
 
 import lombok.Data;
+import propra2.model.Address;
+import propra2.model.ProPayAccount;
 
 import javax.persistence.*;
 import java.util.List;

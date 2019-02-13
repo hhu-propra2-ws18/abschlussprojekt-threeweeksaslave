@@ -9,10 +9,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import propra2.Security.CustomerValidator;
 
-import propra2.model.Customer;
-import propra2.model.OrderProcess;
+import propra2.database.Customer;
+import propra2.database.OrderProcess;
+import propra2.handler.UserHandler;
+import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
-import propra2.model.Product;
+import propra2.database.Product;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
 import java.util.List;
@@ -32,13 +34,16 @@ public class SharingIsCaringController {
     OrderProcessRepository orderProcessRepository;
 
     private OrderProcessHandler orderProcessHandler;
+    private UserHandler userHandler;
 
     @Autowired
     private CustomerValidator customerValidator;
 
     public SharingIsCaringController() {
         orderProcessHandler = new OrderProcessHandler();
+        userHandler = new UserHandler();
     }
+
 
 
     @GetMapping("/")
@@ -46,32 +51,54 @@ public class SharingIsCaringController {
         return "start";
     }
 
+    /**
+     * homepage from a specific customer
+     * @param customer
+     * @param model
+     * @return home template
+     */
     @GetMapping("/home")
     public String home(Customer customer, Model model){
         model.addAttribute("user", customer);
         return "home";
     }
 
+    /**
+     * registration
+     * @return registration template
+     */
     @GetMapping("/registration")
-    public String registration(Model model) {
-        model.addAttribute("customerForm", new Customer());
+    public String registration() {
         return "registration";
     }
 
+    /**
+     * check if registration data is valid, create new ProPay Account, registrate and save Customer in DB
+     * @param user
+     * @param bindingResult
+     * @param model
+     * @return if request failed redirect to registration, otherwise direct to login
+     */
     @PostMapping("/registration")
-    public String createUser(@ModelAttribute("customerForm") Customer newCustomer, BindingResult bindingResult, Model model) {
-        customerValidator.validate(newCustomer, bindingResult);
+    public String createUser(UserRegistration user, BindingResult bindingResult, Model model) {
+        customerValidator.validate(user, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "registration";
         }
-      
-        customerRepository.save(newCustomer);
+
+        Customer customer = new Customer();
+        customer.setMail(user.getEmailAddress());
+        customer.setUsername(user.getUserName());
+
+        customer.setProPay(userHandler.getProPayAccount(user.getUserName()));
+
+        customerRepository.save(customer);
         return "login";
     }
 
     @GetMapping("/product")
-    public String showCreatePerson() {
+    public String getProduct() {
         return "addProduct";
     }
 
@@ -102,6 +129,12 @@ public class SharingIsCaringController {
         throw new IllegalArgumentException();
     }
 
+    /**
+     * show profile data
+     * @param customerId
+     * @param model
+     * @return profile template
+     */
     @GetMapping("/profile/{customerId}")
     public String getUserDataById(@PathVariable Long customerId, Model model) {
         Optional<Customer> user = customerRepository.findById(customerId);
@@ -109,6 +142,12 @@ public class SharingIsCaringController {
         return "profile";
     }
 
+    /**
+     * direct to profileUpdate
+     * @param customerId
+     * @param model
+     * @return profileUpdate template
+     */
     @GetMapping("/profile/change/{customerId}")
     public String getUpdateUserData(@PathVariable Long customerId, Model model){
         Optional<Customer> customer = customerRepository.findById(customerId);
@@ -116,18 +155,25 @@ public class SharingIsCaringController {
         return "profileUpdate";
     }
 
+    /**
+     * update profile data changes
+     * @param customerId
+     * @param customer
+     * @param model
+     * @return profile template
+     */
     @PostMapping("/profile/change/{customerId}")
     public String updateUserData(@PathVariable Long customerId, Customer customer, Model model) {
         customerRepository.save(customer);
         model.addAttribute("user", customer);
         return "profile";
     }
-  
+
     @PostMapping("/orderProcess/{id}")
     public void updateOrderProcess(@PathVariable Long id, @RequestBody OrderProcess orderProcess){
         orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository);
     }
-  
+
     @GetMapping("/profile/offers/{customerId}")
     public List<Product> getOffers(@PathVariable Long customerId) {
         List<Product> products = productRepository.findByOwnerId(customerId);

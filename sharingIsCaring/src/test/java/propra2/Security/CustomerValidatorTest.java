@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
-import propra2.model.Customer;
+import propra2.database.Customer;
 import propra2.repositories.CustomerRepository;
 
 @RunWith(SpringRunner.class)

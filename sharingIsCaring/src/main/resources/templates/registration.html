@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="home.css">
+    <title>Home</title>
+</head>
+<body>
+
+<header>
+    <a class="ribbon" tabindex="-1" title="zurück zur Startseite!" href="">
+        <h1 id="logo">Sharing is Caring</h1>
+        <p>Ing. Three Weeks a Sklave GmbH</span></p>
+    </a>
+</header>
+
+<main>
+
+    <section id="intro">
+        <h2>Registration</h2>
+        <table>
+            <tr>
+                <td>
+                    userName:
+                </td>
+                <td>
+                    <input type="text" name="userName" th:value="${userName}" value="userName">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    emailAddress:
+                </td>
+                <td>
+                    <input type="text" name="mail" th:value="${mail}" value="emailAddress">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    password:
+                </td>
+                <td>
+                    <input type="text" name="password" th:value="${password}" value="password">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    confirm password:
+                </td>
+                <td>
+                    <input type="text" name="confirmPassword" th:value="${passwordConfirm}" value="confirmPassword">
+                </td>
+            </tr>
+        </table>
+        <br/>
+        <button type="submit">Submit</button>
+
+    </section>
+
+</main>
+
+<footer class="grid">
+    <ul id="footer-nav">
+    </ul>
+    <p>
+        Design: ThreeWeeksASlave<br>
+        technische Umsetzung: ThreeWeeksASlave
+    </p>
+</footer>
+
+</body>
+</html>
