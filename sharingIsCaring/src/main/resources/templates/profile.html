@@ -1,33 +1,10 @@
-
-<!DOCTYPE html>
-<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
+<!doctype html>
+<html lang="en" layout:decorate="~{base}">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="base.css">
-    <title>Home</title>
+    <title>Index</title>
 </head>
 <body>
-
-<header>
-    <a class="ribbon" tabindex="-1" title="zurück zur Startseite!" href="home.html">
-        <h1 id="logo">Sharing is Caring</h1>
-        <p>Ing. Three Weeks a Sklave GmbH</span></p>
-    </a>
-</header>
-
-<main>
-
-    <nav id="navigation">
-        <ul>
-            <li><a href="/home">Home</a></li>
-            <li><a aria-current="page">Profile</a></li>
-            <li><a href="/products">view Products</a></li>
-            <li><a href="/product">add Product</a>
-            <li><a href="/messages">messages</a></li>
-        </ul>
-    </nav>
-
+<div layout:fragment="content">
     <section id="intro">
         <h2>Profile</h2>
         <table>
@@ -90,20 +67,10 @@
         </table>
 
         <br/>
-            <a th:href="@{'/profile/update' + ${user.customerId}}" role="button">change profile</a>
+        <a th:href="@{'/profile/update' + ${user.customerId}}" role="button">change profile</a>
 
     </section>
-
-</main>
-
-<footer class="grid">
-    <ul id="footer-nav">
-    </ul>
-    <p>
-        Design: ThreeWeeksASlave<br>
-        technische Umsetzung: ThreeWeeksASlave
-    </p>
-</footer>
+</div>
 
 </body>
 </html>
