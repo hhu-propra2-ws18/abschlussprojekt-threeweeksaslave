@@ -36,6 +36,7 @@ dependencies {
 	runtimeOnly('org.springframework.boot:spring-boot-devtools')
 	compileOnly('org.projectlombok:lombok')
 	runtimeOnly('mysql:mysql-connector-java')
+	runtimeOnly('org.postgresql:postgresql')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 	testImplementation('io.projectreactor:reactor-test')
 	testImplementation('com.h2database:h2')
