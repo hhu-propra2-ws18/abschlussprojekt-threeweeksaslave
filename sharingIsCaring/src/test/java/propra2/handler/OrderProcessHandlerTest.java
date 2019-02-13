@@ -32,9 +32,9 @@ public class OrderProcessHandlerTest {
     @Test
     public void updateOrderProcessTest(){
         OrderProcess orderProcess = new OrderProcess();
-        orderProcess.setId((long) 1234);
-        orderProcess.setOwnerId((long) 5678);
-        orderProcess.setRequestId((long) 3456);
+        orderProcess.setId(1234L);
+        orderProcess.setOwnerId(5678L);
+        orderProcess.setRequestId(3456L);
         orderProcess.setStatus(OrderProcessStatus.PENDING);
 
         orderProcessRepository.save(orderProcess);
@@ -43,7 +43,7 @@ public class OrderProcessHandlerTest {
 
         orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository);
 
-        Optional<OrderProcess> expectedOrderProcess = orderProcessRepository.findById((long) 1234);
+        Optional<OrderProcess> expectedOrderProcess = orderProcessRepository.findById(2L);
 
         Assertions.assertThat(expectedOrderProcess.get().getStatus().toString()).isEqualTo("DENIED");
     }
