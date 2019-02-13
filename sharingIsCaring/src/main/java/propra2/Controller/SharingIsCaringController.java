@@ -45,17 +45,34 @@ public class SharingIsCaringController {
     }
 
 
+    /**
+     * homepage from a specific customer
+     * @param customer
+     * @param model
+     * @return home template
+     */
     @GetMapping("/home")
     public String home(Customer customer, Model model){
         model.addAttribute("user", customer);
         return "home";
     }
 
+    /**
+     * registration
+     * @return registration template
+     */
     @GetMapping("/registration")
     public String registration() {
         return "registration";
     }
 
+    /**
+     * check if registration data is valid, create new ProPay Account, registrate and save Customer in DB
+     * @param user
+     * @param bindingResult
+     * @param model
+     * @return if request failed redirect to registration, otherwise direct to login
+     */
     @PostMapping("/registration")
     public String createUser(UserRegistration user, BindingResult bindingResult, Model model) {
         customerValidator.validate(user, bindingResult);
@@ -75,7 +92,7 @@ public class SharingIsCaringController {
     }
 
     @GetMapping("/product")
-    public String showCreatePerson() {
+    public String getProduct() {
         return "addProduct";
     }
 
@@ -106,6 +123,12 @@ public class SharingIsCaringController {
         throw new IllegalArgumentException();
     }
 
+    /**
+     * show profile data
+     * @param customerId
+     * @param model
+     * @return profile template
+     */
     @GetMapping("/profile/{customerId}")
     public String getUserDataById(@PathVariable Long customerId, Model model) {
         Optional<Customer> user = customerRepository.findById(customerId);
@@ -113,6 +136,12 @@ public class SharingIsCaringController {
         return "profile";
     }
 
+    /**
+     * direct to profileUpdate
+     * @param customerId
+     * @param model
+     * @return profileUpdate template
+     */
     @GetMapping("/profile/change/{customerId}")
     public String getUpdateUserData(@PathVariable Long customerId, Model model){
         Optional<Customer> customer = customerRepository.findById(customerId);
@@ -120,6 +149,13 @@ public class SharingIsCaringController {
         return "profileUpdate";
     }
 
+    /**
+     * update profile data changes
+     * @param customerId
+     * @param customer
+     * @param model
+     * @return profile template
+     */
     @PostMapping("/profile/change/{customerId}")
     public String updateUserData(@PathVariable Long customerId, Customer customer, Model model) {
         customerRepository.save(customer);
