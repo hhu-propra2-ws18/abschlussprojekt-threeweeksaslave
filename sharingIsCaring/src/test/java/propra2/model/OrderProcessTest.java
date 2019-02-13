@@ -2,6 +2,7 @@ package propra2.model;
 
 import org.junit.Assert;
 import org.junit.Test;
+import propra2.database.OrderProcess;
 
 public class OrderProcessTest {
 

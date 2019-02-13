@@ -9,10 +9,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import propra2.Security.CustomerValidator;
 
-import propra2.model.Customer;
-import propra2.model.OrderProcess;
+import propra2.database.Customer;
+import propra2.database.OrderProcess;
+import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
-import propra2.model.Product;
+import propra2.database.Product;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
 import java.util.List;
@@ -48,20 +49,23 @@ public class SharingIsCaringController {
     }
 
     @GetMapping("/registration")
-    public String registration(Model model) {
-        model.addAttribute("customerForm", new Customer());
+    public String registration() {
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String createUser(@ModelAttribute("customerForm") Customer newCustomer, BindingResult bindingResult, Model model) {
-        customerValidator.validate(newCustomer, bindingResult);
+    public String createUser(UserRegistration user, BindingResult bindingResult, Model model) {
+        customerValidator.validate(user, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "registration";
         }
-      
-        customerRepository.save(newCustomer);
+
+        Customer customer = new Customer();
+        customer.setMail(user.getEmailAddress());
+        customer.setUsername(user.getUserName());
+
+        customerRepository.save(customer);
         return "login";
     }
 
