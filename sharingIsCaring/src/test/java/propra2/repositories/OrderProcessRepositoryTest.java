@@ -23,8 +23,7 @@ public class OrderProcessRepositoryTest {
     @Test
     public void findAllContainsListWithSizeOne(){
         OrderProcess orderProcess = new OrderProcess();
-        orderProcess.setId(1L);
-        orderProcessRepository.save(orderProcess);
+        orderProcess = orderProcessRepository.save(orderProcess);
         Assert.assertEquals(1, orderProcessRepository.findAll().size());
     }
 }

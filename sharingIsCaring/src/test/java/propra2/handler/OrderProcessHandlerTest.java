@@ -29,18 +29,17 @@ public class OrderProcessHandlerTest {
     @Test
     public void updateOrderProcessTest(){
         OrderProcess orderProcess = new OrderProcess();
-        orderProcess.setId(1234L);
         orderProcess.setOwnerId(5678L);
         orderProcess.setRequestId(3456L);
         orderProcess.setStatus(OrderProcessStatus.PENDING);
 
-        orderProcessRepository.save(orderProcess);
+        orderProcess = orderProcessRepository.save(orderProcess);
 
         orderProcess.setStatus(OrderProcessStatus.DENIED);
 
         orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository);
 
-        Optional<OrderProcess> expectedOrderProcess = orderProcessRepository.findById(2L);
+        Optional<OrderProcess> expectedOrderProcess = orderProcessRepository.findById(orderProcess.getId());
 
         Assertions.assertThat(expectedOrderProcess.get().getStatus().toString()).isEqualTo("DENIED");
     }

@@ -22,12 +22,11 @@ public class ProductRepositoryTest {
     @Test
     public void productRepositoryTestFindById() {
         Product product = new Product();
-        product.setId(1L);
         product.setTitle("product");
 
-        productRepository.save(product);
+        product = productRepository.save(product);
 
-        Optional<Product> productOptional = productRepository.findById(1L);
+        Optional<Product> productOptional = productRepository.findById(product.getId());
 
         Assertions.assertThat(productOptional.get().getTitle()).isEqualTo("product");
 
@@ -64,22 +63,19 @@ public class ProductRepositoryTest {
     public void productRepositoryTestFindAllById() {
 
         Product product1 = new Product();
-        product1.setId(20L);
         product1.setTitle("product1");
 
         Product product2 = new Product();
-        product2.setId(60L);
         product2.setTitle("product2");
 
         Product product3 = new Product();
-        product3.setId(90L);
         product3.setTitle("product3");
 
-        productRepository.save(product1);
-        productRepository.save(product2);
-        productRepository.save(product3);
+        product1 = productRepository.save(product1);
+        product2 = productRepository.save(product2);
+        product3 = productRepository.save(product3);
 
-        List<Long> ids = Arrays.asList(20L, 90L);
+        List<Long> ids = Arrays.asList(product1.getId(), product2.getId());
 
         List<Product> products = productRepository.findAllById(ids);
         Assertions.assertThat(products.size()).isEqualTo(2);
