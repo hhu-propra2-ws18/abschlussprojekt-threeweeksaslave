@@ -18,6 +18,7 @@ public class Customer {
     private String username;
     private String mail;
 
+    @Lob
     private Address address;
   
     @Lob
