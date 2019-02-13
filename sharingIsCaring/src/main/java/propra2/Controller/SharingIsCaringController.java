@@ -41,6 +41,12 @@ public class SharingIsCaringController {
     }
 
 
+    @GetMapping("/home")
+    public String home(Customer customer, Model model){
+        model.addAttribute("user", customer);
+        return "home";
+    }
+
     @GetMapping("/registration")
     public String registration(Model model) {
         model.addAttribute("customerForm", new Customer());
@@ -88,14 +94,24 @@ public class SharingIsCaringController {
     }
 
     @GetMapping("/profile/{customerId}")
-    public Customer getUserDataById(@PathVariable Long customerId) {
+    public String getUserDataById(@PathVariable Long customerId, Model model) {
         Optional<Customer> user = customerRepository.findById(customerId);
-        return user.get();
+        model.addAttribute("user", user.get());
+        return "profile";
     }
 
-    @PostMapping("/profile/{customerId}")
-    public void updateUserData(@PathVariable Long customerId, @RequestBody Customer customer) {
+    @GetMapping("/profile/change/{customerId}")
+    public String getUpdateUserData(@PathVariable Long customerId, Model model){
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        model.addAttribute("user", customer.get());
+        return "profileUpdate";
+    }
+
+    @PostMapping("/profile/change/{customerId}")
+    public String updateUserData(@PathVariable Long customerId, Customer customer, Model model) {
         customerRepository.save(customer);
+        model.addAttribute("user", customer);
+        return "profile";
     }
   
     @PostMapping("/orderProcess/{id}")

@@ -17,6 +17,8 @@ public class Customer {
 
     private String username;
     private String mail;
+
+    private Address address;
   
     @Lob
     private ProPayAccount proPay;
