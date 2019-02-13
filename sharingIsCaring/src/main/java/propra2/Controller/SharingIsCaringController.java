@@ -41,6 +41,12 @@ public class SharingIsCaringController {
     }
 
 
+    @GetMapping("/home")
+    public String home(Customer customer, Model model){
+        model.addAttribute("user", customer);
+        return "home";
+    }
+
     @GetMapping("/registration")
     public String registration(Model model) {
         model.addAttribute("customerForm", new Customer());

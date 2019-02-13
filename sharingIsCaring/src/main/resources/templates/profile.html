@@ -48,11 +48,49 @@
                 </td>
             </tr>
         </table>
+        <br/>
+        <table>
+            <tr>
+                <td>
+                    Address:
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    street:
+                </td>
+                <td>
+                    <dd th:text="${user.address.street}">street</dd>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    houseNr:
+                </td>
+                <td>
+                    <dd th:text="${user.address.houseNumber}">houseNumber</dd>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    postCode:
+                </td>
+                <td>
+                    <dd th:text="${user.address.postCode}">postCode</dd>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    city:
+                </td>
+                <td>
+                    <dd th:text="${user.address.city}">city</dd>
+                </td>
+            </tr>
+        </table>
 
         <br/>
-        <div>
             <a th:href="@{'/profile/update' + ${user.customerId}}" role="button">change profile</a>
-        </div>
 
     </section>
 
