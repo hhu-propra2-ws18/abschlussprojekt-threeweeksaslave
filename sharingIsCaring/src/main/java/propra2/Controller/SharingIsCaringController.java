@@ -105,10 +105,10 @@ public class SharingIsCaringController {
 
     @PostMapping("/product")
     public String createProduct(final Product newProduct) {
-        if (newProduct.allValuesSet()) {
-            productRepository.save(newProduct);
-        }
-        return "return login";
+      if (newProduct.allValuesSet()) {
+        productRepository.save(newProduct);
+      }
+      return "redirect:http://localhost:8080/home";
     }
 
     @PostMapping("/product/{name}")
@@ -155,14 +155,23 @@ public class SharingIsCaringController {
         model.addAttribute("user", customer.get());
         return "profileUpdate";
     }
+    
+    @GetMapping("/profile/request/{id}")
+    public String showRequests(final Model model, @PathVariable final Long id) {
+        List<OrderProcess> owner = orderProcessRepository.findAllByOwnerId(id);
+        List<OrderProcess> borrower = orderProcessRepository.findAllByRequestId(id);
+        model.addAttribute("owner", owner);
+        model.addAttribute("borrower", borrower);
+        return "requests";
+    }
 
     /**
-     * update profile data changes
-     * @param customerId
-     * @param customer
-     * @param model
-     * @return profile template
-     */
+    * update profile data changes
+    * @param customerId
+    * @param customer
+    * @param model
+    * @return profile template
+    */
     @PostMapping("/profile/change/{customerId}")
     public String updateUserData(@PathVariable Long customerId, Customer customer, Model model) {
         customerRepository.save(customer);
