@@ -79,16 +79,17 @@
                     amount:
                 </td>
                 <td>
-                    <dd th:text="${user.proPay.amount}">amount</dd>
+                    <dd th:text="${user.proPay.amount} + '€'">amount</dd>
                 </td>
             </tr>
             <tr>
                 <td>
                     blocked deposit:
                 </td>
-                <td>
-                    blocked deposit
-                </td>
+            </tr>
+            <tr th:each="reservation:${user.proPay.reservations}">
+                <td th:text="'Nr: ' + ${reservation.id}">Nr: 0</td>
+                <td th:text="'Amount: ' + ${reservation.amount} + '€'">Amount: 0€</td>
             </tr>
         </table>
         <br/>
