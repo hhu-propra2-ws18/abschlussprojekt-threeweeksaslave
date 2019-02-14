@@ -26,8 +26,8 @@ public class Product {
 
 	public boolean allValuesSet() {
 		if(this.getTitle() == null||
-				this.getId() == null ||
 				this.getDeposit() == null ||
+				this.getDescription() == null ||
 				//this.getBorrowedUntil() == null ||
 				this.getDailyFee() == null) {
 
