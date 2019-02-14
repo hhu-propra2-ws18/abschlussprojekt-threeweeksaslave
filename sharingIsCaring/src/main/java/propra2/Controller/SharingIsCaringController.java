@@ -103,7 +103,7 @@ public class SharingIsCaringController {
         if (bindingResult.hasErrors()) {
             return "registration";
         }
-        Customer customer = registrationService.saveCredentials(user);
+        registrationService.saveCredentials(user);
 
         return "redirect:/home";
     }
