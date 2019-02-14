@@ -248,4 +248,22 @@ public class SharingIsCaringController {
         }
         return "";
     }
+
+    @GetMapping("/profile/requests/detailsOwner/{processId}")
+    public String showRequestOwnerDetails(@PathVariable Long processId, Model model) {
+        Optional<OrderProcess> process = orderProcessRepository.findById(processId);
+        model.addAttribute("process", process.get());
+        model.addAttribute("borrower", customerRepository.findById(process.get().getRequestId()));
+        return "requestDetailsOwner";
+    }
+
+    @GetMapping("/profile/requests/detailsBorrower/{processId}")
+    public String showRequestBorrowerDetails(@PathVariable Long processId, Model model) {
+        Optional<OrderProcess> process = orderProcessRepository.findById(processId);
+        Product product = process.get().getProduct();
+        model.addAttribute("process", process.get());
+        model.addAttribute("owner", customerRepository.findById(process.get().getOwnerId()));
+        model.addAttribute("product", product);
+        return "requestDetailsBorrower";
+    }
 }
