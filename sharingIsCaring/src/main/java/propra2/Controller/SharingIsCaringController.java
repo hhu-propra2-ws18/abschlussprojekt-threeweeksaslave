@@ -94,9 +94,7 @@ public class SharingIsCaringController {
             return "registration";
         }
 
-        Customer customer = registrationService.saveCredentials(user);
-
-        customerRepository.save(customer);
+        registrationService.saveCredentials(user);
 
         return "redirect:/home";
     }
