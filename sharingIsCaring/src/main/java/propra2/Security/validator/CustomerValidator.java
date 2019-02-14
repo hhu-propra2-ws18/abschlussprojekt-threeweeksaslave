@@ -24,7 +24,7 @@ public class CustomerValidator implements Validator {
         UserRegistration user = (UserRegistration) o;
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userName", "NotEmpty");
-        if (user.getUserName().length() < 6 || user.getUserName().length() > 32) {
+        if (user.getUserName().length() < 5 || user.getUserName().length() > 32) {
             errors.rejectValue("userName", "Size.userForm.userName");
         }
         if (customerRepo.findByUsername(user.getUserName()).isPresent()) {
