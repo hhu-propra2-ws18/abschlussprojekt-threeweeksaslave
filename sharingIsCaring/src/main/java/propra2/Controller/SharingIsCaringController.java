@@ -171,8 +171,7 @@ public class SharingIsCaringController {
      */
     @GetMapping("/profile")
     public String getUserDataById(Principal user, Model model) {
-        String username = user.getName();
-        Long loggedInId = customerRepository.findByUsername(username).get().getCustomerId();
+        Long loggedInId = getUserId(user);
         Optional<Customer> customer = customerRepository.findById(loggedInId);
         model.addAttribute("user", customer.get());
         return "profile";
@@ -180,17 +179,23 @@ public class SharingIsCaringController {
 
     /**
      * direct to profileUpdate
-     * @param customerId
      * @param model
      * @return profileUpdate template
      */
-    @GetMapping("/profile/update/{customerId}")
-    public String getUpdateUserData(@PathVariable Long customerId, Model model){
-        Optional<Customer> customer = customerRepository.findById(customerId);
+    @GetMapping("/profile/update")
+    public String getUpdateUserData(Principal user, Model model) {
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(userId);
         model.addAttribute("user", customer.get());
         return "profileUpdate";
     }
-    
+
+    private Long getUserId(Principal user) {
+        String username = user.getName();
+        Long id = customerRepository.findByUsername(username).get().getCustomerId();
+        return id;
+    }
+
     @GetMapping("/profile/requests/{id}")
     public String showRequests(final Model model, @PathVariable final Long id) {
         List<OrderProcess> owner = orderProcessRepository.findAllByOwnerId(id);
@@ -204,18 +209,18 @@ public class SharingIsCaringController {
 
     /**
     * update profile data changes
-    * @param customerId
     * @param address
     * @param model
     * @return profile template
     */
-    @PostMapping("/profile/update/{customerId}")
-    public String updateUserData(@PathVariable Long customerId, Address address, Model model) {
-        Optional<Customer> customer = customerRepository.findById(customerId);
+    @PostMapping("/profile/update")
+    public String updateUserData(Principal user, Address address, Model model) {
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(userId);
         customer.get().setAddress(address);
         customerRepository.save(customer.get());
         model.addAttribute("user", customer);
-        return "redirect:http://localhost:8080/profile/" + customerId;
+        return "redirect:/profile";
     }
 
     @PostMapping("/orderProcess/{id}")
