@@ -6,7 +6,7 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <section id="spalte">
+    <section class="spalte">
         <h2>Profile</h2>
         <table>
             <tr>
@@ -14,7 +14,7 @@
                     userName:
                 </td>
                 <td>
-                    <dd th:text="${user.userName}">user name</dd>
+                    <dd th:text="${user.username}">user name</dd>
                 </td>
             </tr>
             <tr>
@@ -68,7 +68,7 @@
         </table>
 
         <br/>
-        <a th:href="@{'/profile/update' + ${user.customerId}}" role="button">change profile</a>
+        <a th:href="@{'/profile/update/' + ${user.customerId}}" role="button">change profile</a>
 
     </section>
     <section class="spalte">
@@ -79,16 +79,17 @@
                     amount:
                 </td>
                 <td>
-                    <dd th:text="${}">amount</dd>
+                    <dd th:text="${user.proPay.amount} + '€'">amount</dd>
                 </td>
             </tr>
             <tr>
                 <td>
                     blocked deposit:
                 </td>
-                <td>
-                    <dd th:text="${}">blocked deposit</dd>
-                </td>
+            </tr>
+            <tr th:each="reservation:${user.proPay.reservations}">
+                <td th:text="'Nr: ' + ${reservation.id}">Nr: 0</td>
+                <td th:text="'Amount: ' + ${reservation.amount} + '€'">Amount: 0€</td>
             </tr>
         </table>
         <br/>
