@@ -25,7 +25,7 @@
         <hr>
         <h3 th:text="${product.title}"></h3>
         <p th:text="${#strings.abbreviate(product.description,100)}"></p>
-        <a th:href="@{/{id}(id=${product.id})}">read more</a>
+        <a th:href="@{/product/{id}(id=${product.id})}">read more</a>
     </section>
 
 </div>
