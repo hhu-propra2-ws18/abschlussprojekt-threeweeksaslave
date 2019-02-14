@@ -1,11 +1,23 @@
 <!doctype html>
-<html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>Index</title>
 </head>
 <body>
 
 <div layout:fragment="content">
+
+    <nav id="navigation">
+        <ul>
+            <li><a th:href="@{'/home/' + ${user.customerId}}">Home</a></li>
+            <li><a th:href="@{'/profile/' + ${user.customerId}}>Profile</a></li>
+            <li><a href="/products">view Products</a></li>
+            <li><a aria-current="page">add Product</a>
+            <li><a href="/messages">messages</a></li>
+            <li><a role="button">logout</a></li>
+        </ul>
+    </nav>
 
     <div class="container">
 

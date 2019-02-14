@@ -6,7 +6,19 @@
 </head>
 <body>
 
+<nav layout:fragment="nav">
+    <ul>
+        <li><a aria-current="page">Home</a></li>
+        <li><a th:href="@{'/profile/' + ${user.customerId}}">Profile</a></li>
+        <li><a href="/products">view Products</a></li>
+        <li><a href="/product">add Product</a>
+        <li><a href="/messages">messages</a></li>
+        <li><a role="button">logout</a></li>
+    </ul>
+</nav>
+
 <div layout:fragment="content">
+
     <section id="intro">
         <h2>Welcome <span>to Sharing is Caring</span></h2>
         <p>
