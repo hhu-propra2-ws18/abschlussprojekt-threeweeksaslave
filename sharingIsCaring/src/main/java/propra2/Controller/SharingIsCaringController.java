@@ -18,6 +18,8 @@ import propra2.repositories.CustomerRepository;
 import propra2.database.Product;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
+
+import java.security.Principal;
 import java.util.List;
 
 import java.util.Optional;
@@ -62,7 +64,7 @@ public class SharingIsCaringController {
      * @return home template
      */
     @GetMapping("/home")
-    public String home(Customer customer, Model model){
+    public String home(Principal customer, Model model){
         model.addAttribute("user", customer);
         return "home";
     }
