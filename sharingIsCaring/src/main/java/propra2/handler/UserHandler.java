@@ -1,11 +1,20 @@
 package propra2.handler;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import propra2.database.Customer;
 import propra2.model.ProPayAccount;
+import propra2.model.UserRegistration;
+import propra2.repositories.CustomerRepository;
 import reactor.core.publisher.Mono;
 
+import java.security.Principal;
+import java.util.Optional;
+
 public class UserHandler {
+    @Autowired
+    private CustomerRepository customerRepo;
 
     public ProPayAccount getProPayAccount(String username){
         ProPayAccount proPayAccount = getEntity(ProPayAccount.class,username);
