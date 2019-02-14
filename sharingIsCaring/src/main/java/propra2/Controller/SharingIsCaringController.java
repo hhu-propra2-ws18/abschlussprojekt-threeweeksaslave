@@ -20,6 +20,7 @@ import propra2.database.Product;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -215,7 +216,7 @@ public class SharingIsCaringController {
     }
 
     @PostMapping("/orderProcess/{id}")
-    public void updateOrderProcess(@PathVariable Long id, @RequestBody OrderProcess orderProcess){
+    public void updateOrderProcess(@PathVariable Long id, @RequestBody OrderProcess orderProcess) throws IOException {
         orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository);
     }
 

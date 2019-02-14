@@ -3,9 +3,7 @@ package propra2.database;
 import lombok.Data;
 import propra2.model.OrderProcessStatus;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.List;
 
 @Data
@@ -16,10 +14,12 @@ public class OrderProcess {
     @Id
     Long id;
 
+    @Lob
     Product product;
     Long ownerId;
     Long requestId;
 
+    @Lob
     List<String> messages;
 
     OrderProcessStatus status;
