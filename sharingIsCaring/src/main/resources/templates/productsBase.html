@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Index</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <section class="spalte">
+        <h2>Products</h2>
+        <div>
+            <form method="get" action="/searchProducts">
+                <input type="search" name="query" />
+                <button type="submit">Search</button>
+            </form>
+
+            <div layout:fragment="productResults">
+
+            </div>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

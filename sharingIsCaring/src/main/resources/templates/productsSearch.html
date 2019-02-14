@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en" layout:decorate="~{productsBase}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Index</title>
+</head>
+<body>
+
+<div layout:fragment="productResults">
+    <b th:text="'Results for ' + ${query}"></b>
+    <section th:each="product : ${products}">
+        <hr>
+        <h3 th:text="${product.title}"></h3>
+        <p th:text="${#strings.abbreviate(product.description,100)}"></p>
+        <a th:href="@{/{id}(id=${product.id})}">read more</a>
+    </section>
+
+</div>
+
+</body>
+</html>
