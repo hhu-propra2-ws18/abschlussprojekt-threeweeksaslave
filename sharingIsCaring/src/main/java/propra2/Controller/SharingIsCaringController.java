@@ -54,12 +54,14 @@ public class SharingIsCaringController {
 
     @GetMapping("/")
     public String start(){
-        UserRegistration admin = new UserRegistration();
-        admin.setUserName("admin");
-        admin.setEmailAddress("admin@admin.de");
-        admin.setPassword("adminPass");
-        admin.setPasswordConfirm("adminPass");
-        registrationService.saveCredentials(admin);
+        if(!customerRepository.findByUsername("admin").isPresent()) {
+            UserRegistration admin = new UserRegistration();
+            admin.setUserName("admin");
+            admin.setEmailAddress("admin@admin.de");
+            admin.setPassword("adminPass");
+            admin.setPasswordConfirm("adminPass");
+            registrationService.saveCredentials(admin);
+        }
 
         return "start";
     }
