@@ -9,61 +9,52 @@
 <div layout:fragment="content">
 
     <section>
-    <form id="intro" method="post">
-        <h2>Registration</h2>
-        <div>
-            The Username has to have between 5 and 32 characters!
-        </div>
-        <table>
-            <tr>
-                <td>
-                    Username:
-                </td>
-                <td>
-                    <input type="text" name="userName" th:value="${userName}">
-                </td>
-            </tr>
-        </table>
-        <br/>
-        <div>
-            Email address has to have between 6 and 32 characters!
-        </div>
+        <form id="intro" method="post">
+            <h2>Registration</h2>
+            <table>
+                <tr>
+                    <td>
+                        Username:
+                    </td>
+                    <td>
+                        <input type="text" name="userName" th:value="${userName}" required minlength="5" maxlength="32">
+                    </td>
+                </tr>
+            </table>
+            <br/>
 
-        <table>
-            <tr>
-                <td>
-                    Email address:
-                </td>
-                <td>
-                    <input type="text" name="emailAddress" th:value="${emailAddress}">
-                </td>
-            </tr>
-        </table>
-        <br/>
-        <div>
-            Password has to have between 6 and 32 characters!
-        </div>
-        <table>
-            <tr>
-                <td>
-                    Password:
-                </td>
-                <td>
-                    <input type="password" name="password" th:value="${password}">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Confirm password:
-                </td>
-                <td>
-                    <input type="password" name="passwordConfirm" th:value="${passwordConfirm}">
-                </td>
-            </tr>
-        </table>
-        <br/>
-        <button type="submit">Submit</button>
-    </form>
+            <table>
+                <tr>
+                    <td>
+                        Email address:
+                    </td>
+                    <td>
+                        <input type="text" name="emailAddress" th:value="${emailAddress}" required minlength="6" maxlength="32">
+                    </td>
+                </tr>
+            </table>
+            <br/>
+            <table>
+                <tr>
+                    <td>
+                        Password:
+                    </td>
+                    <td>
+                        <input type="password" name="password" th:value="${password}" required minlength="6" maxlength="32">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Confirm password:
+                    </td>
+                    <td>
+                        <input type="password" name="passwordConfirm" th:value="${passwordConfirm}" required minlength="6" maxlength="32">
+                    </td>
+                </tr>
+            </table>
+            <br/>
+            <button type="submit">Submit</button>
+        </form>
 
     </section>
 </div>
