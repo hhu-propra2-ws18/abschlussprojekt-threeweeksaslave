@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Index</title>
+</head>
+<body>
+
+<nav layout:fragment="nav">
+    <ul>
+        <li><a th:href="@{'/home/' + ${user.customerId}}">Home</a></li>
+        <li><a th:href="@{'/profile/' + ${user.customerId}}">Profile</a></li>
+        <li><a href="/products">view Products</a></li>
+        <li><a href="/product">add Product</a>
+        <li><a aria-current="page">requests</a></li>
+        <li><a role="button">logout</a></li>
+    </ul>
+</nav>
+
+<div layout:fragment="content">
+
+    <section id="intro">
+        <div class="card-body">
+            <p class="card-text">
+
+            <h1>Your Requests</h1>
+        </div>
+    </section>
+
+    <section class="spalte">
+        <h1>Borrowed products</h1>
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Status</th>
+                <th>Details</th>
+            </tr>
+            <tr th:each="process : ${owner}">
+                <td th:text="${process.product.title}"></td>
+                <td th:text="${process.status}"></td>
+                <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/profile/requests/details/' + ${user.customerId}}">Details</a></td>
+            </tr>
+        </table>
+    </section>
+
+    <section class="spalte">
+        <h1>Lent products</h1>
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Status</th>
+                <th>Details</th>
+            </tr>
+            <tr th:each="process : ${borrower}">
+                <td th:text="${process.product.title}"></td>
+                <td th:text="${process.status}"></td>
+                <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/profile/requests/details/' + ${user.customerId}}">Details</a></td>
+            </tr>
+        </table>
+    </section>
+
+    </main>
+
+</div>
+</body>
+</html>
+
