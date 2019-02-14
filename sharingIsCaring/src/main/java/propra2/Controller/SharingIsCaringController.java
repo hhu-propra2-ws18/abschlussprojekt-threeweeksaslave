@@ -3,11 +3,12 @@ package propra2.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import propra2.Security.service.RegistrationService;
 import propra2.handler.OrderProcessHandler;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import propra2.Security.CustomerValidator;
+import propra2.Security.validator.CustomerValidator;
 
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
@@ -17,6 +18,8 @@ import propra2.repositories.CustomerRepository;
 import propra2.database.Product;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
+
+import java.security.Principal;
 import java.util.List;
 
 import java.util.Optional;
@@ -39,6 +42,9 @@ public class SharingIsCaringController {
     @Autowired
     private CustomerValidator customerValidator;
 
+    @Autowired
+    private RegistrationService registrationService;
+
     public SharingIsCaringController() {
         orderProcessHandler = new OrderProcessHandler();
         userHandler = new UserHandler();
@@ -53,12 +59,13 @@ public class SharingIsCaringController {
 
     /**
      * homepage from a specific customer
-     * @param customer
+     * @param user
      * @param model
      * @return home template
      */
     @GetMapping("/home")
-    public String home(Customer customer, Model model){
+    public String home(Principal user, Model model){
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
         model.addAttribute("user", customer);
         return "home";
     }
@@ -87,14 +94,11 @@ public class SharingIsCaringController {
             return "registration";
         }
 
-        Customer customer = new Customer();
-        customer.setMail(user.getEmailAddress());
-        customer.setUsername(user.getUserName());
-
-        customer.setProPay(userHandler.getProPayAccount(user.getUserName()));
+        Customer customer = registrationService.saveCredentials(user);
 
         customerRepository.save(customer);
-        return "login";
+
+        return "redirect:/home";
     }
 
     @GetMapping("/product")
@@ -104,10 +108,10 @@ public class SharingIsCaringController {
 
     @PostMapping("/product")
     public String createProduct(final Product newProduct) {
-        if (newProduct.allValuesSet()) {
-            productRepository.save(newProduct);
-        }
-        return "redirect:http://localhost:8080/home";
+      if (newProduct.allValuesSet()) {
+        productRepository.save(newProduct);
+      }
+      return "redirect:http://localhost:8080/home";
     }
 
     @PostMapping("/product/{name}")

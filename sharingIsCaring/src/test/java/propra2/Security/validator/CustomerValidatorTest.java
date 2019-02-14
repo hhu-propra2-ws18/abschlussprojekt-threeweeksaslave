@@ -1,4 +1,4 @@
-package propra2.Security;
+package propra2.Security.validator;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
