@@ -11,6 +11,9 @@
     <section>
     <form id="intro" method="post">
         <h2>Registration</h2>
+        <div>
+            The Username has to have between 5 and 32 characters!
+        </div>
         <table>
             <tr>
                 <td>
@@ -20,6 +23,13 @@
                     <input type="text" name="userName" th:value="${userName}">
                 </td>
             </tr>
+        </table>
+        <br/>
+        <div>
+            Email address has to have between 6 and 32 characters!
+        </div>
+
+        <table>
             <tr>
                 <td>
                     Email address:
@@ -28,6 +38,12 @@
                     <input type="text" name="emailAddress" th:value="${emailAddress}">
                 </td>
             </tr>
+        </table>
+        <br/>
+        <div>
+            Password has to have between 6 and 32 characters!
+        </div>
+        <table>
             <tr>
                 <td>
                     Password:

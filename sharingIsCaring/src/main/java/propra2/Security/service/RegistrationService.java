@@ -22,7 +22,7 @@ public class RegistrationService {
         userHandler = new UserHandler();
     }
 
-    public Customer saveCredentials(UserRegistration user) {
+    public void saveCredentials(UserRegistration user) {
         Customer customer = new Customer();
         customer.setRole("ROLE_USER");
         customer.setUsername(user.getUserName());
@@ -38,7 +38,5 @@ public class RegistrationService {
 
 
         customerRepo.save(customer);
-
-        return customer;
     }
 }

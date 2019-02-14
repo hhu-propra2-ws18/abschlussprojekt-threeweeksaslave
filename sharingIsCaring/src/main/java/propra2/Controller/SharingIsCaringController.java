@@ -55,6 +55,15 @@ public class SharingIsCaringController {
 
     @GetMapping("/")
     public String start(){
+        if(!customerRepository.findByUsername("admin").isPresent()) {
+            UserRegistration admin = new UserRegistration();
+            admin.setUserName("admin");
+            admin.setEmailAddress("admin@admin.de");
+            admin.setPassword("adminPass");
+            admin.setPasswordConfirm("adminPass");
+            registrationService.saveCredentials(admin);
+        }
+
         return "start";
     }
 
@@ -94,14 +103,36 @@ public class SharingIsCaringController {
         if (bindingResult.hasErrors()) {
             return "registration";
         }
-
         Customer customer = registrationService.saveCredentials(user);
 
         return "redirect:/home";
     }
+    @GetMapping("/products")
+    public String showProducts(Model model, Principal user){
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        model.addAttribute("user", customer);
+
+        return "productsBase";
+    }
+
+    @GetMapping("/searchProducts")
+    public String searchProducts(@RequestParam final String query, final Model model, Principal user){
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        model.addAttribute("user", customer);
+
+        model.addAttribute("products",this.productRepository
+                .findAllByTitleContainingOrDescriptionContaining(query,query));
+        model.addAttribute("query",query);
+
+
+        return "productsSearch";
+    }
 
     @GetMapping("/product")
-    public String getProduct() {
+    public String getProduct(Principal user, Model model) {
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        model.addAttribute("user", customer);
+
         return "addProduct";
     }
 
