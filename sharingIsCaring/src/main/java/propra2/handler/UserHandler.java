@@ -9,6 +9,7 @@ public class UserHandler {
 
     public ProPayAccount getProPayAccount(String username){
         ProPayAccount proPayAccount = getEntity(ProPayAccount.class,username);
+
         return proPayAccount;
     }
 
@@ -19,7 +20,7 @@ public class UserHandler {
                     .get()
                     .uri(builder ->
                             builder
-                                    .path("http://localhost:8888/account/" + username)
+                                    .path("localhost:8888/account/" + username)
                                     .build())
                     .accept(MediaType.APPLICATION_JSON_UTF8)
                     .retrieve()

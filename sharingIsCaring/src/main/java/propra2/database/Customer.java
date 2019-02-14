@@ -27,6 +27,7 @@ public class Customer {
     private Address address;
 
     @Lob
+    @Embedded
     private ProPayAccount proPay;
 
     @Lob

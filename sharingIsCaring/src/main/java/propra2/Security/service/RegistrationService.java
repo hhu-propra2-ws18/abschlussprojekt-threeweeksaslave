@@ -29,7 +29,6 @@ public class RegistrationService {
         customer.setMail(user.getEmailAddress());
         customer.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         customer.setProPay(userHandler.getProPayAccount(user.getUserName()));
-
         Address address = new Address();
         address.setStreet("-");
         address.setHouseNumber(0);
