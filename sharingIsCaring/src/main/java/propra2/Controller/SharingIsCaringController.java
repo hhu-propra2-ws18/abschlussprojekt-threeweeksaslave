@@ -59,12 +59,13 @@ public class SharingIsCaringController {
 
     /**
      * homepage from a specific customer
-     * @param customer
+     * @param user
      * @param model
      * @return home template
      */
     @GetMapping("/home")
-    public String home(Principal customer, Model model){
+    public String home(Principal user, Model model){
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
         model.addAttribute("user", customer);
         return "home";
     }
