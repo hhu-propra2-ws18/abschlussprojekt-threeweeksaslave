@@ -1,4 +1,4 @@
-package propra2.Security;
+package propra2.Security.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -12,7 +12,7 @@ import propra2.repositories.CustomerRepository;
 import java.util.Optional;
 
 @Service
-public class PersonService implements UserDetailsService {
+public class CustomerService implements UserDetailsService {
 
     @Autowired
     private CustomerRepository users;

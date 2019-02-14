@@ -17,18 +17,16 @@ public class Customer {
     @GeneratedValue
     private Long customerId;
 
+    private String role;
     private String username;
     private String password;
-    @Transient
-    private String retypePassword;
     private String mail;
 
     @Lob
     private Address address;
-  
+
     @Lob
     private ProPayAccount proPay;
-    private String role;
 
     @Lob
     private List<Long> borrowedProductIds;

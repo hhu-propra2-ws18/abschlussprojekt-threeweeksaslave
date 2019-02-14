@@ -1,4 +1,4 @@
-package propra2.Security;
+package propra2.Security.validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
