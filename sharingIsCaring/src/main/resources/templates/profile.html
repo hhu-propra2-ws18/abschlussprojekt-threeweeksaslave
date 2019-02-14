@@ -6,7 +6,7 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <section id="intro">
+    <section id="spalte">
         <h2>Profile</h2>
         <table>
             <tr>
@@ -71,6 +71,30 @@
         <a th:href="@{'/profile/update' + ${user.customerId}}" role="button">change profile</a>
 
     </section>
+    <section class="spalte">
+        <h2>ProPayAccount</h2>
+        <table>
+            <tr>
+                <td>
+                    amount:
+                </td>
+                <td>
+                    <dd th:text="${}">amount</dd>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    blocked deposit:
+                </td>
+                <td>
+                    <dd th:text="${}">blocked deposit</dd>
+                </td>
+            </tr>
+        </table>
+        <br/>
+        <a th:href="@{''}">got to ProPayAccount</a>
+    </section>
+    <a th:href="@{''}">view your actual borrowed products</a>
 </div>
 
 </body>
