@@ -166,30 +166,36 @@ public class SharingIsCaringController {
 
     /**
      * show profile data
-     * @param customerId
      * @param model
      * @return profile template
      */
-    @GetMapping("/profile/{customerId}")
-    public String getUserDataById(@PathVariable Long customerId, Model model) {
-        Optional<Customer> user = customerRepository.findById(customerId);
-        model.addAttribute("user", user.get());
+    @GetMapping("/profile")
+    public String getUserDataById(Principal user, Model model) {
+        Long loggedInId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(loggedInId);
+        model.addAttribute("user", customer.get());
         return "profile";
     }
 
     /**
      * direct to profileUpdate
-     * @param customerId
      * @param model
      * @return profileUpdate template
      */
-    @GetMapping("/profile/update/{customerId}")
-    public String getUpdateUserData(@PathVariable Long customerId, Model model){
-        Optional<Customer> customer = customerRepository.findById(customerId);
+    @GetMapping("/profile/update")
+    public String getUpdateUserData(Principal user, Model model) {
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(userId);
         model.addAttribute("user", customer.get());
         return "profileUpdate";
     }
-    
+
+    private Long getUserId(Principal user) {
+        String username = user.getName();
+        Long id = customerRepository.findByUsername(username).get().getCustomerId();
+        return id;
+    }
+
     @GetMapping("/profile/requests/{id}")
     public String showRequests(final Model model, @PathVariable final Long id) {
         List<OrderProcess> owner = orderProcessRepository.findAllByOwnerId(id);
@@ -203,18 +209,18 @@ public class SharingIsCaringController {
 
     /**
     * update profile data changes
-    * @param customerId
     * @param address
     * @param model
     * @return profile template
     */
-    @PostMapping("/profile/update/{customerId}")
-    public String updateUserData(@PathVariable Long customerId, Address address, Model model) {
-        Optional<Customer> customer = customerRepository.findById(customerId);
+    @PostMapping("/profile/update")
+    public String updateUserData(Principal user, Address address, Model model) {
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(userId);
         customer.get().setAddress(address);
         customerRepository.save(customer.get());
         model.addAttribute("user", customer);
-        return "redirect:http://localhost:8080/profile/" + customerId;
+        return "redirect:/profile";
     }
 
     @PostMapping("/orderProcess/{id}")
@@ -241,5 +247,23 @@ public class SharingIsCaringController {
             orderProcessRepository.save(newOrderProcess);
         }
         return "";
+    }
+
+    @GetMapping("/profile/requests/detailsOwner/{processId}")
+    public String showRequestOwnerDetails(@PathVariable Long processId, Model model) {
+        Optional<OrderProcess> process = orderProcessRepository.findById(processId);
+        model.addAttribute("process", process.get());
+        model.addAttribute("borrower", customerRepository.findById(process.get().getRequestId()));
+        return "requestDetailsOwner";
+    }
+
+    @GetMapping("/profile/requests/detailsBorrower/{processId}")
+    public String showRequestBorrowerDetails(@PathVariable Long processId, Model model) {
+        Optional<OrderProcess> process = orderProcessRepository.findById(processId);
+        Product product = process.get().getProduct();
+        model.addAttribute("process", process.get());
+        model.addAttribute("owner", customerRepository.findById(process.get().getOwnerId()));
+        model.addAttribute("product", product);
+        return "requestDetailsBorrower";
     }
 }
