@@ -120,7 +120,10 @@ public class SharingIsCaringController {
     }
 
     @GetMapping("/product")
-    public String getProduct() {
+    public String getProduct(Principal user, Model model) {
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        model.addAttribute("user", customer);
+
         return "addProduct";
     }
 
