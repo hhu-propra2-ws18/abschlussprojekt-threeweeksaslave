@@ -166,16 +166,15 @@ public class SharingIsCaringController {
 
     /**
      * show profile data
-     * @param customerId
      * @param model
      * @return profile template
      */
-    @GetMapping("/profile/{customerId}")
-    public String getUserDataById(@PathVariable Long customerId, Principal loggedIn, Model model) {
-        String loggedInName = loggedIn.getName();
-        Long loggedInId = customerRepository.findByUsername(loggedInName).get().getCustomerId();
-        Optional<Customer> user = customerRepository.findById(loggedInId);
-        model.addAttribute("user", user.get());
+    @GetMapping("/profile")
+    public String getUserDataById(Principal user, Model model) {
+        String username = user.getName();
+        Long loggedInId = customerRepository.findByUsername(username).get().getCustomerId();
+        Optional<Customer> customer = customerRepository.findById(loggedInId);
+        model.addAttribute("user", customer.get());
         return "profile";
     }
 
