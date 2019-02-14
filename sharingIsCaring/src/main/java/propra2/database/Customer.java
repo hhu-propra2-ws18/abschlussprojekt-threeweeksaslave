@@ -23,6 +23,7 @@ public class Customer {
     private String mail;
 
     @Lob
+    @Embedded
     private Address address;
 
     @Lob

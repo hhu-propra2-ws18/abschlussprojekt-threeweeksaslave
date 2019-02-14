@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="/css/base.css">
 
     <title>Home</title>
 </head>
@@ -21,7 +21,7 @@
     <nav id="navigation">
         <ul>
             <li><a aria-current="page">Home</a></li>
-            <li><a th:href="@{'/profile' + ${user.customerId}}">Profile</a></li>
+            <li><a th:href="@{'/profile/' + ${user.customerId}}">Profile</a></li>
             <li><a href="/products">view Products</a></li>
             <li><a href="/product">add Product</a>
             <li><a href="/messages">messages</a></li>

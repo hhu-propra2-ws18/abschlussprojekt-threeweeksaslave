@@ -6,7 +6,7 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <section id="spalte">
+    <section class="spalte">
         <h2>Profile</h2>
         <table>
             <tr>
@@ -14,7 +14,7 @@
                     userName:
                 </td>
                 <td>
-                    <dd th:text="${user.userName}">user name</dd>
+                    <dd th:text="${user.username}">user name</dd>
                 </td>
             </tr>
             <tr>
@@ -68,18 +68,18 @@
         </table>
 
         <br/>
-        <a th:href="@{'/profile/update' + ${user.customerId}}" role="button">change profile</a>
+        <a th:href="@{'/profile/update/' + ${user.customerId}}" role="button">change profile</a>
 
     </section>
     <section class="spalte">
         <h2>ProPayAccount</h2>
         <table>
-            <tr>
+         <!--   <tr>
                 <td>
                     amount:
                 </td>
                 <td>
-                    <dd th:text="${}">amount</dd>
+                    <dd th:text="${user.proPay.amount}">amount</dd>
                 </td>
             </tr>
             <tr>
@@ -89,7 +89,7 @@
                 <td>
                     <dd th:text="${}">blocked deposit</dd>
                 </td>
-            </tr>
+            </tr> -->
         </table>
         <br/>
         <a th:href="@{''}">got to ProPayAccount</a>

@@ -13,6 +13,7 @@ import propra2.Security.validator.CustomerValidator;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
 import propra2.handler.UserHandler;
+import propra2.model.Address;
 import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
 import propra2.database.Product;
@@ -96,8 +97,6 @@ public class SharingIsCaringController {
 
         Customer customer = registrationService.saveCredentials(user);
 
-        customerRepository.save(customer);
-
         return "redirect:/home";
     }
 
@@ -152,7 +151,7 @@ public class SharingIsCaringController {
      * @param model
      * @return profileUpdate template
      */
-    @GetMapping("/profile/change/{customerId}")
+    @GetMapping("/profile/update/{customerId}")
     public String getUpdateUserData(@PathVariable Long customerId, Model model){
         Optional<Customer> customer = customerRepository.findById(customerId);
         model.addAttribute("user", customer.get());
@@ -171,15 +170,17 @@ public class SharingIsCaringController {
     /**
     * update profile data changes
     * @param customerId
-    * @param customer
+    * @param address
     * @param model
     * @return profile template
     */
-    @PostMapping("/profile/change/{customerId}")
-    public String updateUserData(@PathVariable Long customerId, Customer customer, Model model) {
-        customerRepository.save(customer);
+    @PostMapping("/profile/update/{customerId}")
+    public String updateUserData(@PathVariable Long customerId, Address address, Model model) {
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        customer.get().setAddress(address);
+        customerRepository.save(customer.get());
         model.addAttribute("user", customer);
-        return "profile";
+        return "redirect:http://localhost:8080/profile/" + customerId;
     }
 
     @PostMapping("/orderProcess/{id}")

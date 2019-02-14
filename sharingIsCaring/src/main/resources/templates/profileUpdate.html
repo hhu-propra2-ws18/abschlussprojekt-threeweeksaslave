@@ -7,6 +7,7 @@
 <body>
 <div layout:fragment="content">
     <section id="intro">
+        <form method="POST">
         <h2>Profile</h2>
         <table>
             <tr>
@@ -14,7 +15,7 @@
                     userName:
                 </td>
                 <td>
-                    <dd th:text="${user.userName}">user name</dd>
+                    <dd th:text="${user?.username}">user name</dd>
                 </td>
             </tr>
             <tr>
@@ -22,7 +23,7 @@
                     emailAddress:
                 </td>
                 <td>
-                    <dd th:text="${user.mail}">mail</dd>
+                    <dd th:text="${user?.mail}">mail</dd>
                 </td>
             </tr>
         </table>
@@ -38,7 +39,7 @@
                     street:
                 </td>
                 <td>
-                    <input type="text" name="street" th:value="${user.address.street}">
+                    <input type="text" name="street" th:value="${user?.address.street}">
                 </td>
             </tr>
             <tr>
@@ -46,7 +47,7 @@
                     houseNr:
                 </td>
                 <td>
-                    <input type="number" name="houseNumber" th:value="${user.address.houseNumber}">
+                    <input type="number" name="houseNumber" th:value="${user?.address.houseNumber}">
                 </td>
             </tr>
             <tr>
@@ -54,7 +55,7 @@
                     postCode:
                 </td>
                 <td>
-                    <input type="number" name="postCode" th:value="${user.address.postCode}">
+                    <input type="number" name="postCode" th:value="${user?.address.postCode}">
                 </td>
             </tr>
             <tr>
@@ -62,7 +63,7 @@
                     city:
                 </td>
                 <td>
-                    <input type="text" name="city" th:value="${user.address.city}">
+                    <input type="text" name="city" th:value="${user?.address.city}">
                 </td>
             </tr>
         </table>
@@ -71,7 +72,7 @@
         <div>
             <button type="submit">Save</button>
         </div>
-
+        </form>
     </section>
 </div>
 
