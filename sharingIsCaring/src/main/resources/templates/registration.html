@@ -8,41 +8,39 @@
 <body>
 <div layout:fragment="content">
 
-    <form method="post"><
-    <center>
-    <form id="intro">
+    <form id="intro" method="post">
         <h2>Registration</h2>
         <table>
             <tr>
                 <td>
-                    userName:
+                    Username:
                 </td>
                 <td>
-                    <input type="text" name="userName" th:value="${userName}" value="userName">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    emailAddress:
-                </td>
-                <td>
-                    <input type="text" name="mail" th:value="${mail}" value="emailAddress">
+                    <input type="text" name="userName" th:value="${userName}">
                 </td>
             </tr>
             <tr>
                 <td>
-                    password:
+                    Email address:
                 </td>
                 <td>
-                    <input type="password" name="password" th:value="${password}" value="password">
+                    <input type="text" name="emailAddress" th:value="${emailAddress}">
                 </td>
             </tr>
             <tr>
                 <td>
-                    confirm password:
+                    Password:
                 </td>
                 <td>
-                    <input type="password" name="confirmPassword" th:value="${passwordConfirm}" value="confirmPassword">
+                    <input type="password" name="password" th:value="${password}">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Confirm password:
+                </td>
+                <td>
+                    <input type="password" name="passwordConfirm" th:value="${passwordConfirm}">
                 </td>
             </tr>
         </table>
@@ -51,7 +49,6 @@
     </form>
 
     </section>
-    </center>
 </div>
 
 </body>
@@ -61,7 +58,7 @@
     </ul>
     <p>
         Design: ThreeWeeksASlave<br>
-        technische Umsetzung: ThreeWeeksASlave
+        Technical implementation: ThreeWeeksASlave
     </p>
 </footer>
 
