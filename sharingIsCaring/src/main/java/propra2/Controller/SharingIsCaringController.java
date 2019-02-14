@@ -98,6 +98,25 @@ public class SharingIsCaringController {
 
         return "redirect:/home";
     }
+    @GetMapping("/products")
+    public String showProducts(Model model, Principal user){
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        model.addAttribute("user", customer);
+
+        return "productsBase";
+    }
+
+    @GetMapping("/searchProducts")
+    public String searchProducts(@RequestParam final String query, final Model model, Principal user){
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        model.addAttribute("user", customer);
+
+        model.addAttribute("products",this.productRepository
+                .findAllByTitleContainingOrDescriptionContaining(query,query));
+        model.addAttribute("query",query);
+
+        return "productsSearch";
+    }
 
     @GetMapping("/product")
     public String getProduct() {
