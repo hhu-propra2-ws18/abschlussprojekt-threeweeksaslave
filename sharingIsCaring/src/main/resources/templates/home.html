@@ -4,7 +4,30 @@
     <title>Index</title>
 </head>
 <body>
+
 <div layout:fragment="content">
+
+
+<header>
+    <a class="ribbon" tabindex="-1" title="zurück zur Startseite!" href="home.html">
+        <h1 id="logo">Sharing is Caring</h1>
+        <p>Ing. Three Weeks a Sklave GmbH</span></p>
+    </a>
+</header>
+
+<main>
+
+    <nav id="navigation">
+        <ul>
+            <li><a aria-current="page">Home</a></li>
+            <li><a th:href="@{'/profile' + ${user.customerId}}">Profile</a></li>
+            <li><a href="/products">view Products</a></li>
+            <li><a href="/product">add Product</a>
+            <li><a href="/messages">requests</a></li>
+        </ul>
+    </nav>
+
+
     <section id="intro">
         <h2>Welcome <span>to Sharing is Caring</span></h2>
         <p>
