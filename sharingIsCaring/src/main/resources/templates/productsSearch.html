@@ -7,6 +7,7 @@
 <body>
 
 <div layout:fragment="productResults">
+    <b th:text="'Results for ' + ${query}"></b>
     <section th:each="product : ${products}">
         <h3 th:text="${product.title}"></h3>
         <p th:text="${#strings.abbreviate(product.description,100)}"></p>

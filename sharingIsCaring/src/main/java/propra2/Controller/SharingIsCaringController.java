@@ -115,6 +115,7 @@ public class SharingIsCaringController {
                 .findAllByTitleContainingOrDescriptionContaining(query,query));
         model.addAttribute("query",query);
 
+
         return "productsSearch";
     }
 
