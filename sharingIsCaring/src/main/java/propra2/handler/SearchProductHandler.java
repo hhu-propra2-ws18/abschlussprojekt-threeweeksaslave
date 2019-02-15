@@ -17,12 +17,13 @@ public class SearchProductHandler {
 		List<Product> products = productRepository.findAllByTitleContainingOrDescriptionContaining(query, query);
 		if(filter.equals("borrowed")){
 			List<Product> userBorrowedProducts = new ArrayList<>();
-			List<Long> borrowedProductIds = customer.getBorrowedProductIds();
+			List<Product> borrowedProducts = customer.getBorrowedProducts();
 			for(Product product : products){
-				for(Long borrowedProductsId : borrowedProductIds)
-					if(product.getId().equals(borrowedProductsId)){
+				for(Product borrowedProduct : borrowedProducts){
+					if(product.getId().equals(borrowedProduct.getId())){
 						userBorrowedProducts.add(product);
 					}
+				}
 			}
 			products = userBorrowedProducts;
 		}

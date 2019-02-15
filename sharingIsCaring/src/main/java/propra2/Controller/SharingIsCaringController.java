@@ -11,13 +11,11 @@ import propra2.handler.OrderProcessHandler;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import propra2.Security.service.RegistrationService;
 import propra2.Security.validator.CustomerValidator;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
 import propra2.handler.SearchProductHandler;
 import propra2.database.Product;
-import propra2.handler.OrderProcessHandler;
 import propra2.handler.UserHandler;
 import propra2.model.Address;
 import propra2.model.TransactionType;
@@ -29,7 +27,6 @@ import propra2.repositories.TransactionRepository;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -193,7 +190,7 @@ public class SharingIsCaringController {
 
     /**
      * save a new Product in db
-     * @param tite
+     * @param title
      * @param description
      * @param deposit
      * @param dailyFee
@@ -370,8 +367,8 @@ public class SharingIsCaringController {
 
     @GetMapping("/orders/{customerId}")
     public List<Product> getOrders(@PathVariable Long customerId) {
-        Optional<Customer> customer = customerRepository.findById(customerId);
-        List<Product> products = productRepository.findAllById(customer.get().getBorrowedProductIds());
+        Customer customer = customerRepository.findById(customerId).get();
+        List<Product> products = customer.getBorrowedProducts();
         return products;
     }
 

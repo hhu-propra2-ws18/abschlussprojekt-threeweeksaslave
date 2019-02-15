@@ -77,13 +77,13 @@ public class SearchProductHandlerTest {
 		product3 = productRepository.save(product3);
 		product4 = productRepository.save(product4);
 
-		List<Long> borrowedProductIds = new ArrayList<>();
-		borrowedProductIds.add(product1.getId());
-		borrowedProductIds.add(product2.getId());
-		borrowedProductIds.add(product3.getId());
+		List<Product> borrowedProducts = new ArrayList<>();
+		borrowedProducts.add(product1);
+		borrowedProducts.add(product2);
+		borrowedProducts.add(product3);
 
 		Customer customer = new Customer();
-		customer.setBorrowedProductIds(borrowedProductIds);
+		customer.setBorrowedProducts(borrowedProducts);
 
 
 		List<Product> allProducts = searchProductHandler.getSearchedProducts("test", "borrowed", customer, productRepository);
