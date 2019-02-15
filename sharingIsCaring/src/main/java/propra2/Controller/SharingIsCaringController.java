@@ -289,5 +289,5 @@ public class SharingIsCaringController {
         model.addAttribute("borrower", customerRepository.findById(process.get().getRequestId()));
         return "requestDetailsOwner";
     }
-      
+  
 }

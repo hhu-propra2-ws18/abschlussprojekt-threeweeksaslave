@@ -1,1 +1,9 @@
 language: java
+before_install:
+  - sudo docker run --rm -e POSTGRES_PASSWORD=secret -e POSTGRES_DB=propra -p 5432:5432 postgres
+  - sudo docker run -p 8888:8888 propra/propay:latest
+
+
+
+
+
