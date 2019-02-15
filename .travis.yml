@@ -2,11 +2,11 @@ language: java
 jdk:
   - oraclejdk8
 skript:
-#  - ./gradlew check
-  - chmod +x ./gradlew
-service:
-  - docker
-  - postgresql
+  - TERM=dumb ./gradlew check
+# - chmod +x ./gradlew
+#service:
+#  - docker
+#  - postgresql
 
 before_skript:
   - cd sharingIsCaring
