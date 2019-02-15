@@ -217,10 +217,11 @@ public class SharingIsCaringController {
      * @return profile template
      */
     @PostMapping("/profile/update")
-    public String updateUserData(Principal user, Address address, Model model) {
+    public String updateUserData(Principal user, Address address, Model model, String mail) {
         Long userId = getUserId(user);
         Optional<Customer> customer = customerRepository.findById(userId);
         customer.get().setAddress(address);
+        customer.get().setMail(mail);
         customerRepository.save(customer.get());
         model.addAttribute("user", customer);
         return "redirect:/profile";
@@ -250,7 +251,7 @@ public class SharingIsCaringController {
         }
         return "";
     }
-
+  
     @PostMapping("/orderProcess/{id}")
     public void updateOrderProcess(@PathVariable Long id, @RequestBody OrderProcess orderProcess) throws IOException {
         orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository);
@@ -280,7 +281,7 @@ public class SharingIsCaringController {
         model.addAttribute("product", product);
         return "requestDetailsBorrower";
     }
-
+      
     @GetMapping("/requests/detailsOwner/{processId}")
     public String showRequestOwnerDetails(@PathVariable Long processId, Model model) {
         Optional<OrderProcess> process = orderProcessRepository.findById(processId);
@@ -288,5 +289,5 @@ public class SharingIsCaringController {
         model.addAttribute("borrower", customerRepository.findById(process.get().getRequestId()));
         return "requestDetailsOwner";
     }
-
+      
 }
