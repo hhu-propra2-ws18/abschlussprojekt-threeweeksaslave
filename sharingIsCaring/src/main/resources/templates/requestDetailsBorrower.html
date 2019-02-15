@@ -4,7 +4,7 @@
 <head>
     <title>Index</title>
 </head>
-<body>
+<body+>
 
 <nav layout:fragment="nav">
     <ul>
@@ -19,7 +19,7 @@
 
 <div layout:fragment="content">
     <section id="spalte">
-        <h1>Your lent Products:</h1>
+        <h1>Your borrowed Products:</h1>
             <table>
                 <tr>
                     <td>
@@ -67,6 +67,12 @@
                 <form method="post">
                     <button class="btn btn-outline-danger btn-sm" name="action" type="submit" value="delete">Delete Process</button>
                 </form>
+            </a>
+            <a th:case="CONFLICT">
+                <!-- TODO: Konfliktmanagment -->
+            </a>
+            <a th:case="RETURNED">
+                <td>Please wait for owners response!</td>
             </a>
             <a th:case="FINISHED">
                 <form method="post">
