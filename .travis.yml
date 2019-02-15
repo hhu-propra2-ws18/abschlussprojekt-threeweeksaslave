@@ -8,8 +8,7 @@ script:
 - cd sharingIsCaring/
 - chmod =+rwx gradlew
 - chmod =+rwx gradle
-- ./gradlew build --scan -s
-  
+- ./gradlew build
 #skript:
 #  - ./gradlew check
 #  - chmod +x ./gradlew
