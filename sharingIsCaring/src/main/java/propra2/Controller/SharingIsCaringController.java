@@ -81,6 +81,22 @@ public class SharingIsCaringController {
         return "home";
     }
 
+    @GetMapping("/rechargeCredit")
+    public String getRechargeCredit(Principal user, Model model){
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        model.addAttribute("user", customer);
+        return "rechargeCredit";
+    }
+
+    @PostMapping("/rechargeCredit")
+    public String rechargeCredit(Principal user, int amount, Model model){
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        Customer customer1 = userHandler.rechargeCredit(customer, amount);
+        customerRepository.save(customer1);
+        model.addAttribute("user", customer);
+        return "redirect:/profile/" + customer.getCustomerId();
+    }
+
     /**
      * registration
      * @return registration template
