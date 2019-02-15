@@ -1,6 +1,9 @@
 package propra2.handler;
 
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
 import propra2.model.ProPayAccount;
@@ -9,15 +12,16 @@ import reactor.core.publisher.Mono;
 public class UserHandler {
 
     public Customer rechargeCredit(Customer customer, int amount){
-        System.out.println(amount);
-        WebClient.create().post().uri(builder ->
+
+       Mono<ProPayAccount> account =  WebClient.create().post().uri(builder ->
                 builder
                         .path("localhost:8888/account/" + customer.getUsername())
                         .query("amount=" + amount)
-                        .build());
+                        .build())
+               .retrieve()
+               .bodyToMono(ProPayAccount.class);
 
-        ProPayAccount proPayAccount = getEntity(ProPayAccount.class,customer.getUsername());
-        customer.setProPay(proPayAccount);
+        customer.setProPay(account.block());
         return customer;
     }
 
