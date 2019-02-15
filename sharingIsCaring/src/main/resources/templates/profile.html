@@ -12,8 +12,9 @@
         <li><a aria-current="page">Profile</a></li>
         <li><a href="/products">view Products</a></li>
         <li><a href="/product">add Product</a>
-        <li><a th:href="@{'/profile/requests/' + ${user.customerId}}">requests</a></li>
-        <li><a role="button">logout</a></li>
+        <li><a href="/messages">messages</a></li>
+        <li><a th:href="@{'/requests/' + ${user.customerId}}">requests</a></li>
+        <li><a href="/logout" role="button">logout</a></li>
     </ul>
 </nav>
 <div layout:fragment="content">
@@ -23,7 +24,7 @@
         <table>
             <tr>
                 <td>
-                    userName:
+                    Username:
                 </td>
                 <td>
                     <dd th:text="${user.username}">user name</dd>
@@ -31,7 +32,7 @@
             </tr>
             <tr>
                 <td>
-                    emailAddress:
+                    Email address:
                 </td>
                 <td>
                     <dd th:text="${user.mail}">mail</dd>
@@ -47,7 +48,7 @@
             </tr>
             <tr>
                 <td>
-                    street:
+                    Street:
                 </td>
                 <td>
                     <dd th:text="${user.address.street}">street</dd>
@@ -55,7 +56,7 @@
             </tr>
             <tr>
                 <td>
-                    houseNr:
+                    House No.:
                 </td>
                 <td>
                     <dd th:text="${user.address.houseNumber}">houseNumber</dd>
@@ -63,7 +64,7 @@
             </tr>
             <tr>
                 <td>
-                    postCode:
+                    Postal code:
                 </td>
                 <td>
                     <dd th:text="${user.address.postCode}">postCode</dd>
@@ -71,7 +72,7 @@
             </tr>
             <tr>
                 <td>
-                    city:
+                    City:
                 </td>
                 <td>
                     <dd th:text="${user.address.city}">city</dd>
@@ -80,7 +81,7 @@
         </table>
 
         <br/>
-        <a th:href="@{'/profile/update/' + ${user.customerId}}" role="button">change profile</a>
+        <a th:href="@{'/profile/update/'}" role="button">change profile</a>
 
     </section>
     <section class="spalte">

@@ -7,13 +7,23 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
+
 import propra2.database.Transaction;
 import propra2.model.ProPayAccount;
 import propra2.model.TransactionType;
 import propra2.repositories.TransactionRepository;
+
+import propra2.model.UserRegistration;
+import propra2.repositories.CustomerRepository;
+
 import reactor.core.publisher.Mono;
 
+import java.security.Principal;
+import java.util.Optional;
+
 public class UserHandler {
+    @Autowired
+    private CustomerRepository customerRepo;
 
     public Customer rechargeCredit(Customer customer, int amount){
 
