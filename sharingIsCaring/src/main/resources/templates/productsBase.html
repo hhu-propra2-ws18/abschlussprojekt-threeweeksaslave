@@ -23,11 +23,11 @@
         <h2>Products</h2>
         <div>
             <form method="get" action="/searchProducts">
-                <input type="search" name="query" />
+                <input type="search" name="query" th:value="${query}"/>
                 <select type="text" name="filter">
-                    <option>all</option>
-                    <option>borrowed</option>
-                    <option>lent</option>
+                    <option th:value="all">all</option>
+                    <option th:value="borrowed">borrowed</option>
+                    <option th:value="offered">my products</option>
                 </select>
                 <button type="submit">Search</button>
             </form>

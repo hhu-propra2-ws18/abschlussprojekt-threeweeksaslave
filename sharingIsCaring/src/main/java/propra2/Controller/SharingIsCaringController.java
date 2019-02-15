@@ -151,7 +151,7 @@ public class SharingIsCaringController {
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         model.addAttribute("user", customer);
 
-        return "productsBase";
+        return searchProducts("","all",model,user);
     }
 
 
