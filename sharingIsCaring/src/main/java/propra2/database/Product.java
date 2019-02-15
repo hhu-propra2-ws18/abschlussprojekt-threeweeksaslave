@@ -9,6 +9,7 @@ import java.util.Date;
 @Data
 @Table(name = "product")
 @Entity (name = "Product")
+
 public class Product {
 	@GeneratedValue
 	@Id
@@ -23,6 +24,8 @@ public class Product {
 	Integer deposit;
 	Integer dailyFee;
 
+	@ManyToOne
+	Customer owner;
 	Long ownerId;
 
 	@Lob

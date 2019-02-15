@@ -30,10 +30,10 @@ public class Customer {
     @Embedded
     private ProPayAccount proPay;
 
-    @Lob
-    private List<Long> borrowedProductIds;
+    @OneToMany
+    private List<Product> borrowedProducts;
 
     void addBorrowedProduct(Product newProduct){
-        borrowedProductIds.add(newProduct.getId());
+        borrowedProducts.add(newProduct);
     }
 }
