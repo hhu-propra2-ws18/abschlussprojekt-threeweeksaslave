@@ -4,7 +4,7 @@
 <head>
     <title>Index</title>
 </head>
-<body+>
+<body>
 
 <nav layout:fragment="nav">
     <ul>
@@ -110,6 +110,12 @@
                 </form>
             </a>
         </th:block>
+        <br>
+        <table>
+            <tr th:each="message : ${process.messages}">
+                <td th:text="${message}"><br></td>
+            </tr>
+        </table>
     </section>
 </div>
 </body>
