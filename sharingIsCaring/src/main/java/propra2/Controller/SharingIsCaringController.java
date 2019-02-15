@@ -269,6 +269,4 @@ public class SharingIsCaringController {
         model.addAttribute("product", product);
         return "requestDetailsBorrower";
     }
-
-
 }
