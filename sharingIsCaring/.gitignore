@@ -4,8 +4,8 @@
 
 ### binäre Dateien ###
 *.class
-*.jar
 !gradle/wrapper/gradle-wrapper.jar
+*.jar
 
 ### STS ###
 .apt_generated
