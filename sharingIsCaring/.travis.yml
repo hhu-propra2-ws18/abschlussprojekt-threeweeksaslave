@@ -1,8 +1,13 @@
 language: java
+jdk:
+  - oraclejdk8
+before_skript:
+  - docker run --rm -e POSTGRES_PASSWORD=secret -e POSTGRES_DB=propra -p 5432:5432 postgres
+  - docker run -p 8888:8888 propra/propay:latest
 before_install:
-  - sudo docker run --rm -e POSTGRES_PASSWORD=secret -e POSTGRES_DB=propra -p 5432:5432 postgres
-  - sudo docker run -p 8888:8888 propra/propay:latest
-
+  - chmod +x gradlew
+script:
+  - ./gradlew test
 
 
 
