@@ -262,7 +262,7 @@ public class SharingIsCaringController {
         userHandler.saveTransaction(amount, TransactionType.PREPAYMENTINPUT, customer.getUsername(), transactionRepository);
         customerRepository.save(customer1);
         model.addAttribute("user", customer);
-        return "redirect:/profile/" + customer.getCustomerId();
+        return "redirect:/profile";
     }
 
     @GetMapping("/transactions")
