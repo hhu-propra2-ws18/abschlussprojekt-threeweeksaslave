@@ -1,6 +1,7 @@
 package propra2.database;
 
 import lombok.Data;
+import propra2.model.Address;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -23,6 +24,11 @@ public class Product {
 	Integer dailyFee;
 
 	Long ownerId;
+
+	@Lob
+	@Embedded
+	Address address;
+
 
 	public boolean allValuesSet() {
 		if(this.getTitle() == null||
