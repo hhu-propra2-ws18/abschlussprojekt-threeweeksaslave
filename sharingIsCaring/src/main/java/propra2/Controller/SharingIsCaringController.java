@@ -214,10 +214,11 @@ public class SharingIsCaringController {
     * @return profile template
     */
     @PostMapping("/profile/update")
-    public String updateUserData(Principal user, Address address, Model model) {
+    public String updateUserData(Principal user, Address address, Model model, String mail) {
         Long userId = getUserId(user);
         Optional<Customer> customer = customerRepository.findById(userId);
         customer.get().setAddress(address);
+        customer.get().setMail(mail);
         customerRepository.save(customer.get());
         model.addAttribute("user", customer);
         return "redirect:/profile";
