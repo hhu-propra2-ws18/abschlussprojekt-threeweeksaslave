@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Index</title>
+</head>
+<body>
+
+<nav layout:fragment="nav">
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li><a th:href="@{'/profile/' + ${user.customerId}}">Profile</a></li>
+        <li><a href="/products">view Products</a></li>
+        <li><a href="/product">add Product</a>
+        <li><a th:href="@{'/profile/requests/' + ${user.customerId}}">requests</a></li>
+        <li><a role="button">logout</a></li>
+    </ul>
+</nav>
+
+<div layout:fragment="content">
+
+    <h2>Transactions:</h2>
+        <table>
+            <tbody>
+            <tr th:each="transaction:${transactions}">
+                <td th:text="'Nr: ' + ${transaction.id}"></td>
+                <td th:text="'amount: ' + ${transaction.amount} + '€'"></td>
+                <td th:text="'type: ' + ${transaction.transactionType}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+</div>
+
+</body>
+</html>

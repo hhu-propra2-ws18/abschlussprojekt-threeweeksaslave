@@ -2,21 +2,28 @@ package propra2.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import propra2.Security.service.RegistrationService;
+import propra2.database.Transaction;
+import propra2.handler.OrderProcessHandler;
+
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import propra2.Security.service.RegistrationService;
 import propra2.Security.validator.CustomerValidator;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
+import propra2.handler.SearchProductHandler;
 import propra2.database.Product;
-import propra2.handler.OrderProcessHandler;
 import propra2.handler.UserHandler;
 import propra2.model.Address;
+import propra2.model.TransactionType;
 import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
+import propra2.repositories.TransactionRepository;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -39,6 +46,7 @@ public class SharingIsCaringController {
 
     private OrderProcessHandler orderProcessHandler;
     private UserHandler userHandler;
+    private SearchProductHandler searchProductHandler;
 
     @Autowired
     private CustomerValidator customerValidator;
@@ -46,9 +54,13 @@ public class SharingIsCaringController {
     @Autowired
     private RegistrationService registrationService;
 
+    @Autowired
+    TransactionRepository transactionRepository;
+
     public SharingIsCaringController() {
         orderProcessHandler = new OrderProcessHandler();
         userHandler = new UserHandler();
+        searchProductHandler = new SearchProductHandler();
     }
 
 
@@ -69,6 +81,11 @@ public class SharingIsCaringController {
         return "start";
     }
 
+    /**
+     * check if user exists
+     * @param username
+     * @return
+     */
     @PostMapping("/")
     public boolean userExists(final String username) {
         if (customerRepository.findByUsername(username).isPresent())
@@ -124,27 +141,47 @@ public class SharingIsCaringController {
     /*********************************************************************************
         PRODUCTS
      **********************************************************************************/
+
+    /**
+     * return base template of product poverview
+     * @param model
+     * @param user
+     * @return
+     */
     @GetMapping("/products")
     public String showProducts(Model model, Principal user) {
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         model.addAttribute("user", customer);
 
-        return "productsBase";
+        return searchProducts("","all",model,user);
     }
 
-    @GetMapping("/searchProducts")
-    public String searchProducts(@RequestParam final String query, final Model model, Principal user) {
-        Customer customer = customerRepository.findByUsername(user.getName()).get();
-        model.addAttribute("user", customer);
 
-        model.addAttribute("products", this.productRepository
-                .findAllByTitleContainingOrDescriptionContaining(query, query));
-        model.addAttribute("query", query);
+  /**
+   * return template for product overview with a list of specific products
+   * @param query
+   * @param model
+   * @param user
+   * @return
+   */
+	@GetMapping("/searchProducts")
+	public String searchProducts(@RequestParam final String query, String filter, final Model model, Principal user){
+		Customer customer = customerRepository.findByUsername(user.getName()).get();
+		List<Product> products = this.searchProductHandler.getSearchedProducts(query, filter, customer, this.productRepository);
+		model.addAttribute("user", customer);
+		model.addAttribute("query",query);
+		model.addAttribute("products", products);
+		return "productsSearch";
+	}
+    
 
 
-        return "productsSearch";
-    }
-
+    /**
+     * get template to create a new product
+     * @param user
+     * @param model
+     * @return
+     */
     @GetMapping("/product")
     public String getProduct(Principal user, Model model) {
         Customer customer = customerRepository.findByUsername(user.getName()).get();
@@ -153,6 +190,18 @@ public class SharingIsCaringController {
         return "addProduct";
     }
 
+    /**
+     * save a new Product in db
+     * @param title
+     * @param description
+     * @param deposit
+     * @param dailyFee
+     * @param street
+     * @param houseNumber
+     * @param postCode
+     * @param city
+     * @return
+     */
     @PostMapping("/product")
     public String createProduct(Principal user, final Product newProduct, final Model model) {
         Long loggedInId = getUserId(user);
@@ -161,20 +210,31 @@ public class SharingIsCaringController {
 
         newProduct.setOwnerId(loggedInId);
         newProduct.setAvailable(true);
+        //TODO set address
         //TODO set borrowed until
-
+  
         if (newProduct.allValuesSet()) {
             productRepository.save(newProduct);
         }
         return "redirect:/home";
     }
 
+    /**
+     * return a list of products with a specific title
+     * @param name
+     * @return
+     */
     @PostMapping("/product/{name}")
     public List<Product> searchForProducts(String name) {
         List<Product> resultList = productRepository.findByTitle(name);
         return resultList;
     }
 
+    /**
+     * return a specific product find by id
+     * @param id
+     * @return
+     */
     @PostMapping("/product/{id}")
     public Product getProductInformationById(Long id) {
         return productRepository.findById(id).get();
@@ -247,6 +307,59 @@ public class SharingIsCaringController {
         model.addAttribute("user", customer);
         return "redirect:/profile";
     }
+  
+  /*********************************************************************************
+        ProPayAccount
+     **********************************************************************************/
+
+    /**
+     * get template to recharge Credit
+     * @param user
+     * @param model
+     * @return
+     */
+  @GetMapping("/rechargeCredit")
+    public String getRechargeCredit(Principal user, Model model){
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        model.addAttribute("user", customer);
+        return "rechargeCredit";
+    }
+
+    /**
+     * send amount to ProPayAccount and save Transaction in db
+     * @param user
+     * @param amount
+     * @param iban
+     * @param model
+     * @return
+     */
+    @PostMapping("/rechargeCredit")
+    public String rechargeCredit(Principal user, int amount, String iban,Model model){
+        if(amount==0 || iban == null){
+            return "redirect:/rechargeCredit";
+        }
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        Customer customer1 = userHandler.rechargeCredit(customer, amount);
+        userHandler.saveTransaction(amount, TransactionType.PREPAYMENTINPUT, customer.getUsername(), transactionRepository);
+        customerRepository.save(customer1);
+        model.addAttribute("user", customer);
+        return "redirect:/profile";
+    }
+
+    /**
+     * get overview of transactions for a specific user
+     * @param user
+     * @param model
+     * @return
+     */
+    @GetMapping("/transactions")
+    public String getTransactions(Principal user, Model model){
+        List<Transaction> transactions = transactionRepository.findAllByUserName(user.getName());
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        model.addAttribute("user", customer);
+        model.addAttribute("transactions", transactions);
+        return "transactions";
+    }
 
 
     /*********************************************************************************
@@ -260,8 +373,8 @@ public class SharingIsCaringController {
 
     @GetMapping("/orders/{customerId}")
     public List<Product> getOrders(@PathVariable Long customerId) {
-        Optional<Customer> customer = customerRepository.findById(customerId);
-        List<Product> products = productRepository.findAllById(customer.get().getBorrowedProductIds());
+        Customer customer = customerRepository.findById(customerId).get();
+        List<Product> products = customer.getBorrowedProducts();
         return products;
     }
 

@@ -1,9 +1,10 @@
 .gradle
 /build/
-!gradle/wrapper/gradle-wrapper.jar
+
 
 ### binäre Dateien ###
 *.class
+!gradle/wrapper/gradle-wrapper.jar
 *.jar
 
 ### STS ###
@@ -28,3 +29,5 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+
+

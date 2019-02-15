@@ -10,6 +10,7 @@ import propra2.database.OrderProcess;
 import propra2.model.OrderProcessStatus;
 import propra2.repositories.OrderProcessRepository;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @RunWith(SpringRunner.class)
@@ -27,7 +28,7 @@ public class OrderProcessHandlerTest {
     }
 
     @Test
-    public void updateOrderProcessTest(){
+    public void updateOrderProcessTest() throws IOException {
         OrderProcess orderProcess = new OrderProcess();
         orderProcess.setOwnerId(5678L);
         orderProcess.setRequestId(3456L);

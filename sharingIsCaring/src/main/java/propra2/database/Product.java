@@ -1,6 +1,7 @@
 package propra2.database;
 
 import lombok.Data;
+import propra2.model.Address;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.Date;
 @Data
 @Table(name = "product")
 @Entity (name = "Product")
+
 public class Product {
 	@GeneratedValue
 	@Id
@@ -22,7 +24,14 @@ public class Product {
 	Integer deposit;
 	Integer dailyFee;
 
+	@ManyToOne
+	Customer owner;
 	Long ownerId;
+
+	@Lob
+	@Embedded
+	Address address;
+
 
 	public boolean allValuesSet() {
 		return this.getTitle() != null &&
