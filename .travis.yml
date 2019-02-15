@@ -6,8 +6,6 @@ service:
 before_skript:
   - docker run --rm -e POSTGRES_PASSWORD=secret -e POSTGRES_DB=propra -p 5432:5432 postgres
   - docker run -p 8888:8888 propra/propay:latest
-script:
-  - ./gradlew test
 
 
 
