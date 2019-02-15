@@ -1,15 +1,24 @@
-language: java
-jdk:
-  - oraclejdk8
-skript:
-#  - ./gradlew check
-  - chmod +x ./gradlew
-service:
-  - docker
-  - postgresql
+ language: java
+install: true
 
-before_skript:
-  - cd sharingIsCaring
+jdk:
+- oraclejdk8
+
+script:
+- cd ausleih-service/
+- chmod =+rwx gradlew
+- chmod =+rwx gradle
+- ./gradlew build --scan -s
+  
+#skript:
+#  - ./gradlew check
+#  - chmod +x ./gradlew
+#service:
+#  - docker
+#  - postgresql
+
+#before_skript:
+#  - cd sharingIsCaring
 #  - docker run --rm -e POSTGRES_PASSWORD=secret -e POSTGRES_DB=propra -p 5432:5432 postgres
 #  - docker run -p 8888:8888 propra/propay:latest
 #script:
