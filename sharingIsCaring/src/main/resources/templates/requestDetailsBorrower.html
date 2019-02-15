@@ -13,13 +13,13 @@
         <li><a href="/products">view Products</a></li>
         <li><a href="/product">add Product</a>
         <li><a th:href="@{'/profile/requests/' + ${user.customerId}}">requests</a></li>
-        <li><a role="button">logout</a></li>
+        <li><a th:href="/logout" role="button">logout</a></li>
     </ul>
 </nav>
 
 <div layout:fragment="content">
     <section id="spalte">
-        <h1>Your lent Products:</h1>
+        <h1>Your borrowed Products:</h1>
             <table>
                 <tr>
                     <td>
@@ -68,6 +68,12 @@
                     <button class="btn btn-outline-danger btn-sm" name="action" type="submit" value="delete">Delete Process</button>
                 </form>
             </a>
+            <a th:case="CONFLICT">
+                <!-- TODO: Konfliktmanagment -->
+            </a>
+            <a th:case="RETURNED">
+                <td>Please wait for owners response!</td>
+            </a>
             <a th:case="FINISHED">
                 <form method="post">
                     <button class="btn btn-outline-danger btn-sm" name="action" type="submit" value="delete">Delete Process</button>
@@ -104,6 +110,12 @@
                 </form>
             </a>
         </th:block>
+        <br>
+        <table>
+            <tr th:each="message : ${process.messages}">
+                <td th:text="${message}"><br></td>
+            </tr>
+        </table>
     </section>
 </div>
 </body>

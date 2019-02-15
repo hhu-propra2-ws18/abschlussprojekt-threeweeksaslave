@@ -2,11 +2,20 @@ package propra2.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
+
+import propra2.database.Transaction;
 import propra2.model.ProPayAccount;
+import propra2.model.TransactionType;
+import propra2.repositories.TransactionRepository;
+
 import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
+
 import reactor.core.publisher.Mono;
 
 import java.security.Principal;
@@ -15,6 +24,20 @@ import java.util.Optional;
 public class UserHandler {
     @Autowired
     private CustomerRepository customerRepo;
+
+    public Customer rechargeCredit(Customer customer, int amount){
+
+       Mono<ProPayAccount> account =  WebClient.create().post().uri(builder ->
+                builder
+                        .path("localhost:8888/account/" + customer.getUsername())
+                        .query("amount=" + amount)
+                        .build())
+               .retrieve()
+               .bodyToMono(ProPayAccount.class);
+
+        customer.setProPay(account.block());
+        return customer;
+    }
 
     public ProPayAccount getProPayAccount(String username){
         ProPayAccount proPayAccount = getEntity(ProPayAccount.class,username);
@@ -39,5 +62,14 @@ public class UserHandler {
         catch(Exception e){
             return null;
         }
+    }
+
+    public void saveTransaction(int amount, TransactionType transactionType, String userName, TransactionRepository transactionRepository){
+        Transaction transaction = new Transaction();
+        transaction.setAmount(amount);
+        transaction.setTransactionType(transactionType);
+        transaction.setUserName(userName);
+
+        transactionRepository.save(transaction);
     }
 }

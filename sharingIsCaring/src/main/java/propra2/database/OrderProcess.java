@@ -19,6 +19,8 @@ public class OrderProcess {
     Long ownerId;
     Long requestId;
 
+    int reservationId;
+
     @Lob
     List<String> messages;
 

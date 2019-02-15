@@ -9,11 +9,11 @@
 <nav layout:fragment="nav">
     <ul>
         <li><a href="/home">Home</a></li>
-        <li><a th:href="@{'/profile/' + ${user.customerId}}">Profile</a></li>
+        <li><a th:href="@{'/profile'}">Profile</a></li>
         <li><a aria-current="base">view Products</a></li>
         <li><a href="/messages">messages</a></li>
         <li><a href="/product">add Product</a>
-        <li><a th:href="@{'/profile/requests/' + ${user.customerId}}">requests</a></li>
+        <li><a th:href="@{'/requests/' + ${user.customerId}}">requests</a></li>
         <li><a href="/logout" role="button">logout</a></li>
     </ul>
 </nav>

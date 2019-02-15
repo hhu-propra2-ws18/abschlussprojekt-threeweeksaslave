@@ -13,7 +13,7 @@
         <li><a href="/products">view Products</a></li>
         <li><a href="/product">add Product</a>
         <li><a href="/messages">messages</a></li>
-        <li><a th:href="@{'/profile/requests/' + ${user.customerId}}">requests</a></li>
+        <li><a th:href="@{'/requests/' + ${user.customerId}}">requests</a></li>
         <li><a href="/logout" role="button">logout</a></li>
     </ul>
 </nav>
@@ -106,7 +106,9 @@
             </tr>
         </table>
         <br/>
-        <a th:href="@{''}">got to ProPayAccount</a>
+        <a th:href="@{'/rechargeCredit'}">recharge credit</a>
+        <br/>
+        <a th:href="@{'/transactions'}">Transaction Overview</a>
     </section>
     <a th:href="@{''}">view your actual borrowed products</a>
 </div>

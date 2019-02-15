@@ -13,7 +13,7 @@
         <li><a href="/products">view Products</a></li>
         <li><a aria-current="page">add Product</a>
         <li><a href="/messages">messages</a></li>
-        <li><a th:href="@{'/profile/requests/' + ${user.customerId}}">requests</a></li>
+        <li><a th:href="@{'/requests/' + ${user.customerId}}">requests</a></li>
         <li><a href="/logout" role="button">logout</a></li>
     </ul>
  </nav>
@@ -40,6 +40,25 @@
                 <tr>
                     <td> Daily Fee:</td>
                     <td><input name="dailyFee" th:value="${product?.dailyFee}" type="number" required></td>
+                </tr>
+                <tr>
+                    <td> Address:</td>
+                </tr>
+                <tr>
+                    <td> street:</td>
+                    <td><input name="street" th:value="${product?.address?.street}" type="text" required></td>
+                </tr>
+                <tr>
+                    <td> houseNr:</td>
+                    <td><input name="houseNumber" th:value="${product?.address?.houseNumber}" type="number" required></td>
+                </tr>
+                <tr>
+                    <td> postCode:</td>
+                    <td><input name="postCode" th:value="${product?.address?.postCode}" type="number" required></td>
+                </tr>
+                <tr>
+                    <td> city:</td>
+                    <td><input name="city" th:value="${product?.address?.city}" type="text" required></td>
                 </tr>
             </table>
             <br>

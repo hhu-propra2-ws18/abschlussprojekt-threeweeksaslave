@@ -13,7 +13,7 @@
         <li><a href="/products">view Products</a></li>
         <li><a href="/product">add Product</a>
         <li><a href="/messages">messages</a></li>
-        <li><a th:href="@{'/profile/requests/'}">requests</a></li>
+        <li><a th:href="@{'/requests'}">requests</a></li>
         <li><a href="/logout" role="button">logout</a></li>
     </ul>
 </nav>
@@ -37,7 +37,7 @@
                     emailAddress:
                 </td>
                 <td>
-                    <dd th:text="${user?.mail}">mail</dd>
+                    <input type="text" name="mail" th:value="${user?.mail}">
                 </td>
             </tr>
         </table>
