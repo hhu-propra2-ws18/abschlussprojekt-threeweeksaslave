@@ -253,8 +253,10 @@ public class SharingIsCaringController {
     @GetMapping("/profile/requests/detailsOwner/{processId}")
     public String showRequestOwnerDetails(@PathVariable Long processId, Model model) {
         Optional<OrderProcess> process = orderProcessRepository.findById(processId);
+        Product product = process.get().getProduct();
         model.addAttribute("process", process.get());
         model.addAttribute("borrower", customerRepository.findById(process.get().getRequestId()));
+        model.addAttribute("product", product);
         return "requestDetailsOwner";
     }
 
@@ -267,4 +269,6 @@ public class SharingIsCaringController {
         model.addAttribute("product", product);
         return "requestDetailsBorrower";
     }
+
+
 }
