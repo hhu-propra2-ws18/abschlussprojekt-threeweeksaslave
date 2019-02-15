@@ -15,6 +15,7 @@ import propra2.Security.service.RegistrationService;
 import propra2.Security.validator.CustomerValidator;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
+import propra2.handler.SearchProductHandler;
 import propra2.database.Product;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.UserHandler;
@@ -28,6 +29,7 @@ import propra2.repositories.TransactionRepository;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +47,7 @@ public class SharingIsCaringController {
 
     private OrderProcessHandler orderProcessHandler;
     private UserHandler userHandler;
+    private SearchProductHandler searchProductHandler;
 
     @Autowired
     private CustomerValidator customerValidator;
@@ -58,6 +61,7 @@ public class SharingIsCaringController {
     public SharingIsCaringController() {
         orderProcessHandler = new OrderProcessHandler();
         userHandler = new UserHandler();
+        searchProductHandler = new SearchProductHandler();
     }
 
 
@@ -78,6 +82,11 @@ public class SharingIsCaringController {
         return "start";
     }
 
+    /**
+     * check if user exists
+     * @param username
+     * @return
+     */
     @PostMapping("/")
     public boolean userExists(final String username) {
         if (customerRepository.findByUsername(username).isPresent())
@@ -98,8 +107,6 @@ public class SharingIsCaringController {
         model.addAttribute("user", customer);
         return "home";
     }
-
-   
 
     /**
      * registration
@@ -135,6 +142,13 @@ public class SharingIsCaringController {
     /*********************************************************************************
         PRODUCTS
      **********************************************************************************/
+
+    /**
+     * return base template of product poverview
+     * @param model
+     * @param user
+     * @return
+     */
     @GetMapping("/products")
     public String showProducts(Model model, Principal user) {
         Customer customer = customerRepository.findByUsername(user.getName()).get();
@@ -143,19 +157,32 @@ public class SharingIsCaringController {
         return "productsBase";
     }
 
-    @GetMapping("/searchProducts")
-    public String searchProducts(@RequestParam final String query, final Model model, Principal user) {
-        Customer customer = customerRepository.findByUsername(user.getName()).get();
-        model.addAttribute("user", customer);
 
-        model.addAttribute("products", this.productRepository
-                .findAllByTitleContainingOrDescriptionContaining(query, query));
-        model.addAttribute("query", query);
+  /**
+   * return template for product overview with a list of specific products
+   * @param query
+   * @param model
+   * @param user
+   * @return
+   */
+	@GetMapping("/searchProducts")
+	public String searchProducts(@RequestParam final String query, String filter, final Model model, Principal user){
+		Customer customer = customerRepository.findByUsername(user.getName()).get();
+		List<Product> products = this.searchProductHandler.getSearchedProducts(query, filter, customer, this.productRepository);
+		model.addAttribute("user", customer);
+		model.addAttribute("query",query);
+		model.addAttribute("products", products);
+		return "productsSearch";
+	}
+    
 
 
-        return "productsSearch";
-    }
-
+    /**
+     * get template to create a new product
+     * @param user
+     * @param model
+     * @return
+     */
     @GetMapping("/product")
     public String getProduct(Principal user, Model model) {
         Customer customer = customerRepository.findByUsername(user.getName()).get();
@@ -164,20 +191,58 @@ public class SharingIsCaringController {
         return "addProduct";
     }
 
+    /**
+     * save a new Product in db
+     * @param tite
+     * @param description
+     * @param deposit
+     * @param dailyFee
+     * @param street
+     * @param houseNumber
+     * @param postCode
+     * @param city
+     * @return
+     */
     @PostMapping("/product")
-    public String createProduct(final Product newProduct) {
+    public String createProduct(String title, String description, int deposit, int dailyFee, String street, int houseNumber, int postCode, String city, Principal user) {
+        Customer owner = customerRepository.findByUsername(user.getName()).get();
+
+        Product newProduct = new Product();
+        newProduct.setTitle(title);
+        newProduct.setDailyFee(dailyFee);
+        newProduct.setDeposit(deposit);
+        newProduct.setDescription(description);
+        newProduct.setOwnerId(owner.getCustomerId());
+
+        Address address = new Address();
+        address.setCity(city);
+        address.setPostCode(postCode);
+        address.setHouseNumber(houseNumber);
+        address.setStreet(street);
+
+        newProduct.setAddress(address);
         if (newProduct.allValuesSet()) {
             productRepository.save(newProduct);
         }
         return "redirect:/home";
     }
 
+    /**
+     * return a list of products with a specific title
+     * @param name
+     * @return
+     */
     @PostMapping("/product/{name}")
     List<Product> searchForProducts(String name) {
         List<Product> resultList = productRepository.findByTitle(name);
         return resultList;
     }
 
+    /**
+     * return a specific product find by id
+     * @param id
+     * @return
+     */
     @PostMapping("/product/{id}")
     Product getProductInformationById(Long id) {
         return productRepository.findById(id).get();
@@ -243,8 +308,13 @@ public class SharingIsCaringController {
   /*********************************************************************************
         ProPayAccount
      **********************************************************************************/
-  
-  
+
+    /**
+     * get template to recharge Credit
+     * @param user
+     * @param model
+     * @return
+     */
   @GetMapping("/rechargeCredit")
     public String getRechargeCredit(Principal user, Model model){
         Customer customer = customerRepository.findByUsername(user.getName()).get();
@@ -252,6 +322,14 @@ public class SharingIsCaringController {
         return "rechargeCredit";
     }
 
+    /**
+     * send amount to ProPayAccount and save Transaction in db
+     * @param user
+     * @param amount
+     * @param iban
+     * @param model
+     * @return
+     */
     @PostMapping("/rechargeCredit")
     public String rechargeCredit(Principal user, int amount, String iban,Model model){
         if(amount==0 || iban == null){
@@ -265,6 +343,12 @@ public class SharingIsCaringController {
         return "redirect:/profile";
     }
 
+    /**
+     * get overview of transactions for a specific user
+     * @param user
+     * @param model
+     * @return
+     */
     @GetMapping("/transactions")
     public String getTransactions(Principal user, Model model){
         List<Transaction> transactions = transactionRepository.findAllByUserName(user.getName());
