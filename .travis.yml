@@ -1,5 +1,5 @@
 language: java
-install: true
+install: gradle wrapper --gradle-version 4.2
 
 jdk:
 - oraclejdk8
@@ -8,7 +8,7 @@ script:
 - cd sharingIsCaring/
 - chmod =+rwx gradlew
 - chmod =+rwx gradle
-- ./gradlew build
+- ./gradlew build --scan -s
 #skript:
 #  - ./gradlew check
 #  - chmod +x ./gradlew
