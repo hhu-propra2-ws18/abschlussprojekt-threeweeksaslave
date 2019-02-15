@@ -165,7 +165,20 @@ public class SharingIsCaringController {
     }
 
     @PostMapping("/product")
-    public String createProduct(final Product newProduct) {
+    public String createProduct(String tite, String description, int deposit, int dailyFee, String street, int houseNumber, int postCode, String city) {
+        Product newProduct = new Product();
+        newProduct.setTitle(tite);
+        newProduct.setDailyFee(dailyFee);
+        newProduct.setDeposit(deposit);
+        newProduct.setDescription(description);
+
+        Address address = new Address();
+        address.setCity(city);
+        address.setPostCode(postCode);
+        address.setHouseNumber(houseNumber);
+        address.setStreet(street);
+
+        newProduct.setAddress(address);
         if (newProduct.allValuesSet()) {
             productRepository.save(newProduct);
         }
