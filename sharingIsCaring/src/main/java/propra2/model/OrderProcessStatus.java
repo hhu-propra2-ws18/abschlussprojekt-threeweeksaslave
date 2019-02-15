@@ -2,5 +2,5 @@ package propra2.model;
 
 public enum OrderProcessStatus {
 
-    PENDING, ACCEPTED, DENIED, FINISHED, CONFLICT, RETURNED
+    PENDING, ACCEPTED, DENIED, FINISHED, CONFLICT, RETURNED, PUNISHED
 }
