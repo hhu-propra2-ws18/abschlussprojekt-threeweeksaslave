@@ -9,6 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import propra2.database.Customer;
+import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
 
 @RunWith(SpringRunner.class)
@@ -20,9 +21,11 @@ public class CustomerValidatorTest {
 
     @Test
     public void validate() {
-        Customer customer = new Customer();
-        customer.setMail("mail@gmail.com");
-        customer.setUsername("exampleuser123");
+        UserRegistration customer = new UserRegistration();
+        customer.setEmailAddress("mail@gmail.com");
+        customer.setUserName("exampleuser123");
+        customer.setPassword("password");
+        customer.setPasswordConfirm("password");
 
         CustomerValidator customerValidator = new CustomerValidator();
         customerValidator.customerRepo = this.customerRepo;
@@ -35,9 +38,11 @@ public class CustomerValidatorTest {
 
     @Test
     public void tooShortMail() {
-        Customer customer = new Customer();
-        customer.setMail("b");
-        customer.setUsername("exampleuser123");
+        UserRegistration customer = new UserRegistration();
+        customer.setEmailAddress("b");
+        customer.setUserName("exampleuser123");
+        customer.setPassword("password");
+        customer.setPasswordConfirm("password");
 
         CustomerValidator customerValidator = new CustomerValidator();
         customerValidator.customerRepo = this.customerRepo;
@@ -50,9 +55,11 @@ public class CustomerValidatorTest {
 
     @Test
     public void tooShortUsername() throws Exception {
-        Customer customer = new Customer();
-        customer.setMail("mail@gmail.com");
-        customer.setUsername("a");
+        UserRegistration customer = new UserRegistration();
+        customer.setEmailAddress("mail@gmail.com");
+        customer.setUserName("a");
+        customer.setPassword("password");
+        customer.setPasswordConfirm("password");
 
         CustomerValidator customerValidator = new CustomerValidator();
         customerValidator.customerRepo = this.customerRepo;
@@ -65,11 +72,18 @@ public class CustomerValidatorTest {
 
     @Test
     public void duplicateCustomer() {
-        Customer customer = new Customer();
-        customer.setMail("mail@gmail.com");
-        customer.setUsername("exampleuser123");
+        UserRegistration customer = new UserRegistration();
+        customer.setEmailAddress("mail@gmail.com");
+        customer.setUserName("exampleuser123");
+        customer.setPassword("password");
+        customer.setPasswordConfirm("password");
 
-        customerRepo.save(customer);
+        Customer oldCustomer = new Customer();
+        oldCustomer.setMail("mail@gmail.com");
+        oldCustomer.setUsername("exampleuser123");
+        oldCustomer.setPassword("password");
+
+        customerRepo.save(oldCustomer);
 
         CustomerValidator customerValidator = new CustomerValidator();
         customerValidator.customerRepo = this.customerRepo;
