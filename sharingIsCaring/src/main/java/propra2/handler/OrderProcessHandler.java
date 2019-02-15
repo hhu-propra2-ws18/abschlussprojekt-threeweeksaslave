@@ -46,6 +46,11 @@ public class OrderProcessHandler {
                         builder
                                 .path("localhost:8888/reservation/release/" + rentingAccount)
                                 .build());
+                break;
+            case RETURNED:
+                //TODO: Tagessatz wird nicht mehr abgerechnet
+                break;
+            case CONFLICT:
                 //TODO: Konfliktlöser
                 break;
             default:
