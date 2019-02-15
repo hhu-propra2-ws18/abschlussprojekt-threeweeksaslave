@@ -21,13 +21,20 @@
 <div layout:fragment="productResults">
 
 
-    <b th:text="'Results for ' + ${query}"></b>
-    <section th:each="product : ${products}">
-        <hr>
-        <h3 th:text="${product.title}"></h3>
-        <p th:text="${#strings.abbreviate(product.description,100)}"></p>
-        <a th:href="@{/product/{id}(id=${product.id})}">read more</a>
-    </section>
+    <div th:if="${query != ''}">
+        <b th:text="${'Results for ' + '&quot;'+ query + '&quot;'}"></b>
+    </div>
+    <div th:if="${products.isEmpty() == false}">
+        <section th:each="product : ${products}">
+            <hr>
+            <h3 th:text="${product.title}"></h3>
+            <p th:text="${#strings.abbreviate(product.description,100)}"></p>
+            <a th:href="@{/product/{id}(id=${product.id})}">read more</a>
+        </section>
+    </div>
+    <div th:if="${products.isEmpty()}">
+        <p>No results</p>
+    </div>
 
 </div>
 
