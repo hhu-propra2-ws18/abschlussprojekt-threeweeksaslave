@@ -34,14 +34,10 @@ public class Product {
 
 
 	public boolean allValuesSet() {
-		if(this.getTitle() == null||
-				this.getDeposit() == null ||
-				this.getDescription() == null ||
+		return this.getTitle() != null &&
+				this.getDeposit() != null &&
+				this.getDescription() != null &&
 				//this.getBorrowedUntil() == null ||
-				this.getDailyFee() == null) {
-
-			return false;
-		}
-		return true;
-}
+				this.getDailyFee() != null;
+	}
 }
