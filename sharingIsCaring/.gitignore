@@ -5,6 +5,7 @@
 ### binäre Dateien ###
 *.class
 *.jar
+!gradle/wrapper/gradle-wrapper.jar
 
 ### STS ###
 .apt_generated
@@ -29,4 +30,4 @@
 /nbdist/
 /.nb-gradle/
 
-!gradle/wrapper/gradle-wrapper.jar
+
