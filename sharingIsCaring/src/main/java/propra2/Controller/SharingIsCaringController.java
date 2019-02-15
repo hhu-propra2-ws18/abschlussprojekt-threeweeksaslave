@@ -15,6 +15,7 @@ import propra2.Security.service.RegistrationService;
 import propra2.Security.validator.CustomerValidator;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
+import propra2.handler.SearchProductHandler;
 import propra2.database.Product;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.UserHandler;
@@ -28,6 +29,7 @@ import propra2.repositories.TransactionRepository;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +47,7 @@ public class SharingIsCaringController {
 
     private OrderProcessHandler orderProcessHandler;
     private UserHandler userHandler;
+    private SearchProductHandler searchProductHandler;
 
     @Autowired
     private CustomerValidator customerValidator;
@@ -58,6 +61,7 @@ public class SharingIsCaringController {
     public SharingIsCaringController() {
         orderProcessHandler = new OrderProcessHandler();
         userHandler = new UserHandler();
+        searchProductHandler = new SearchProductHandler();
     }
 
 
@@ -153,25 +157,25 @@ public class SharingIsCaringController {
         return "productsBase";
     }
 
-    /**
-     * return template for product overview with a list of specific products
-     * @param query
-     * @param model
-     * @param user
-     * @return
-     */
-    @GetMapping("/searchProducts")
-    public String searchProducts(@RequestParam final String query, final Model model, Principal user) {
-        Customer customer = customerRepository.findByUsername(user.getName()).get();
-        model.addAttribute("user", customer);
 
-        model.addAttribute("products", this.productRepository
-                .findAllByTitleContainingOrDescriptionContaining(query, query));
-        model.addAttribute("query", query);
+  /**
+   * return template for product overview with a list of specific products
+   * @param query
+   * @param model
+   * @param user
+   * @return
+   */
+	@GetMapping("/searchProducts")
+	public String searchProducts(@RequestParam final String query, String filter, final Model model, Principal user){
+		Customer customer = customerRepository.findByUsername(user.getName()).get();
+		List<Product> products = this.searchProductHandler.getSearchedProducts(query, filter, customer, this.productRepository);
+		model.addAttribute("user", customer);
+		model.addAttribute("query",query);
+		model.addAttribute("products", products);
+		return "productsSearch";
+	}
+    
 
-
-        return "productsSearch";
-    }
 
     /**
      * get template to create a new product
