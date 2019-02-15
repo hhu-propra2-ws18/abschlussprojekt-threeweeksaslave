@@ -190,31 +190,19 @@ public class SharingIsCaringController {
         return "addProduct";
     }
 
-    /**
-     * save a new Product in db
-     * @param title
-     * @param description
-     * @param deposit
-     * @param dailyFee
-     * @param street
-     * @param houseNumber
-     * @param postCode
-     * @param city
-     * @return
-     */
     @PostMapping("/product")
-    public String createProduct(Principal user, final Product newProduct, final Model model) {
+    public String createProduct(Principal user, final Product product, final Address address, final Model model) {
         Long loggedInId = getUserId(user);
         Optional<Customer> customer = customerRepository.findById(loggedInId);
         model.addAttribute("user", user);
 
-        newProduct.setOwnerId(loggedInId);
-        newProduct.setAvailable(true);
-        //TODO set address
+        product.setOwnerId(loggedInId);
+        product.setAvailable(true);
+        product.setAddress(address);
         //TODO set borrowed until
-  
-        if (newProduct.allValuesSet()) {
-            productRepository.save(newProduct);
+
+        if (product.allValuesSet()) {
+            productRepository.save(product);
         }
         return "redirect:/home";
     }

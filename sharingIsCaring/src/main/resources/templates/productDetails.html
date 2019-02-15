@@ -11,8 +11,8 @@
         <li><a href="/home">Home</a></li>
         <li><a th:href="@{'/profile'}">Profile</a></li>
         <li><a aria-current="base">view Products</a></li>
-        <li><a href="/messages">messages</a></li>
         <li><a href="/product">add Product</a>
+        <li><a href="/messages">messages</a></li>
         <li><a th:href="@{'/requests/' + ${user.customerId}}">requests</a></li>
         <li><a href="/logout" role="button">logout</a></li>
     </ul>
@@ -24,9 +24,7 @@
         <h2 th:text="${product?.title}">Title</h2>
 
         <b>Lender:
-            <a th:text="${user?.username}"
-               th:href="@{'/name'}">Name
-            </a>
+            <a th:text="${user?.username}" th:href="@{'/name'}">Name</a>
         </b>
         <br>
         <table>
@@ -39,7 +37,7 @@
                 <td th:text="${product?.available}? 'Available' : 'Not available'">Status</td>
             </tr>
             <tr th:if="${!product?.available}">
-                <td th:text="${product?.available}? 'Borrowed until' : '' "></td>
+                <td th:text="${product?.available}? 'Borrowed until' : ''"></td>
                 <td th:text="${product?.available}? ${product.borrowedUntil} : ''"></td>
             </tr>
             <tr>
@@ -52,7 +50,7 @@
             </tr>
         </table>
         <br>
-        <a th:href="@{'/'}">Lend!   </a>
+        <a th:href="@{'/'}">Lend it!</a>
         <a th:href="@{'/products'}">Back</a>
     </section>
 </div>
