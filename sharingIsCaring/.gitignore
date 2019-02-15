@@ -1,6 +1,6 @@
 .gradle
 /build/
-!gradle/wrapper/gradle-wrapper.jar
+
 
 ### binäre Dateien ###
 *.class
@@ -28,3 +28,5 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+
+!gradle/wrapper/gradle-wrapper.jar
