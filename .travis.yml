@@ -2,7 +2,7 @@ language: java
 jdk:
   - oraclejdk8
 skript:
-  - TERM=dumb ./gradlew check
+  - ./gradlew check
 #service:
 #  - docker
 #before_skript:
