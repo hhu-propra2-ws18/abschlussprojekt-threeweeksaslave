@@ -204,12 +204,15 @@ public class SharingIsCaringController {
      * @return
      */
     @PostMapping("/product")
-    public String createProduct(String tite, String description, int deposit, int dailyFee, String street, int houseNumber, int postCode, String city) {
+    public String createProduct(String title, String description, int deposit, int dailyFee, String street, int houseNumber, int postCode, String city, Principal user) {
+        Customer owner = customerRepository.findByUsername(user.getName()).get();
+
         Product newProduct = new Product();
-        newProduct.setTitle(tite);
+        newProduct.setTitle(title);
         newProduct.setDailyFee(dailyFee);
         newProduct.setDeposit(deposit);
         newProduct.setDescription(description);
+        newProduct.setOwnerId(owner.getCustomerId());
 
         Address address = new Address();
         address.setCity(city);
