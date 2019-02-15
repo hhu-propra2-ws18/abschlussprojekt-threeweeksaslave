@@ -20,6 +20,8 @@ import propra2.repositories.ProductRepository;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -152,7 +154,15 @@ public class SharingIsCaringController {
     }
 
     @PostMapping("/product")
-    public String createProduct(final Product newProduct) {
+    public String createProduct(Principal user, final Product newProduct, final Model model) {
+        Long loggedInId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(loggedInId);
+        model.addAttribute("user", user);
+
+        newProduct.setOwnerId(loggedInId);
+        newProduct.setAvailable(true);
+        //TODO set borrowed until
+
         if (newProduct.allValuesSet()) {
             productRepository.save(newProduct);
         }
@@ -160,14 +170,25 @@ public class SharingIsCaringController {
     }
 
     @PostMapping("/product/{name}")
-    List<Product> searchForProducts(String name) {
+    public List<Product> searchForProducts(String name) {
         List<Product> resultList = productRepository.findByTitle(name);
         return resultList;
     }
 
     @PostMapping("/product/{id}")
-    Product getProductInformationById(Long id) {
+    public Product getProductInformationById(Long id) {
         return productRepository.findById(id).get();
+    }
+
+    @GetMapping("/product/{id}")
+    public String getProductDetails(@PathVariable Long id, final Principal user, final Model model) {
+        Long loggedInId = getUserId(user);
+        Customer customer = customerRepository.findById(loggedInId).get();
+        model.addAttribute("user", customer);
+
+        Product product = productRepository.findById(id).get();
+        model.addAttribute("product", product);
+        return "productDetails";
     }
 
 

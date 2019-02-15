@@ -11,8 +11,8 @@
         <li><a href="/home">Home</a></li>
         <li><a th:href="@{'/profile'}">Profile</a></li>
         <li><a aria-current="base">view Products</a></li>
-        <li><a href="/messages">messages</a></li>
         <li><a href="/product">add Product</a>
+        <li><a href="/messages">messages</a></li>
         <li><a th:href="@{'/requests/' + ${user.customerId}}">requests</a></li>
         <li><a href="/logout" role="button">logout</a></li>
     </ul>
@@ -26,7 +26,7 @@
         <hr>
         <h3 th:text="${product.title}"></h3>
         <p th:text="${#strings.abbreviate(product.description,100)}"></p>
-        <a th:href="@{/product/{id}(id=${product.id})}">read more</a>
+        <a th:href="@{/product/{id}(id=${product.id})}">Read more</a>
     </section>
 
 </div>

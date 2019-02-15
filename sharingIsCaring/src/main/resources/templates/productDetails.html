@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Product details</title>
+</head>
+<body>
+
+<nav layout:fragment="nav">
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li><a th:href="@{'/profile'}">Profile</a></li>
+        <li><a aria-current="base">view Products</a></li>
+        <li><a href="/messages">messages</a></li>
+        <li><a href="/product">add Product</a>
+        <li><a th:href="@{'/requests/' + ${user.customerId}}">requests</a></li>
+        <li><a href="/logout" role="button">logout</a></li>
+    </ul>
+</nav>
+
+
+<div layout:fragment="content">
+    <section class="spalte">
+        <h2 th:text="${product?.title}">Title</h2>
+
+        <b>Lender:
+            <a th:text="${user?.username}"
+               th:href="@{'/name'}">Name
+            </a>
+        </b>
+        <br>
+        <table>
+            <tr>
+                <td>Description: </td>
+                <td th:text="${product?.description}">Description</td>
+            </tr>
+            <tr>
+                <td>Availability: </td>
+                <td th:text="${product?.available}? 'Available' : 'Not available'">Status</td>
+            </tr>
+            <tr th:if="${!product?.available}">
+                <td th:text="${product?.available}? 'Borrowed until' : '' "></td>
+                <td th:text="${product?.available}? ${product.borrowedUntil} : ''"></td>
+            </tr>
+            <tr>
+                <td>Deposit: </td>
+                <td th:text="${#numbers.formatInteger(product.deposit, 1, 'POINT')} + ' €'">Amount</td>
+            </tr>
+            <tr>
+                <td>Daily fee: </td>
+                <td th:text="${#numbers.formatInteger(product.dailyFee, 1, 'POINT')} + ' €'">Amount</td>
+            </tr>
+        </table>
+        <br>
+        <a th:href="@{'/'}">Lend!   </a>
+        <a th:href="@{'/products'}">Back</a>
+    </section>
+</div>
+
+</body>
+</html>
