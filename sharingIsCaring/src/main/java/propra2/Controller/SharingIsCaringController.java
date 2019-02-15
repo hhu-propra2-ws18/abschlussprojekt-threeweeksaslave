@@ -2,6 +2,12 @@ package propra2.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import propra2.Security.service.RegistrationService;
+import propra2.database.Transaction;
+import propra2.handler.OrderProcessHandler;
+
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +19,12 @@ import propra2.database.Product;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.UserHandler;
 import propra2.model.Address;
+import propra2.model.TransactionType;
 import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
+import propra2.repositories.TransactionRepository;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -43,6 +51,9 @@ public class SharingIsCaringController {
 
     @Autowired
     private RegistrationService registrationService;
+
+    @Autowired
+    TransactionRepository transactionRepository;
 
     public SharingIsCaringController() {
         orderProcessHandler = new OrderProcessHandler();
@@ -87,6 +98,8 @@ public class SharingIsCaringController {
         model.addAttribute("user", customer);
         return "home";
     }
+
+   
 
     /**
      * registration
@@ -225,6 +238,40 @@ public class SharingIsCaringController {
         customerRepository.save(customer.get());
         model.addAttribute("user", customer);
         return "redirect:/profile";
+    }
+  
+  /*********************************************************************************
+        ProPayAccount
+     **********************************************************************************/
+  
+  
+  @GetMapping("/rechargeCredit")
+    public String getRechargeCredit(Principal user, Model model){
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        model.addAttribute("user", customer);
+        return "rechargeCredit";
+    }
+
+    @PostMapping("/rechargeCredit")
+    public String rechargeCredit(Principal user, int amount, String iban,Model model){
+        if(amount==0 || iban == null){
+            return "redirect:/rechargeCredit";
+        }
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        Customer customer1 = userHandler.rechargeCredit(customer, amount);
+        userHandler.saveTransaction(amount, TransactionType.PREPAYMENTINPUT, customer.getUsername(), transactionRepository);
+        customerRepository.save(customer1);
+        model.addAttribute("user", customer);
+        return "redirect:/profile/" + customer.getCustomerId();
+    }
+
+    @GetMapping("/transactions")
+    public String getTransactions(Principal user, Model model){
+        List<Transaction> transactions = transactionRepository.findAllByUserName(user.getName());
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        model.addAttribute("user", customer);
+        model.addAttribute("transactions", transactions);
+        return "transactions";
     }
 
 
