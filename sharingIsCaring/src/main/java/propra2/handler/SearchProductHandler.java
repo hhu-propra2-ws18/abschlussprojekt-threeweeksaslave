@@ -28,10 +28,9 @@ public class SearchProductHandler {
 			products = userBorrowedProducts;
 		}
 		if(filter.equals("lent")){
-			Long customerId = customer.getCustomerId();
 			List<Product> userLentProducts = new ArrayList<>();
 			for(Product product : products){
-				if(product.getOwnerId().equals(customerId)){
+				if(product.getOwner().equals(customer)){
 					userLentProducts.add(product);
 				}
 			}

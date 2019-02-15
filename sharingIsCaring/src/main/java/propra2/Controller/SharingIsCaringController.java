@@ -209,7 +209,7 @@ public class SharingIsCaringController {
         newProduct.setDailyFee(dailyFee);
         newProduct.setDeposit(deposit);
         newProduct.setDescription(description);
-        newProduct.setOwnerId(owner.getCustomerId());
+        newProduct.setOwner(owner);
 
         Address address = new Address();
         address.setCity(city);
