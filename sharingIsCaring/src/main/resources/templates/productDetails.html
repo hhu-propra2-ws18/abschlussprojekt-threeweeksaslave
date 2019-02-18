@@ -50,7 +50,7 @@
             </tr>
         </table>
         <br>
-        <a th:href="@{'/'}">Lend it!</a>
+        <a th:href="@{'/product/' + ${product.id} + '/orderProcess'}">Lend it!</a>
         <a th:href="@{'/products'}">Back</a>
     </section>
 </div>
