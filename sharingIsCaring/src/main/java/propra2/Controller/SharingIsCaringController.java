@@ -156,6 +156,12 @@ public class SharingIsCaringController {
         return searchProducts("","all",model,user);
     }
 
+    @GetMapping("/{id}")
+    public String searchForOwner(Model model, @PathVariable Long id) {
+        Customer owner = customerRepository.findById(id).get();
+        model.addAttribute("owner", owner);
+        return "customer";
+    }
 
   /**
    * return template for product overview with a list of specific products
@@ -236,6 +242,8 @@ public class SharingIsCaringController {
 
         Product product = productRepository.findById(id).get();
         model.addAttribute("product", product);
+        Customer owner = customerRepository.findById(product.getOwnerId()).get();
+        model.addAttribute("owner", owner);
         return "productDetails";
     }
 
