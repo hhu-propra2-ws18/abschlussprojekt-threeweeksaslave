@@ -39,5 +39,6 @@ public class Customer {
 
     public Customer() {
         this.address = new Address();
+        this.proPay = new ProPayAccount();
     }
 }

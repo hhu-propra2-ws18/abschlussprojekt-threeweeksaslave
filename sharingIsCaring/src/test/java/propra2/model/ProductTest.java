@@ -28,6 +28,7 @@ public class ProductTest {
         product.setDailyFee(123);
         product.setBorrowedUntil(new Date());
         product.setTitle("Putzfrau");
+        product.setDescription("Putzt alles blitzblank");
 
         Assert.assertEquals(true, product.allValuesSet());
     }
