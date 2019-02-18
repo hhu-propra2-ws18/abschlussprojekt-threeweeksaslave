@@ -36,23 +36,28 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    public void productRepositoryTestFindByOwnerId() {
+    public void productRepositoryTestFindByOwner() {
+
+    	Customer customer1 = new Customer();
+    	customer1 = customerRepository.save(customer1);
+    	Customer customer2 = new Customer();
+    	customer2 = customerRepository.save(customer2);
 
         Product product1 = new Product();
         product1.setId(2L);
         product1.setTitle("product1");
 
-        product1.setOwnerId(1L);
+        product1.setOwner(customer1);
 
         Product product2 = new Product();
         product2.setId(3L);
         product2.setTitle("product2");
-        product2.setOwnerId(4L);
+        product2.setOwner(customer2);
 
         productRepository.save(product1);
         productRepository.save(product2);
 
-        List<Product> products = productRepository.findByOwnerId(1L);
+        List<Product> products = productRepository.findByOwner(customer1);
         Assertions.assertThat(products.size()).isEqualTo(1);
 
         productRepository.delete(product1);

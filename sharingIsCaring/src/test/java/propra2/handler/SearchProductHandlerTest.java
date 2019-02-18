@@ -107,25 +107,27 @@ public class SearchProductHandlerTest {
 		Long id = 69L;
 		customer.setCustomerId(id);
 
+		Customer customer2 = new Customer();
+
 		Product product1 = new Product();
 		product1.setTitle("testProduct1");
 		product1.setDescription("this is One product");
-		product1.setOwnerId(id);
+		product1.setOwner(customer);
 
 		Product product2 = new Product();
 		product2.setTitle("testProduct2");
 		product2.setDescription("this is Two product kappa");
-		product2.setOwnerId(id);
+		product2.setOwner(customer);
 
 		Product product3 = new Product();
 		product3.setTitle("testProduct3");
 		product3.setDescription("this is Three product kappa");
-		product3.setOwnerId(id);
+		product3.setOwner(customer);
 
 		Product product4 = new Product();
 		product4.setTitle("testProduct2Unlent");
 		product4.setDescription("this is unlent product kappa");
-		product4.setOwnerId(70L);
+		product4.setOwner(customer2);
 
 		product1 = productRepository.save(product1);
 		product2 = productRepository.save(product2);

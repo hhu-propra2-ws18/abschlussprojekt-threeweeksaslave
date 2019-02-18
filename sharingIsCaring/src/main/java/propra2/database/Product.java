@@ -37,6 +37,7 @@ public class Product {
 				this.getDeposit() != null &&
 				this.getDescription() != null &&
 				//this.getBorrowedUntil() == null ||
+				this.getOwner() != null ||
 				this.getDailyFee() != null;
 	}
 	public Product() {
