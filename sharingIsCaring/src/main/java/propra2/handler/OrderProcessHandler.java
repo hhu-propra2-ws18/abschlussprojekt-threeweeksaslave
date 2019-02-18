@@ -22,16 +22,25 @@ public class OrderProcessHandler {
     @Autowired
     CustomerRepository customerRepository;
 
+
     @Autowired
     UserHandler userHandler;
 
     public void updateOrderProcess(OrderProcess orderProcess, OrderProcessRepository orderProcessRepository) throws IOException {
         OrderProcess oldOrderProcess = orderProcessRepository.findById(orderProcess.getId()).get();
-        List<String> messages  = oldOrderProcess.getMessages();
-        orderProcess.addMessages(messages);
+
+        if(!(oldOrderProcess.getMessages() == null))
+        {
+            List<String> messages  = oldOrderProcess.getMessages();
+            orderProcess.addMessages(messages);
+        }
+
 
         Customer rentingAccount = customerRepository.findById(orderProcess.getRequestId()).get();
         Customer ownerAccount = customerRepository.findById(orderProcess.getOwnerId()).get();
+
+        //Customer rentingAccount = orderProcessRepository.findByRequestId(orderProcess.getRequestId()).get();
+        //Customer ownerAccount = orderProcessRepository.findByOwnerId(orderProcess.getOwnerId()).get();
         Mono<ProPayAccount> account;
         switch (orderProcess.getStatus()) {
             case DENIED:
