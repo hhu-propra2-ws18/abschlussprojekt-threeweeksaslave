@@ -18,6 +18,8 @@ import java.util.Optional;
 public class ProductRepositoryTest {
     @Autowired
     ProductRepository productRepository;
+    @Autowired
+    CustomerRepository customerRepository;
 
     @Test
     public void productRepositoryTestFindById() {
@@ -36,12 +38,10 @@ public class ProductRepositoryTest {
     @Test
     public void productRepositoryTestFindByOwnerId() {
 
-        Customer owner = new Customer();
-        owner.setCustomerId(1L);
-
         Product product1 = new Product();
         product1.setId(2L);
         product1.setTitle("product1");
+
         product1.setOwnerId(1L);
 
         Product product2 = new Product();

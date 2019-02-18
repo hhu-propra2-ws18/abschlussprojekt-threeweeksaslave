@@ -36,4 +36,9 @@ public class Customer {
     void addBorrowedProduct(Product newProduct){
         borrowedProducts.add(newProduct);
     }
+
+    public Customer() {
+        this.address = new Address();
+        this.proPay = new ProPayAccount();
+    }
 }

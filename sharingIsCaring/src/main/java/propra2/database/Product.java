@@ -40,4 +40,7 @@ public class Product {
 				//this.getBorrowedUntil() == null ||
 				this.getDailyFee() != null;
 	}
+	public Product() {
+		this.address = new Address();
+	}
 }
