@@ -1,9 +1,11 @@
 package propra2.database;
 
 import lombok.Data;
+import org.apache.tomcat.util.digester.ArrayStack;
 import propra2.model.OrderProcessStatus;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -27,8 +29,11 @@ public class OrderProcess {
     OrderProcessStatus status;
 
     public void addMessages(List<String> list){
+
         list.addAll(messages);
         this.messages = list;
+
+
     }
 
     public boolean allValuesSet() {

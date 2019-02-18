@@ -376,7 +376,7 @@ public class SharingIsCaringController {
   
     @PostMapping("/orderProcess/{id}")
     public void updateOrderProcess(@PathVariable Long id, @RequestBody OrderProcess orderProcess) throws IOException {
-        orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository);
+        orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository, customerRepository);
     }
 
 
