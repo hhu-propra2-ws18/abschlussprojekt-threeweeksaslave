@@ -26,7 +26,6 @@ public class Product {
 
 	@ManyToOne
 	Customer owner;
-	Long ownerId;
 
 	@Lob
 	@Embedded

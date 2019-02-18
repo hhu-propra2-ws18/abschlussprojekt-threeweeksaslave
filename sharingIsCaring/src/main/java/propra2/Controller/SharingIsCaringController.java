@@ -192,11 +192,15 @@ public class SharingIsCaringController {
 
     @PostMapping("/product")
     public String createProduct(Principal user, final Product product, final Address address, final Model model) {
-        Long loggedInId = getUserId(user);
-        Optional<Customer> customer = customerRepository.findById(loggedInId);
-        model.addAttribute("user", user);
+		Long loggedInId = getUserId(user);
+		Optional<Customer> customer = customerRepository.findById(loggedInId);
+		model.addAttribute("user", user);
 
-        product.setOwnerId(loggedInId);
+		if(customer.isPresent()){
+			product.setOwner(customer.get());
+		}
+
+        //product.setOwnerId(loggedInId);
         product.setAvailable(true);
         product.setAddress(address);
         //TODO set borrowed until
@@ -355,7 +359,8 @@ public class SharingIsCaringController {
      **********************************************************************************/
     @GetMapping("/offers/{customerId}")
     public List<Product> getOffers(@PathVariable Long customerId) {
-        List<Product> products = productRepository.findByOwnerId(customerId);
+    	Optional<Customer> customer = customerRepository.findById(customerId);
+        List<Product> products = productRepository.findByOwner(customer.get());
         return products;
     }
 
