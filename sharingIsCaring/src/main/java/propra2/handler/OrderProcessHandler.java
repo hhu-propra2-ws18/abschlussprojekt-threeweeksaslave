@@ -16,17 +16,14 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 public class OrderProcessHandler {
 
     @Autowired
-    CustomerRepository customerRepository;
-
-
-    @Autowired
     UserHandler userHandler;
 
-    public void updateOrderProcess(OrderProcess orderProcess, OrderProcessRepository orderProcessRepository) throws IOException {
+    public void updateOrderProcess(OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, CustomerRepository customerRepository) throws IOException {
         OrderProcess oldOrderProcess = orderProcessRepository.findById(orderProcess.getId()).get();
 
         if(!(oldOrderProcess.getMessages() == null))
@@ -35,12 +32,9 @@ public class OrderProcessHandler {
             orderProcess.addMessages(messages);
         }
 
-
-        Customer rentingAccount = customerRepository.findById(orderProcess.getRequestId()).get();
-        Customer ownerAccount = customerRepository.findById(orderProcess.getOwnerId()).get();
-
-        //Customer rentingAccount = orderProcessRepository.findByRequestId(orderProcess.getRequestId()).get();
-        //Customer ownerAccount = orderProcessRepository.findByOwnerId(orderProcess.getOwnerId()).get();
+        Optional<Customer> rentingAccount = customerRepository.findById(oldOrderProcess.getRequestId());
+        Optional<Customer> ownerAccount = customerRepository.findById(orderProcess.getOwnerId());
+        
         Mono<ProPayAccount> account;
         switch (orderProcess.getStatus()) {
             case DENIED:
@@ -51,13 +45,13 @@ public class OrderProcessHandler {
                 //Propay Kautionsbetrag blocken
                 Mono<Reservation> reservation =  WebClient.create().post().uri(builder ->
                         builder
-                                .path("localhost:8888/reservation/reserve/" + rentingAccount.getUsername() + "/" + ownerAccount.getUsername())
+                                .path("localhost:8888/reservation/reserve/" + rentingAccount.get().getUsername() + "/" + ownerAccount.get().getUsername())
                                 .query("amount=" + deposit)
                                 .build())
                         .retrieve()
                         .bodyToMono(Reservation.class);
 
-                rentingAccount.setProPay(userHandler.getProPayAccount(rentingAccount.getUsername()));
+                rentingAccount.get().setProPay(userHandler.getProPayAccount(rentingAccount.get().getUsername()));
                 orderProcess.setReservationId(reservation.block().getId());
                 orderProcessRepository.save(orderProcess);
                 break;
@@ -70,7 +64,7 @@ public class OrderProcessHandler {
                         .retrieve()
                         .bodyToMono(ProPayAccount.class);
 
-                rentingAccount.setProPay(account.block());
+                rentingAccount.get().setProPay(account.block());
                 orderProcessRepository.save(orderProcess);
                 break;
             case RETURNED:
@@ -89,7 +83,7 @@ public class OrderProcessHandler {
                         .retrieve()
                         .bodyToMono(ProPayAccount.class);
 
-                rentingAccount.setProPay(account.block());
+                rentingAccount.get().setProPay(account.block());
                 orderProcessRepository.save(orderProcess);
                 break;
             default:
