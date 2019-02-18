@@ -22,11 +22,16 @@
     <h2>Transactions:</h2>
         <table>
             <tbody>
-            <tr th:each="transaction:${transactions}">
-                <td th:text="'Nr: ' + ${transaction.id}"></td>
-                <td th:text="'amount: ' + ${transaction.amount} + '€'"></td>
-                <td th:text="'type: ' + ${transaction.transactionType}"></td>
-            </tr>
+                <tr>
+                    <th>Nr</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                </tr>
+                <tr th:each="transaction:${transactions}">
+                    <td th:text="${transaction.id}">Id</td>
+                    <td th:text="${transaction.amount} + '€'">Amount</td>
+                    <td th:text="${transaction.transactionType}">Type</td>
+                </tr>
             </tbody>
         </table>
 
