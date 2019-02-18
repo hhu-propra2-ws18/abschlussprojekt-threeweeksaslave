@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Index</title>
+</head>
+<body>
+
+<nav layout:fragment="nav">
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li><a th:href="@{'/profile'}">Profile</a></li>
+        <li><a href="/products">view Products</a></li>
+        <li><a href="/product">add Product</a>
+        <li><a href="/messages">messages</a></li>
+        <li><a th:href="@{'/requests/' + ${user.customerId}}">requests</a></li>
+        <li><a href="/logout" role="button">logout</a></li>
+    </ul>
+</nav>
+<div layout:fragment="content">
+
+    <section class="spalte">
+        <h2>Owner</h2>
+        <table>
+            <tr>
+                <td>
+                    Username:
+                </td>
+                <td>
+                    <dd th:text="${owner.username}">user name</dd>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Email address:
+                </td>
+                <td>
+                    <dd th:text="${owner.mail}">mail</dd>
+                </td>
+            </tr>
+        </table>
+        <br/>
+        <table>
+            <tr>
+                <td>
+                    Address:
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <dd th:text="${owner.address.street} + ' ' + ${owner.address.houseNumber} + ', ' + ${owner.address.postCode} + ' ' + ${owner.address.city}"></dd>
+                </td>
+            </tr>
+        </table>
+    </section>
+</div>
+
+</body>
+</html>
