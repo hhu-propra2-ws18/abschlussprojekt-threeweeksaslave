@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ public class OrderProcessHandler {
 
         if(!(oldOrderProcess.getMessages() == null))
         {
-            List<String> messages  = oldOrderProcess.getMessages();
+            ArrayList<String> messages  = oldOrderProcess.getMessages();
             orderProcess.addMessages(messages);
         }
 

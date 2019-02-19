@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Index</title>
+</head>
+<body>
+
+<nav layout:fragment="nav">
+    <ul>
+        <li><a aria-current="page">Home</a></li>
+        <li><a th:href="@{'/profile'}">Profile</a></li>
+        <li><a href="/products">view Products</a></li>
+        <li><a href="/product">add Product</a>
+        <li><a href="/messages">messages</a></li>
+        <li><a th:href="@{'/requests/' + ${user.customerId}}">requests</a></li>
+        <li><a href="/logout" role="button">logout</a></li>
+    </ul>
+</nav>
+
+<div layout:fragment="content">
+
+    <form method="post">
+        <section id="intro">
+            <h2>Order Process</h2>
+
+            *please insert a comment*<br/>
+            <textarea name="message" cols="60" rows="10" th:value="${message}">Write a comment</textarea>
+            <br/>
+            *period*<br/>
+            <input name="from" type="date" th:value="${from}" required/>
+            <br/>
+            <input name="to" type="date" th:value="${to}" required/>
+            <br/>
+            <button type="submit">finish order</button>
+        </section>
+    </form>
+
+</div>
+
+</body>
+</html>

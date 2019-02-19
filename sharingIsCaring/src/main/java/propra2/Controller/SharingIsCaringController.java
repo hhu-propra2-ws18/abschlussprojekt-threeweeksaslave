@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.thymeleaf.templateparser.text.TextParseException;
 import propra2.Security.service.RegistrationService;
 import propra2.database.Transaction;
 import propra2.handler.OrderProcessHandler;
@@ -18,6 +19,7 @@ import propra2.handler.SearchProductHandler;
 import propra2.database.Product;
 import propra2.handler.UserHandler;
 import propra2.model.Address;
+import propra2.model.OrderProcessStatus;
 import propra2.model.TransactionType;
 import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
@@ -27,8 +29,11 @@ import propra2.repositories.TransactionRepository;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -230,16 +235,6 @@ public class SharingIsCaringController {
         return resultList;
     }
 
-    /**
-     * return a specific product find by id
-     * @param id
-     * @return
-     */
-    @PostMapping("/product/{id}")
-    public Product getProductInformationById(Long id) {
-        return productRepository.findById(id).get();
-    }
-
     @GetMapping("/product/{id}")
     public String getProductDetails(@PathVariable Long id, final Principal user, final Model model) {
         Long loggedInId = getUserId(user);
@@ -367,6 +362,38 @@ public class SharingIsCaringController {
     /*********************************************************************************
         ORDERS
      **********************************************************************************/
+
+    @GetMapping("/product/{id}/orderProcess")
+    public String startOrderProcess(@PathVariable Long id, final Principal user, Model model){
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        model.addAttribute("user", customer);
+        return "orderProcess";
+    }
+
+    @PostMapping("/product/{id}/orderProcess")
+    public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user) throws ParseException {
+        Product product = productRepository.findById(id).get();
+        OrderProcess orderProcess = new OrderProcess();
+        orderProcess.setOwnerId(product.getOwnerId());
+
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
+        orderProcess.setRequestId(customer.getCustomerId());
+
+        orderProcess.setProduct(product);
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(message);
+        orderProcess.setMessages(messages);
+
+        orderProcess.setFromDate(java.sql.Date.valueOf("2017-11-15"));
+        orderProcess.setToDate(java.sql.Date.valueOf(to));
+
+        orderProcess.setStatus(OrderProcessStatus.PENDING);
+
+        orderProcessRepository.save(orderProcess);
+
+        return "redirect:/home";
+    }
+
     @GetMapping("/offers/{customerId}")
     public List<Product> getOffers(@PathVariable Long customerId) {
     	Optional<Customer> customer = customerRepository.findById(customerId);
