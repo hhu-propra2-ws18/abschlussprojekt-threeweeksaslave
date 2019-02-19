@@ -48,6 +48,10 @@
                 <td th:text="${product?.available}? ${product.borrowedUntil} : ''"></td>
             </tr>
             <tr>
+                <td>Address:</td>
+                <td th:text="${product.address.street} + ' ' + ${product.address.houseNumber} + ', ' + ${product.address.postCode} + ' ' + ${product.address.city}"></td>
+            </tr>
+            <tr>
                 <td>Deposit: </td>
                 <td th:text="${#numbers.formatInteger(product.deposit, 1, 'POINT')} + ' €'">Amount</td>
             </tr>
