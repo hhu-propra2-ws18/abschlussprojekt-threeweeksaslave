@@ -31,6 +31,8 @@
             <br>
             <div th:text="${#strings.abbreviate(product.description,100)}"></div>
             <br>
+            <div th:text="'Daily Fee: ' + ${product.dailyFee} + '€'"></div>
+            <br>
             <a th:href="@{/product/{id}(id=${product.id})}">read more</a>
             <hr>
         </section>
