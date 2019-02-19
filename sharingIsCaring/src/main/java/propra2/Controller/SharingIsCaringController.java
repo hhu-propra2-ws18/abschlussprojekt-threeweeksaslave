@@ -366,11 +366,17 @@ public class SharingIsCaringController {
 
     @PostMapping("/product/{id}/orderProcess")
     public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user) throws ParseException {
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
         Product product = productRepository.findById(id).get();
+        double totalAmount = product.getTotalAmount(java.sql.Date.valueOf(from), java.sql.Date.valueOf(to));
+
+        if(!customer.hasEnoughMoney(totalAmount)){
+            return "error";
+        }
+
         OrderProcess orderProcess = new OrderProcess();
         orderProcess.setOwnerId(product.getOwner().getCustomerId());
 
-        Customer customer = customerRepository.findByUsername(user.getName()).get();
         orderProcess.setRequestId(customer.getCustomerId());
 
         orderProcess.setProduct(product);
@@ -378,7 +384,7 @@ public class SharingIsCaringController {
         messages.add(message);
         orderProcess.setMessages(messages);
 
-        orderProcess.setFromDate(java.sql.Date.valueOf("2017-11-15"));
+        orderProcess.setFromDate(java.sql.Date.valueOf(from));
         orderProcess.setToDate(java.sql.Date.valueOf(to));
 
         orderProcess.setStatus(OrderProcessStatus.PENDING);

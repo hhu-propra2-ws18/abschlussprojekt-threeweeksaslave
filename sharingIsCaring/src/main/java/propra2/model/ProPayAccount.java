@@ -21,4 +21,12 @@ public class ProPayAccount {
     public void addReservation(Reservation reservation) {
         reservations.add(reservation);
     }
+
+    public int getAvailableAmount(){
+        int result= (int) amount;
+        for(Reservation reservation : reservations){
+            result -= reservation.getAmount();
+        }
+        return result;
+    }
 }
