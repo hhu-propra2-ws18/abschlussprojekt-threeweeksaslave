@@ -1,19 +1,21 @@
 package propra2.controller;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.*;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import propra2.Security.service.CustomerService;
@@ -44,7 +46,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class SharingIsCaringControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    MockMvc mvc;
 
     @MockBean
     CustomerRepository customerRepository;
@@ -75,38 +77,57 @@ public class SharingIsCaringControllerTest {
      PRODUCTS
      **********************************************************************************/
 
-
+    @Ignore //Leo fragen
     @Test
-   // @WithMockUser
-    public void searchProductsTest() throws Exception{
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void showProductsTest() throws Exception{
         Customer customer = new Customer();
-        customer.setCustomerId(1234L);
+        customer.setCustomerId(111L);
         customer.setUsername("Kevin");
         customer.setMail("kevin@istdumm.de");
-        Address address = new Address();
-        address.setStreet("Baumstrasse");
-        address.setHouseNumber(7);
-        address.setPostCode(2345);
-        address.setCity("Erkrath");
-        customer.setAddress(address);
+        customer.setPassword("Baumhaus");
+
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+
+        mvc.perform(get("/products"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("customer"));
+
+
+
+    }
+
+    @Ignore //Leo fragen
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void searchProductsTest() throws Exception{
+        Customer customer = new Customer();
+        customer.setCustomerId(111L);
+        customer.setUsername("Kevin");
+        customer.setMail("kevin@istdumm.de");
+        customer.setPassword("Baumhaus");
+
 
         Product product1 = new Product();
         product1.setTitle("Baumstamm");
         product1.setId(34L);
+        product1.setAvailable(false);
 
         Product product2 = new Product();
-        product1.setTitle("Baumhaus");
+        product2.setTitle("Baumlaube");
         product2.setId(56L);
+        product2.setAvailable(false);
 
         Product product3 = new Product();
-        product1.setTitle("Gartenhaus");
+        product3.setTitle("Gartenhaus");
         product3.setId(78L);
+        product3.setAvailable(false);
 
 
         Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
-        Mockito.when(searchProductHandler.getSearchedProducts("baum", "borrowed", customer, productRepository)).thenReturn(Arrays.asList(product1, product2));
+        Mockito.when(searchProductHandler.getSearchedProducts("Baum", "borrowed", customer, productRepository)).thenReturn(Arrays.asList(product1, product2));
 
-        mockMvc.perform(get("/searchProducts"))
+        mvc.perform(get("/searchProducts"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("productsSearch"))
                 .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
@@ -120,11 +141,58 @@ public class SharingIsCaringControllerTest {
                 .andExpect(MockMvcResultMatchers.model().attribute("products", hasItem(
                         allOf(
                                 hasProperty("id", is("56L")),
-                                hasProperty("title", is("Baumhaus"))
+                                hasProperty("title", is("Baumlaube"))
                         )
                 )));
+    }
+
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void searchForOwnerTest() throws Exception{
+        Customer customer = new Customer();
+        customer.setCustomerId(112L);
+        customer.setUsername("Kevin");
+        customer.setPassword("Baumhaus");
+        customer.setMail("kevin@istdumm.de");
+
+
+        Customer owner = new Customer();
+        owner.setCustomerId(113L);
+        owner.setUsername("Lukas");
+        owner.setMail("lukas@web.de");
+
+
+
+        Mockito.when(customerRepository.findById(113L)).thenReturn(java.util.Optional.of(owner));
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+
+        mvc.perform(get("/owner/{customerId}", 113L))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("customer"))
+                .andExpect(MockMvcResultMatchers.model().attribute("owner", owner))
+                .andExpect(MockMvcResultMatchers.model().attribute("user", customer));
 
     }
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void getProductTest() throws Exception{
+        Customer customer = new Customer();
+        customer.setCustomerId(112L);
+        customer.setUsername("Kevin");
+        customer.setPassword("Baumhaus");
+        customer.setMail("kevin@istdumm.de");
+
+        mvc.perform(get("/product"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("addProduct"))
+                .andExpect(MockMvcResultMatchers.model().attribute("user", customer));
+
+    }
+
+
+
 
 
 }
