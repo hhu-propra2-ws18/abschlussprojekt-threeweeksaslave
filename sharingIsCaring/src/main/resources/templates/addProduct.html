@@ -31,7 +31,8 @@
                 </tr>
                 <tr>
                     <td> Description:</td>
-                    <td><input name="description" th:value="${product?.description}" type="text" required maxlength="255"></td>
+                    <td><textarea name="description" th:value="${product?.description}"
+                                  required maxlength="255" rows="6" cols="40"></textarea></td>
                 </tr>
                 <tr>
                     <td> Deposit:</td>
