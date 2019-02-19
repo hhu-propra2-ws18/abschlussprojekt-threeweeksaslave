@@ -2,7 +2,7 @@
 <html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Product details</title>
+    <title th:text="${product?.title} + ' - Details'">details</title>
 </head>
 <body>
 

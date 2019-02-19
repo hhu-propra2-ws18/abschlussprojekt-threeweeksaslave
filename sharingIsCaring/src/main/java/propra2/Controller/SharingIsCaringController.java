@@ -367,6 +367,8 @@ public class SharingIsCaringController {
     @GetMapping("/product/{id}/orderProcess")
     public String startOrderProcess(@PathVariable Long id, final Principal user, Model model){
         Customer customer = customerRepository.findByUsername(user.getName()).get();
+        Product product = productRepository.findById(id).get();
+        model.addAttribute("product", product);
         model.addAttribute("user", customer);
         return "orderProcess";
     }
