@@ -11,5 +11,5 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
     List<Product> findByTitle(String title);
     List<Product> findByOwner(Customer customer);
     List<Product> findAllById(Iterable<Long> id);
-    List<Product> findAllByTitleContainingOrDescriptionContaining(String titleQuery, String bodyQuery);
+    List<Product> findAllByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String titleQuery, String bodyQuery);
 }
