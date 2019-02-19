@@ -18,7 +18,7 @@ services:
    image: postgres
    restart: always
    volumes:
-     - ./sharingIsCaring:/src/main/resources/mysql
+     - ./sharingIsCaring/data:/var/lib/postgres/data
 
    environment:
      - POSTGRES_PASSWORD=secret
