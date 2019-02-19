@@ -425,13 +425,21 @@ public class SharingIsCaringController {
     /*********************************************************************************
         REQUESTS
      **********************************************************************************/
-    @GetMapping("/requests/{id}")
-    public String showRequests(final Model model, @PathVariable final Long id) {
-        List<OrderProcess> owner = orderProcessRepository.findAllByOwnerId(id);
-        List<OrderProcess> borrower = orderProcessRepository.findAllByRequestId(id);
-        Optional<Customer> user = customerRepository.findById(id);
-        model.addAttribute("user", user.get());
-        model.addAttribute("owner", owner);
+    @GetMapping("/requests")
+    public String showRequests(Principal user, final Model model) {
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(userId);
+
+        List<OrderProcess> ownerOrderProcesses = orderProcessRepository.findAllByOwnerId(userId);
+        for (OrderProcess orderProcess : ownerOrderProcesses) {
+            System.out.println(orderProcess);
+        }
+        List<OrderProcess> borrower = orderProcessRepository.findAllByRequestId(userId);
+        for (OrderProcess orderProcess : borrower) {
+            System.out.println(orderProcess);
+        }
+        model.addAttribute("user", customer.get());
+        model.addAttribute("owner", ownerOrderProcesses);
         model.addAttribute("borrower", borrower);
         return "requests";
     }

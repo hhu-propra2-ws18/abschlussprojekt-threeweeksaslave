@@ -29,23 +29,25 @@
     </section>
 
     <section class="spalte">
-        <h1>Borrowed products</h1>
+        <!--Produkte, die wir verleihen-->
+        <h1>Lend products</h1>
         <table>
             <tr>
                 <th>Product</th>
                 <th>Status</th>
                 <th>Details</th>
             </tr>
-            <tr th:each="process : ${owner}">
+            <tr th:each="process : ${ownerOrderProcesses}">
                 <td th:text="${process.product.title}"></td>
                 <td th:text="${process.status}"></td>
-                <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/profile/requests/detailsOwner/' + ${user.customerId}}">Details</a></td>
+                <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/requests/detailsOwner/' + ${user.customerId}}">Details</a></td>
             </tr>
         </table>
     </section>
 
     <section class="spalte">
-        <h1>Lent products</h1>
+        <!--Produkte, die wir selber ausleihen-->
+        <h1>Borrowed products</h1>
         <table>
             <tr>
                 <th>Product</th>
@@ -55,7 +57,7 @@
             <tr th:each="process : ${borrower}">
                 <td th:text="${process.product.title}"></td>
                 <td th:text="${process.status}"></td>
-                <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/profile/requests/detailsBorrower/' + ${user.customerId}}">Details</a></td>
+                <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/requests/detailsBorrower/' + ${user.customerId}}">Details</a></td>
             </tr>
         </table>
     </section>
