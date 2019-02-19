@@ -248,7 +248,7 @@ public class SharingIsCaringController {
 
         Product product = productRepository.findById(id).get();
         model.addAttribute("product", product);
-        Customer owner = customerRepository.findById(product.getOwnerId()).get();
+        Customer owner = product.getOwner();
         model.addAttribute("owner", owner);
         return "productDetails";
     }
