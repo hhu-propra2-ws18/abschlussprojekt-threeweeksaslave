@@ -184,6 +184,7 @@ public class SharingIsCaringController {
 		model.addAttribute("user", customer);
 		model.addAttribute("query",query);
 		model.addAttribute("products", products);
+		model.addAttribute("filter",filter);
 		return "productsSearch";
 	}
     

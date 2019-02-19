@@ -1,11 +1,7 @@
 package propra2.handler;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestParam;
 import propra2.database.Customer;
 import propra2.database.Product;
-import propra2.repositories.CustomerRepository;
 import propra2.repositories.ProductRepository;
 
 import java.util.ArrayList;
@@ -14,7 +10,7 @@ import java.util.List;
 public class SearchProductHandler {
 
 	public List<Product> getSearchedProducts(final String query, String filter,  Customer customer, ProductRepository productRepository){
-		List<Product> products = productRepository.findAllByTitleContainingOrDescriptionContaining(query, query);
+		List<Product> products = productRepository.findAllByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(query, query);
 		if(filter.equals("borrowed")){
 			List<Product> userBorrowedProducts = new ArrayList<>();
 			List<Product> borrowedProducts = customer.getBorrowedProducts();

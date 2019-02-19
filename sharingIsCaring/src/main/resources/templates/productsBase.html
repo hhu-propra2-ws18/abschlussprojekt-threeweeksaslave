@@ -9,7 +9,7 @@
     <ul>
         <li><a href="/home">Home</a></li>
         <li><a th:href="@{'/profile'}">Profile</a></li>
-        <li><a aria-current="base">view Products</a></li>
+        <li><a aria-current="page">view Products</a></li>
         <li><a href="/product">add Product</a>
         <li><a href="/messages">messages</a></li>
         <li><a th:href="@{'/requests/' + ${user.customerId}}">requests</a></li>
@@ -25,9 +25,9 @@
             <form method="get" action="/searchProducts">
                 <input type="search" name="query" th:value="${query}"/>
                 <select type="text" name="filter">
-                    <option th:value="all">all</option>
-                    <option th:value="borrowed">borrowed</option>
-                    <option th:value="offered">my products</option>
+                    <option th:value="all" th:text="all" th:selected="${filter.equals('all')}"></option>
+                    <option th:value="borrowed" th:text="borrowed" th:selected="${filter.equals('borrowed')}"></option>
+                    <option th:value="offered" th:text="offered" th:selected="${filter.equals('offered')}"></option>
                 </select>
                 <button type="submit">Search</button>
             </form>

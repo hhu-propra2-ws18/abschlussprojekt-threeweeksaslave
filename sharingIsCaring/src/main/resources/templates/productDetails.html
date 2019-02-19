@@ -10,7 +10,7 @@
     <ul>
         <li><a href="/home">Home</a></li>
         <li><a th:href="@{'/profile'}">Profile</a></li>
-        <li><a aria-current="base">view Products</a></li>
+        <li><a href="/products">view Products</a></li>
         <li><a href="/product">add Product</a>
         <li><a href="/messages">messages</a></li>
         <li><a th:href="@{'/requests/' + ${user.customerId}}">requests</a></li>
@@ -23,14 +23,21 @@
     <section class="spalte">
         <h2 th:text="${product?.title}">Title</h2>
 
-        <b>Owner:
-            <a th:text="${owner?.username}" th:href="@{'/owner/' + ${owner?.customerId}}">Name</a>
-        </b>
+
         <br>
         <table>
             <tr>
-                <td>Description: </td>
-                <td th:text="${product?.description}">Description</td>
+                <td>
+                    <b>Owner:
+                    </b>
+                </td>
+                <td>
+                    <a th:text="${owner?.username}" th:href="@{'/owner/' + ${owner?.customerId}}">Name</a>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">Description: </td>
+                <td valign="top" th:text="${product?.description}">Description</td>
             </tr>
             <tr>
                 <td>Availability: </td>
@@ -50,8 +57,9 @@
             </tr>
         </table>
         <br>
-        <a th:href="@{'/product/' + ${product.id} + '/orderProcess'}">Lend it!</a>
-        <a th:href="@{'/products'}">Back</a>
+        <a th:href="@{'/product/' + ${product.id} + '/orderProcess'}">Borrow it!</a>
+        <hr>
+        <a href="javascript:history.back()">Back to search page</a>
     </section>
 </div>
 

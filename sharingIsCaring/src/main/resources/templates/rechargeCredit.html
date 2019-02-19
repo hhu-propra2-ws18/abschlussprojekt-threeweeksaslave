@@ -25,7 +25,7 @@
         <h2>Recharge Credit</h2>
         <p> please insert your IBAN and the amount you want to send to your ProPayAccount!</p>
         <p>Amount: </p>
-        <input type="number" name="amount" th:value="${amount}">
+        <input type="number" name="amount" th:value="${amount}" min="1">
         <br/>
         <p>IBAN:</p>
         <input type="text" name="iban">
