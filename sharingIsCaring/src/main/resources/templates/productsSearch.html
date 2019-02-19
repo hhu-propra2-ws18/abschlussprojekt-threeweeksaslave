@@ -24,11 +24,15 @@
         <b th:text="${'Results for ' + '&quot;'+ query + '&quot;'}"></b>
     </div>
     <div th:if="${products.isEmpty() == false}">
+        <hr>
         <section th:each="product : ${products}">
-            <hr>
-            <h3 th:text="${product.title}"></h3>
-            <p th:text="${#strings.abbreviate(product.description,100)}"></p>
+
+            <h3><u th:text="${product.title}"></u></h3>
+            <br>
+            <div th:text="${#strings.abbreviate(product.description,100)}"></div>
+            <br>
             <a th:href="@{/product/{id}(id=${product.id})}">read more</a>
+            <hr>
         </section>
     </div>
     <div th:if="${products.isEmpty()}">
