@@ -19,16 +19,14 @@ public class OrderProcessHandler {
         this.userHandler = new UserHandler();
     }
 
-    public void updateOrderProcess(OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, CustomerRepository customerRepository) {
-        OrderProcess oldOrderProcess = orderProcessRepository.findById(orderProcess.getId()).get();
+    public void updateOrderProcess(ArrayList<String> oldMessages, OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, CustomerRepository customerRepository) {
 
-        if(!(oldOrderProcess.getMessages() == null))
+        if(!(oldMessages == null))
         {
-            ArrayList<String> messages  = oldOrderProcess.getMessages();
-            orderProcess.addMessages(messages);
+            orderProcess.addMessages(oldMessages);
         }
 
-        Optional<Customer> rentingAccount = customerRepository.findById(oldOrderProcess.getRequestId());
+        Optional<Customer> rentingAccount = customerRepository.findById(orderProcess.getRequestId());
         Optional<Customer> ownerAccount = customerRepository.findById(orderProcess.getOwnerId());
         
         Mono<ProPayAccount> account;
@@ -39,16 +37,16 @@ public class OrderProcessHandler {
             case ACCEPTED:
                 Integer deposit = orderProcess.getProduct().getDeposit();
                 //Propay Kautionsbetrag blocken
-                Mono<Reservation> reservation =  WebClient.create().post().uri(builder ->
-                        builder
-                                .path("localhost:8888/reservation/reserve/" + rentingAccount.get().getUsername() + "/" + ownerAccount.get().getUsername())
-                                .query("amount=" + deposit)
-                                .build())
-                        .retrieve()
-                        .bodyToMono(Reservation.class);
-
-                rentingAccount.get().getProPay().addReservation(reservation.block());
-                orderProcess.setReservationId(reservation.block().getId());
+//                Mono<Reservation> reservation =  WebClient.create().post().uri(builder ->
+//                        builder
+//                                .path("localhost:8888/reservation/reserve/" + rentingAccount.get().getUsername() + "/" + ownerAccount.get().getUsername())
+//                                .query("amount=" + deposit)
+//                                .build())
+//                        .retrieve()
+//                        .bodyToMono(Reservation.class);
+//
+//                rentingAccount.get().getProPay().addReservation(reservation.block());
+//                orderProcess.setReservationId(reservation.block().getId());
                 orderProcessRepository.save(orderProcess);
                 break;
             case FINISHED:

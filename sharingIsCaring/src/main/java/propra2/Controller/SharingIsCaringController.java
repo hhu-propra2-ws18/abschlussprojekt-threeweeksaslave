@@ -408,11 +408,6 @@ public class SharingIsCaringController {
         }
         return "";
     }
-  
-    @PostMapping("/orderProcess/{id}")
-    public void updateOrderProcess(@PathVariable Long id, @RequestBody OrderProcess orderProcess) throws IOException {
-        orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository, customerRepository);
-    }
 
 
     /*********************************************************************************
@@ -432,12 +427,19 @@ public class SharingIsCaringController {
     }
 
     @GetMapping("/requests/detailsBorrower/{processId}")
-    public String showRequestBorrowerDetails(@PathVariable Long processId, Model model) {
+    public String showRequestBorrowerDetails(@PathVariable Long processId, Principal user, final Model model) {
+        Long userId = getUserId(user);
+        Customer customer = customerRepository.findById(userId).get();
+
         Optional<OrderProcess> process = orderProcessRepository.findById(processId);
         Product product = process.get().getProduct();
-        model.addAttribute("process", process.get());
-        model.addAttribute("owner", customerRepository.findById(process.get().getOwnerId()));
+        Long ownerId = process.get().getOwnerId();
+        Customer owner = customerRepository.findById(ownerId).get();
+
+        model.addAttribute("owner", owner);
         model.addAttribute("product", product);
+        model.addAttribute("process", process.get());
+        model.addAttribute("user", customer);
         return "requestDetailsBorrower";
     }
       
@@ -458,11 +460,51 @@ public class SharingIsCaringController {
     public String accept(String message, @PathVariable Long processId) {
         OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.ACCEPTED);
+        ArrayList<String> oldMessages = orderProcess.getMessages();
         ArrayList<String> messages = new ArrayList<>();
         messages.add(message);
         orderProcess.setMessages(messages);
 
-        orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository, customerRepository);
+        orderProcessHandler.updateOrderProcess(oldMessages, orderProcess, orderProcessRepository, customerRepository);
+
+        return "redirect:/requests";
+    }
+
+    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=deny")
+    public String deny(String message, @PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcess.setStatus(OrderProcessStatus.DENIED);
+        ArrayList<String> oldMessages = orderProcess.getMessages();
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(message);
+        orderProcess.setMessages(messages);
+
+        orderProcessHandler.updateOrderProcess(oldMessages, orderProcess, orderProcessRepository, customerRepository);
+
+        return "redirect:/requests";
+    }
+
+    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=deleteProcess")
+    public String deleteByOwner(@PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcessRepository.delete(orderProcess);
+
+        return "redirect:/requests";
+    }
+
+    @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=delete")
+    public String deleteByBorrower(@PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcessRepository.delete(orderProcess);
+
+        return "redirect:/requests";
+    }
+
+    @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=return")
+    public String returnProduct(@PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcess.setStatus(OrderProcessStatus.FINISHED);
+        orderProcessRepository.save(orderProcess);
 
         return "redirect:/requests";
     }

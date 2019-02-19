@@ -69,7 +69,7 @@
         <div th:switch="${process.status.name()}">
             <div th:case="'FINISHED'">
                 <form method="post">
-                    <button name="action" type="submit" value="delete">Delete Process</button>
+                    <button name="action" type="submit" value="deleteProcess">Delete Process</button>
                 </form>
             </div>
 
@@ -139,6 +139,12 @@
                     <textarea name="message" cols="60" rows="10" th:value="${message}">Write a comment</textarea>
                     <button name="action" type="submit" value="acceptProcess">Accept Process</button>
                     <button name="action" type="submit" value="deny">Deny Process</button>
+                </form>
+            </div>
+
+            <div th:case="'DENIED'">
+                <form method="post">
+                    <button name="action" type="submit" value="deleteProcess">Delete Process</button>
                 </form>
             </div>
 
