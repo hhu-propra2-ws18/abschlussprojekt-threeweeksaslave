@@ -1,6 +1,5 @@
 package propra2.handler;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
@@ -10,30 +9,24 @@ import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class OrderProcessHandler {
+    private UserHandler userHandler;
 
-    @Autowired
-    UserHandler userHandler;
+    public OrderProcessHandler() {
+        this.userHandler = new UserHandler();
+    }
 
-    public void updateOrderProcess(OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, CustomerRepository customerRepository) throws IOException {
-        OrderProcess oldOrderProcess = orderProcessRepository.findById(orderProcess.getId()).get();
+    public void updateOrderProcess(ArrayList<String> oldMessages, OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, CustomerRepository customerRepository) {
 
-        if(!(oldOrderProcess.getMessages() == null))
+        if(!(oldMessages == null))
         {
-            ArrayList<String> messages  = oldOrderProcess.getMessages();
-            orderProcess.addMessages(messages);
+            orderProcess.addMessages(oldMessages);
         }
 
-        Optional<Customer> rentingAccount = customerRepository.findById(oldOrderProcess.getRequestId());
+        Optional<Customer> rentingAccount = customerRepository.findById(orderProcess.getRequestId());
         Optional<Customer> ownerAccount = customerRepository.findById(orderProcess.getOwnerId());
         
         Mono<ProPayAccount> account;
@@ -44,16 +37,16 @@ public class OrderProcessHandler {
             case ACCEPTED:
                 Integer deposit = orderProcess.getProduct().getDeposit();
                 //Propay Kautionsbetrag blocken
-                Mono<Reservation> reservation =  WebClient.create().post().uri(builder ->
-                        builder
-                                .path("localhost:8888/reservation/reserve/" + rentingAccount.get().getUsername() + "/" + ownerAccount.get().getUsername())
-                                .query("amount=" + deposit)
-                                .build())
-                        .retrieve()
-                        .bodyToMono(Reservation.class);
-
-                rentingAccount.get().setProPay(userHandler.getProPayAccount(rentingAccount.get().getUsername()));
-                orderProcess.setReservationId(reservation.block().getId());
+//                Mono<Reservation> reservation =  WebClient.create().post().uri(builder ->
+//                        builder
+//                                .path("localhost:8888/reservation/reserve/" + rentingAccount.get().getUsername() + "/" + ownerAccount.get().getUsername())
+//                                .query("amount=" + deposit)
+//                                .build())
+//                        .retrieve()
+//                        .bodyToMono(Reservation.class);
+//
+//                rentingAccount.get().getProPay().addReservation(reservation.block());
+//                orderProcess.setReservationId(reservation.block().getId());
                 orderProcessRepository.save(orderProcess);
                 break;
             case FINISHED:

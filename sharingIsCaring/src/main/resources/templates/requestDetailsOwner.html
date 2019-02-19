@@ -7,36 +7,27 @@
 <body>
 <h1>Orderdetails</h1>
 
-</body>
-</html><!doctype html>
-<html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <title>Index</title>
-</head>
-<body>
-
 <nav layout:fragment="nav">
     <ul>
-        <li><a th:href="@{'/home/' + ${user.customerId}}">Home</a></li>
-        <li><a th:href="@{'/profile/' + ${user.customerId}}">Profile</a></li>
+        <li><a th:href="@{'/home'}">Home</a></li>
+        <li><a th:href="@{'/profile'}">Profile</a></li>
         <li><a href="/products">view Products</a></li>
         <li><a href="/product">add Product</a>
-        <li><a th:href="@{'/profile/requests/' + ${user.customerId}}">requests</a></li>
-        <li><a role="button">logout</a></li>
+        <li><a th:href="@{'/profile/requests/'}">requests</a></li>
+        <li><a href="/logout" role="button">logout</a></li>
     </ul>
 </nav>
 
 <div layout:fragment="content">
     <section id="spalte">
-        <h1>Your lent Products:</h1>
+        <h1>Your lent Product:</h1>
         <table>
             <tr>
                 <td>
                     Product:
                 </td>
                 <td>
-                    <dd th:text="${product.title}"></dd>
+                    <dd th:text="${product?.title}"></dd>
                 </td>
             </tr>
             <tr>
@@ -44,7 +35,7 @@
                     Borrower:
                 </td>
                 <td>
-                    <dd th:text="${borrower.username}"></dd>
+                    <dd th:text="${borrower?.username}"></dd>
                 </td>
             </tr>
             <tr>
@@ -52,7 +43,7 @@
                     Emailadress:
                 </td>
                 <td>
-                    <dd th:text="${borrower.mail}"></dd>
+                    <dd th:text="${borrower?.mail}"></dd>
                 </td>
             </tr>
             <tr>
@@ -60,7 +51,7 @@
                     Address:
                 </td>
                 <td>
-                    <dd th:text="${owner.address.street} + ' ' + ${owner.address.houseNumber} + ', ' + ${owner.address.postCode} + ' ' + ${owner.address.city}"></dd>
+                    <dd th:text="${product.address.street} + ' ' + ${product.address.houseNumber} + ', ' + ${product.address.postCode} + ' ' + ${product.address.city}"></dd>
                 </td>
             </tr>
             <tr>
@@ -72,50 +63,112 @@
                 </td>
             </tr>
         </table>
-        <th:block th:switch="${process.status}">
-            <a th:case="FINISHED">
+
+        <br>
+
+        <div th:switch="${process.status.name()}">
+            <div th:case="'FINISHED'">
                 <form method="post">
-                    <button name="action" type="submit" value="delete">Delete Process</button>
+                    <button name="action" type="submit" value="deleteProcess">Delete Process</button>
                 </form>
-            </a>
-            <a th:case="ACCEPTED">
+            </div>
+
+            <div th:case="'ACCEPTED'">
                 <table>
                     <tr>
                         <td>
-                            Borrowed until:
+                            Bookmarked from:
                         </td>
                         <td>
-                            <dd th:date="${process.borrowedUntil}"></dd>
+                            <dd th:text="${#dates.formatISO(process?.fromDate)}"></dd>
                         </td>
                     </tr>
-                </table>
-            </a>
-            <a th:case="PENDING">
-                <table>
                     <tr>
                         <td>
                             Bookmarked until:
                         </td>
                         <td>
-                            <dd th:date="${process.borrowedUntil}"></dd>
+                            <dd th:text="${#dates.formatISO(process?.toDate)}"></dd>
                         </td>
                     </tr>
                 </table>
+
+                <br>
+
+                <table>
+                    <tr>
+                        <td>Messages</td>
+                    </tr>
+                    <tr th:each="message : ${process.messages}">
+                        <td th:text="${message}"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div th:case="'PENDING'">
+                <table>
+                    <tr>
+                        <td>
+                            Bookmarked from:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.formatISO(process?.fromDate)}"></dd>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Bookmarked until:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.formatISO(process?.toDate)}"></dd>
+                        </td>
+                    </tr>
+                </table>
+
+                <br>
+
+                <table>
+                    <tr>
+                        <td>Messages</td>
+                    </tr>
+                    <tr th:each="message : ${process.messages}">
+                        <td th:text="${message}"></td>
+                    </tr>
+                </table>
                 <form method="post">
+                    <textarea name="message" cols="60" rows="10" th:value="${message}">Write a comment</textarea>
                     <button name="action" type="submit" value="acceptProcess">Accept Process</button>
                     <button name="action" type="submit" value="deny">Deny Process</button>
                 </form>
-            </a>
-            <a th:case="CONFLICT">
+            </div>
+
+            <div th:case="'DENIED'">
+                <form method="post">
+                    <button name="action" type="submit" value="deleteProcess">Delete Process</button>
+                </form>
+            </div>
+
+            <div th:case="'CONFLICT'">
                 <!-- TODO: Konfliktmanagment -->
-            </a>
-            <a th:case="RETURNED">
+            </div>
+
+            <div th:case="'RETURNED'">
+                <table>
+                    <tr>
+                        <td>Messages</td>
+                    </tr>
+                    <tr th:each="message : ${process.messages}">
+                        <td th:text="${message}"></td>
+                    </tr>
+                </table>
+
                 <form method="post">
                     <button name="action" type="submit" value="acceptProduct">Accept Product</button>
                     <button name="action" type="submit" value="appeal">Deny Product</button>
                 </form>
-            </a>
-        </th:block>
+
+            </div>
+        </div>
     </section>
 </div>
 </body>
