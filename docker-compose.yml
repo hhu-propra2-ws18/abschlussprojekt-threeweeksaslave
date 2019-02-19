@@ -15,7 +15,7 @@ services:
     build: ./sharingIsCaring
 
   sharingiscaringdb:
-   image: mariadb
+   image: postgres
    restart: always
    volumes:
      - ./sharingIsCaring:/src/main/resources/mysql
