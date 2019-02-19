@@ -1,6 +1,5 @@
 package propra2.handler;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
@@ -10,21 +9,17 @@ import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class OrderProcessHandler {
+    private UserHandler userHandler;
 
-    @Autowired
-    UserHandler userHandler;
+    public OrderProcessHandler() {
+        this.userHandler = new UserHandler();
+    }
 
-    public void updateOrderProcess(OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, CustomerRepository customerRepository) throws IOException {
+    public void updateOrderProcess(OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, CustomerRepository customerRepository) {
         OrderProcess oldOrderProcess = orderProcessRepository.findById(orderProcess.getId()).get();
 
         if(!(oldOrderProcess.getMessages() == null))
@@ -52,7 +47,7 @@ public class OrderProcessHandler {
                         .retrieve()
                         .bodyToMono(Reservation.class);
 
-                rentingAccount.get().setProPay(userHandler.getProPayAccount(rentingAccount.get().getUsername()));
+                rentingAccount.get().getProPay().addReservation(reservation.block());
                 orderProcess.setReservationId(reservation.block().getId());
                 orderProcessRepository.save(orderProcess);
                 break;

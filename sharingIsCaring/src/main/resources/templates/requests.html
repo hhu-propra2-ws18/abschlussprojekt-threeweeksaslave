@@ -30,7 +30,7 @@
 
     <section class="spalte">
         <!--Produkte, die wir verleihen-->
-        <h1>Lend products</h1>
+        <h1>Lent products</h1>
         <table>
             <tr>
                 <th>Product</th>
@@ -40,7 +40,7 @@
             <tr th:each="process : ${ownerOrderProcesses}">
                 <td th:text="${process.product.title}"></td>
                 <td th:text="${process.status}"></td>
-                <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/requests/detailsOwner/' + ${user.customerId}}">Details</a></td>
+                <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/requests/detailsOwner/' + ${process.id}}">Details</a></td>
             </tr>
         </table>
     </section>
@@ -57,7 +57,7 @@
             <tr th:each="process : ${borrower}">
                 <td th:text="${process.product.title}"></td>
                 <td th:text="${process.status}"></td>
-                <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/requests/detailsBorrower/' + ${user.customerId}}">Details</a></td>
+                <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/requests/detailsBorrower/' + ${process.id}}">Details</a></td>
             </tr>
         </table>
     </section>

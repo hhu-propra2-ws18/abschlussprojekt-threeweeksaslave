@@ -2,21 +2,17 @@ package propra2.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.thymeleaf.templateparser.text.TextParseException;
-import propra2.Security.service.RegistrationService;
-import propra2.database.Transaction;
-import propra2.handler.OrderProcessHandler;
-
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import propra2.Security.service.RegistrationService;
 import propra2.Security.validator.CustomerValidator;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
-import propra2.handler.SearchProductHandler;
 import propra2.database.Product;
+import propra2.database.Transaction;
+import propra2.handler.OrderProcessHandler;
+import propra2.handler.SearchProductHandler;
 import propra2.handler.UserHandler;
 import propra2.model.Address;
 import propra2.model.OrderProcessStatus;
@@ -29,11 +25,8 @@ import propra2.repositories.TransactionRepository;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -431,15 +424,9 @@ public class SharingIsCaringController {
         Optional<Customer> customer = customerRepository.findById(userId);
 
         List<OrderProcess> ownerOrderProcesses = orderProcessRepository.findAllByOwnerId(userId);
-        for (OrderProcess orderProcess : ownerOrderProcesses) {
-            System.out.println(orderProcess);
-        }
         List<OrderProcess> borrower = orderProcessRepository.findAllByRequestId(userId);
-        for (OrderProcess orderProcess : borrower) {
-            System.out.println(orderProcess);
-        }
         model.addAttribute("user", customer.get());
-        model.addAttribute("owner", ownerOrderProcesses);
+        model.addAttribute("ownerOrderProcesses", ownerOrderProcesses);
         model.addAttribute("borrower", borrower);
         return "requests";
     }
@@ -455,11 +442,29 @@ public class SharingIsCaringController {
     }
       
     @GetMapping("/requests/detailsOwner/{processId}")
-    public String showRequestOwnerDetails(@PathVariable Long processId, Model model) {
+    public String showRequestOwnerDetails(@PathVariable Long processId, Principal user, final Model model) {
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(userId);
         Optional<OrderProcess> process = orderProcessRepository.findById(processId);
+
+        model.addAttribute("user", customer);
+        model.addAttribute("product", process.get().getProduct());
         model.addAttribute("process", process.get());
-        model.addAttribute("borrower", customerRepository.findById(process.get().getRequestId()));
+        model.addAttribute("borrower", customerRepository.findById(process.get().getRequestId()).get());
         return "requestDetailsOwner";
+    }
+
+    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=acceptProcess")
+    public String accept(String message, @PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcess.setStatus(OrderProcessStatus.ACCEPTED);
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(message);
+        orderProcess.setMessages(messages);
+
+        orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository, customerRepository);
+
+        return "redirect:/requests";
     }
   
 }
