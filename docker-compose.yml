@@ -15,10 +15,10 @@ services:
     build: ./sharingIsCaring
 
   sharingiscaringdb:
-   image: postgres
+   image: mariadb
    restart: always
    volumes:
-     - ./sharingIsCaring/data:/var/lib/postgres/data
+     - ./sharingIsCaring:/src/main/resources/mysql
 
    environment:
      - POSTGRES_PASSWORD=secret
