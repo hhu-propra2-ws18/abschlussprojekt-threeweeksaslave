@@ -378,7 +378,7 @@ public class SharingIsCaringController {
         messages.add(message);
         orderProcess.setMessages(messages);
 
-        orderProcess.setFromDate(java.sql.Date.valueOf("2017-11-15"));
+        orderProcess.setFromDate(java.sql.Date.valueOf(from));
         orderProcess.setToDate(java.sql.Date.valueOf(to));
 
         orderProcess.setStatus(OrderProcessStatus.PENDING);
