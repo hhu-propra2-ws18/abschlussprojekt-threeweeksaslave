@@ -2,7 +2,7 @@
 <html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Product details</title>
+    <title th:text="${product?.title} + ' - Details'">details</title>
 </head>
 <body>
 
@@ -10,11 +10,11 @@
     <ul>
         <li><a href="/home">Home</a></li>
         <li><a th:href="@{'/profile'}">Profile</a></li>
-        <li><a href="/products">view Products</a></li>
-        <li><a href="/product">add Product</a>
-        <li><a href="/messages">messages</a></li>
-        <li><a th:href="@{'/requests/' + ${user.customerId}}">requests</a></li>
-        <li><a href="/logout" role="button">logout</a></li>
+        <li><a href="/products">View Products</a></li>
+        <li><a href="/product">Add Product</a>
+        <li><a href="/messages">Messages</a></li>
+        <li><a th:href="@{'/requests/' + ${user.customerId}}">Requests</a></li>
+        <li><a href="/logout" role="button">Log Out</a></li>
     </ul>
 </nav>
 
@@ -25,38 +25,40 @@
 
 
         <br>
-        <table>
-            <tr>
+        <table class="table">
+            <tr bgcolor="#f5f5f5">
                 <td>
-                    <b>Owner:
-                    </b>
+                    <b>Owner: </b>
                 </td>
                 <td>
                     <a th:text="${owner?.username}" th:href="@{'/owner/' + ${owner?.customerId}}">Name</a>
                 </td>
+
             </tr>
-            <tr>
-                <td valign="top">Description: </td>
+            <tr bgcolor="#f5f5f5">
+                <td valign="top"><b>Description: </b></td>
                 <td valign="top" th:text="${product?.description}">Description</td>
+
             </tr>
-            <tr>
-                <td>Availability: </td>
+
+            <tr bgcolor="#f5f5f5">
+                <td><b>Availability: </b></td>
                 <td th:text="${product?.available}? 'Available' : 'Not available'">Status</td>
             </tr>
-            <tr th:if="${!product?.available}">
+            <tr th:if="${!product?.available}" bgcolor="#f5f5f5">
                 <td th:text="${product?.available}? 'Borrowed until' : ''"></td>
                 <td th:text="${product?.available}? ${product.borrowedUntil} : ''"></td>
             </tr>
-            <tr>
+            <tr bgcolor="#f5f5f5">
                 <td>Address:</td>
                 <td th:text="${product.address.street} + ' ' + ${product.address.houseNumber} + ', ' + ${product.address.postCode} + ' ' + ${product.address.city}"></td>
             </tr>
-            <tr>
-                <td>Deposit: </td>
+            <tr bgcolor="#f5f5f5">
+                <td><b>Deposit: </b></td>
                 <td th:text="${#numbers.formatInteger(product.deposit, 1, 'POINT')} + ' €'">Amount</td>
             </tr>
-            <tr>
-                <td>Daily fee: </td>
+            <tr bgcolor="#f5f5f5">
+                <td><b>Daily Fee: </b></td>
                 <td th:text="${#numbers.formatInteger(product.dailyFee, 1, 'POINT')} + ' €'">Amount</td>
             </tr>
         </table>

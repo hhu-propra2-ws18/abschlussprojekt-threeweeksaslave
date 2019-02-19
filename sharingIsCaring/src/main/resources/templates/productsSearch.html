@@ -2,7 +2,7 @@
 <html lang="en" layout:decorate="~{productsBase}" xmlns:layout="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Index</title>
+    <title>View Products</title>
 </head>
 <body>
 
@@ -10,11 +10,11 @@
     <ul>
         <li><a href="/home">Home</a></li>
         <li><a th:href="@{'/profile'}">Profile</a></li>
-        <li><a aria-current="page">view Products</a></li>
-        <li><a href="/product">add Product</a>
-        <li><a href="/messages">messages</a></li>
-        <li><a th:href="@{'/requests/' + ${user.customerId}}">requests</a></li>
-        <li><a href="/logout" role="button">logout</a></li>
+        <li><a aria-current="page">View Products</a></li>
+        <li><a href="/product">Add Product</a>
+        <li><a href="/messages">Messages</a></li>
+        <li><a th:href="@{'/requests/' + ${user.customerId}}">Requests</a></li>
+        <li><a href="/logout" role="button">Log Out</a></li>
     </ul>
 </nav>
 
@@ -31,6 +31,15 @@
             <br>
             <div th:text="${#strings.abbreviate(product.description,100)}"></div>
             <br>
+            <div th:text="'Daily Fee: ' + ${product.dailyFee} + '€'"></div>
+            <br>
+
+            <div th:if="${product.available}">
+                <b style="color:mediumseagreen" th:text="Available"></b>
+            </div>
+            <div th:if="${!product.available}">
+                <b style="color:tomato" th:text="'Borrowed Until' + ${product.date}"></b>
+            </div>
             <a th:href="@{/product/{id}(id=${product.id})}">read more</a>
             <hr>
         </section>
