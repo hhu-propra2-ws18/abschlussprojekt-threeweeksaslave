@@ -374,7 +374,7 @@ public class SharingIsCaringController {
     public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user) throws ParseException {
         Product product = productRepository.findById(id).get();
         OrderProcess orderProcess = new OrderProcess();
-        orderProcess.setOwnerId(product.getOwnerId());
+        orderProcess.setOwnerId(product.getOwner().getCustomerId());
 
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         orderProcess.setRequestId(customer.getCustomerId());
