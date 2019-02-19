@@ -27,38 +27,38 @@
                 <table>
                 <tr>
                     <td> Title:</td>
-                    <td><input name="title" th:value="${product?.title}" type="text" required></td>
+                    <td><input name="title" th:value="${product?.title}" type="text" required maxlength="255"></td>
                 </tr>
                 <tr>
                     <td> Description:</td>
-                    <td><input name="description" th:value="${product?.description}" type="text" required></td>
+                    <td><input name="description" th:value="${product?.description}" type="text" required maxlength="255"></td>
                 </tr>
                 <tr>
                     <td> Deposit:</td>
-                    <td><input name="deposit" th:value="${product?.deposit}" type="number" required></td>
+                    <td><input name="deposit" th:value="${product?.deposit}" type="number" required min="0"></td>
                 </tr>
                 <tr>
                     <td> Daily Fee:</td>
-                    <td><input name="dailyFee" th:value="${product?.dailyFee}" type="number" required></td>
+                    <td><input name="dailyFee" th:value="${product?.dailyFee}" type="number" required min="0"></td>
                 </tr>
                 <tr>
                     <td> Address:</td>
                 </tr>
                 <tr>
                     <td> street:</td>
-                    <td><input name="street" th:value="${product?.address?.street}" type="text" required></td>
+                    <td><input name="street" th:value="${product?.address?.street}" type="text" required maxlength="255"></td>
                 </tr>
                 <tr>
                     <td> houseNr:</td>
-                    <td><input name="houseNumber" th:value="${product?.address?.houseNumber}" type="number" required></td>
+                    <td><input name="houseNumber" th:value="${product?.address?.houseNumber}" type="number" required min="1"></td>
                 </tr>
                 <tr>
                     <td> postCode:</td>
-                    <td><input name="postCode" th:value="${product?.address?.postCode}" type="number" required></td>
+                    <td><input name="postCode" th:value="${product?.address?.postCode}" type="number" required min="1"></td>
                 </tr>
                 <tr>
                     <td> city:</td>
-                    <td><input name="city" th:value="${product?.address?.city}" type="text" required></td>
+                    <td><input name="city" th:value="${product?.address?.city}" type="text" required maxlength="255"></td>
                 </tr>
             </table>
             <br>
