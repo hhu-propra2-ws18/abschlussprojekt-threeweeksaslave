@@ -2,21 +2,17 @@ package propra2.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.thymeleaf.templateparser.text.TextParseException;
-import propra2.Security.service.RegistrationService;
-import propra2.database.Transaction;
-import propra2.handler.OrderProcessHandler;
-
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import propra2.Security.service.RegistrationService;
 import propra2.Security.validator.CustomerValidator;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
-import propra2.handler.SearchProductHandler;
 import propra2.database.Product;
+import propra2.database.Transaction;
+import propra2.handler.OrderProcessHandler;
+import propra2.handler.SearchProductHandler;
 import propra2.handler.UserHandler;
 import propra2.model.Address;
 import propra2.model.OrderProcessStatus;
@@ -29,11 +25,8 @@ import propra2.repositories.TransactionRepository;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -387,7 +380,7 @@ public class SharingIsCaringController {
         messages.add(message);
         orderProcess.setMessages(messages);
 
-        orderProcess.setFromDate(java.sql.Date.valueOf("2017-11-15"));
+        orderProcess.setFromDate(java.sql.Date.valueOf(from));
         orderProcess.setToDate(java.sql.Date.valueOf(to));
 
         orderProcess.setStatus(OrderProcessStatus.PENDING);
@@ -418,43 +411,105 @@ public class SharingIsCaringController {
         }
         return "";
     }
-  
-    @PostMapping("/orderProcess/{id}")
-    public void updateOrderProcess(@PathVariable Long id, @RequestBody OrderProcess orderProcess) throws IOException {
-        orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository, customerRepository);
-    }
 
 
     /*********************************************************************************
         REQUESTS
      **********************************************************************************/
-    @GetMapping("/requests/{id}")
-    public String showRequests(final Model model, @PathVariable final Long id) {
-        List<OrderProcess> owner = orderProcessRepository.findAllByOwnerId(id);
-        List<OrderProcess> borrower = orderProcessRepository.findAllByRequestId(id);
-        Optional<Customer> user = customerRepository.findById(id);
-        model.addAttribute("user", user.get());
-        model.addAttribute("owner", owner);
+    @GetMapping("/requests")
+    public String showRequests(Principal user, final Model model) {
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(userId);
+
+        List<OrderProcess> ownerOrderProcesses = orderProcessRepository.findAllByOwnerId(userId);
+        List<OrderProcess> borrower = orderProcessRepository.findAllByRequestId(userId);
+        model.addAttribute("user", customer.get());
+        model.addAttribute("ownerOrderProcesses", ownerOrderProcesses);
         model.addAttribute("borrower", borrower);
         return "requests";
     }
 
     @GetMapping("/requests/detailsBorrower/{processId}")
-    public String showRequestBorrowerDetails(@PathVariable Long processId, Model model) {
+    public String showRequestBorrowerDetails(@PathVariable Long processId, Principal user, final Model model) {
+        Long userId = getUserId(user);
+        Customer customer = customerRepository.findById(userId).get();
+
         Optional<OrderProcess> process = orderProcessRepository.findById(processId);
         Product product = process.get().getProduct();
-        model.addAttribute("process", process.get());
-        model.addAttribute("owner", customerRepository.findById(process.get().getOwnerId()));
+        Long ownerId = process.get().getOwnerId();
+        Customer owner = customerRepository.findById(ownerId).get();
+
+        model.addAttribute("owner", owner);
         model.addAttribute("product", product);
+        model.addAttribute("process", process.get());
+        model.addAttribute("user", customer);
         return "requestDetailsBorrower";
     }
       
     @GetMapping("/requests/detailsOwner/{processId}")
-    public String showRequestOwnerDetails(@PathVariable Long processId, Model model) {
+    public String showRequestOwnerDetails(@PathVariable Long processId, Principal user, final Model model) {
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(userId);
         Optional<OrderProcess> process = orderProcessRepository.findById(processId);
+
+        model.addAttribute("user", customer);
+        model.addAttribute("product", process.get().getProduct());
         model.addAttribute("process", process.get());
-        model.addAttribute("borrower", customerRepository.findById(process.get().getRequestId()));
+        model.addAttribute("borrower", customerRepository.findById(process.get().getRequestId()).get());
         return "requestDetailsOwner";
+    }
+
+    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=acceptProcess")
+    public String accept(String message, @PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcess.setStatus(OrderProcessStatus.ACCEPTED);
+        ArrayList<String> oldMessages = orderProcess.getMessages();
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(message);
+        orderProcess.setMessages(messages);
+
+        orderProcessHandler.updateOrderProcess(oldMessages, orderProcess, orderProcessRepository, customerRepository);
+
+        return "redirect:/requests";
+    }
+
+    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=deny")
+    public String deny(String message, @PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcess.setStatus(OrderProcessStatus.DENIED);
+        ArrayList<String> oldMessages = orderProcess.getMessages();
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(message);
+        orderProcess.setMessages(messages);
+
+        orderProcessHandler.updateOrderProcess(oldMessages, orderProcess, orderProcessRepository, customerRepository);
+
+        return "redirect:/requests";
+    }
+
+    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=deleteProcess")
+    public String deleteByOwner(@PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcessRepository.delete(orderProcess);
+
+        return "redirect:/requests";
+    }
+
+    @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=delete")
+    public String deleteByBorrower(@PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcessRepository.delete(orderProcess);
+
+        return "redirect:/requests";
+    }
+
+    @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=return")
+    public String returnProduct(@PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcess.setStatus(OrderProcessStatus.FINISHED);
+        orderProcessRepository.save(orderProcess);
+
+        return "redirect:/requests";
     }
   
 }

@@ -12,8 +12,8 @@
         <li><a aria-current="page">Profile</a></li>
         <li><a href="/products">View Products</a></li>
         <li><a href="/product">Add Product</a>
-        <li><a th:href="@{'/profile/requests/' + ${user.customerId}}">Requests</a></li>
-        <li><a role="button">Log Out</a></li>
+        <li><a th:href="@{'/requests/'}">Requests</a></li>
+        <li><a href="/logout" role="button">Log Out</a></li>
     </ul>
 </nav>
 
