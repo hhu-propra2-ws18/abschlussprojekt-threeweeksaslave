@@ -19,6 +19,7 @@ import propra2.handler.SearchProductHandler;
 import propra2.database.Product;
 import propra2.handler.UserHandler;
 import propra2.model.Address;
+import propra2.model.OrderProcessStatus;
 import propra2.model.TransactionType;
 import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
@@ -32,7 +33,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -365,16 +366,14 @@ public class SharingIsCaringController {
         orderProcess.setRequestId(customer.getCustomerId());
 
         orderProcess.setProduct(product);
-        List<String> messages = new ArrayList<>();
+        ArrayList<String> messages = new ArrayList<>();
         messages.add(message);
         orderProcess.setMessages(messages);
 
-        DateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-        Date dateFrom = format.parse(from);
-        Date dateTo = format.parse(to);
+        orderProcess.setFromDate(java.sql.Date.valueOf("2017-11-15"));
+        orderProcess.setToDate(java.sql.Date.valueOf(to));
 
-        orderProcess.setFrom(dateFrom);
-        orderProcess.setTo(dateTo);
+        orderProcess.setStatus(OrderProcessStatus.PENDING);
 
         orderProcessRepository.save(orderProcess);
 
