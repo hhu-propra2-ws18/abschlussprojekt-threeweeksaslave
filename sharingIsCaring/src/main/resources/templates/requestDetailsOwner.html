@@ -60,7 +60,7 @@
                     Address:
                 </td>
                 <td>
-                    <dd th:text="${borrower.address.city} + ', ' + ${borrower.address.postCode} + ', ' + ${borrower.address.street} + ' ' + ${borrower.address.houseNumber}"></dd>
+                    <dd th:text="${owner.address.street} + ' ' + ${owner.address.houseNumber} + ', ' + ${owner.address.postCode} + ' ' + ${owner.address.city}"></dd>
                 </td>
             </tr>
             <tr>
