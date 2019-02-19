@@ -24,7 +24,7 @@
         <h2 th:text="${product?.title}">Title</h2>
 
         <b>Owner:
-            <a th:text="${owner?.username}" th:href="@{'/' + ${owner?.customerId}}">Name</a>
+            <a th:text="${owner?.username}" th:href="@{'/owner/' + ${owner?.customerId}}">Name</a>
         </b>
         <br>
         <table>
