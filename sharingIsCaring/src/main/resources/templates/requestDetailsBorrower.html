@@ -89,7 +89,7 @@
                             Bookmarked from:
                         </td>
                         <td>
-                            <dd th:text="${#dates.formatISO(process?.fromDate)}"></dd>
+                            <dd th:text="${#dates.format(process?.fromDate, 'dd.MM.yyyy')}"></dd>
                         </td>
                     </tr>
                     <tr>
@@ -97,7 +97,7 @@
                             Bookmarked until:
                         </td>
                         <td>
-                            <dd th:text="${#dates.formatISO(process?.toDate)}"></dd>
+                            <dd th:text="${#dates.format(process?.toDate, 'dd.MM.yyyy')}"></dd>
                         </td>
                     </tr>
                 </table>
@@ -113,7 +113,7 @@
                             Bookmarked from:
                         </td>
                         <td>
-                            <dd th:text="${#dates.formatISO(process?.fromDate)}"></dd>
+                            <dd th:text="${#dates.format(process?.fromDate, 'dd.MM.yyyy')}"></dd>
                         </td>
                     </tr>
                     <tr>
@@ -121,7 +121,7 @@
                             Bookmarked until:
                         </td>
                         <td>
-                            <dd th:text="${#dates.formatISO(process?.toDate)}"></dd>
+                            <dd th:text="${#dates.format(process?.toDate, 'dd.MM.yyyy')}"></dd>
                         </td>
                     </tr>
                 </table>
@@ -148,7 +148,7 @@
                             Bookmarked from:
                         </td>
                         <td>
-                            <dd th:text="${#dates.formatISO(process?.fromDate)}"></dd>
+                            <dd th:text="${#dates.format(process?.fromDate, 'dd.MM.yyyy')}"></dd>
                         </td>
                     </tr>
                     <tr>
@@ -156,7 +156,7 @@
                             Bookmarked until:
                         </td>
                         <td>
-                            <dd th:text="${#dates.formatISO(process?.toDate)}"></dd>
+                            <dd th:text="${#dates.format(process?.toDate, 'dd.MM.yyyy')}"></dd>
                         </td>
                     </tr>
                 </table>
