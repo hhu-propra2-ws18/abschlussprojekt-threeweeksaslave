@@ -23,11 +23,18 @@
     <section class="spalte">
         <h2 th:text="${product?.title}">Title</h2>
 
-        <b>Owner:
-            <a th:text="${owner?.username}" th:href="@{'/owner/' + ${owner?.customerId}}">Name</a>
-        </b>
+
         <br>
         <table>
+            <tr>
+                <td>
+                    <b>Owner:
+                    </b>
+                </td>
+                <td>
+                    <a th:text="${owner?.username}" th:href="@{'/owner/' + ${owner?.customerId}}">Name</a>
+                </td>
+            </tr>
             <tr>
                 <td>Description: </td>
                 <td th:text="${product?.description}">Description</td>
@@ -51,7 +58,8 @@
         </table>
         <br>
         <a th:href="@{'/product/' + ${product.id} + '/orderProcess'}">Borrow it!</a>
-        <a th:href="@{'/products'}">Back</a>
+        <hr>
+        <a href="javascript:history.back()">Back to search page</a>
     </section>
 </div>
 
