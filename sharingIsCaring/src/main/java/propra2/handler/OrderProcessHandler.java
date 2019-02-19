@@ -31,25 +31,26 @@ public class OrderProcessHandler {
         
         Mono<ProPayAccount> account;
         switch (orderProcess.getStatus()) {
-            case DENIED:
+           /* case DENIED:
                 orderProcessRepository.save(orderProcess);
-                break;
+                break;*/
             case ACCEPTED:
                 Integer deposit = orderProcess.getProduct().getDeposit();
                 //Propay Kautionsbetrag blocken
-//                Mono<Reservation> reservation =  WebClient.create().post().uri(builder ->
-//                        builder
-//                                .path("localhost:8888/reservation/reserve/" + rentingAccount.get().getUsername() + "/" + ownerAccount.get().getUsername())
-//                                .query("amount=" + deposit)
-//                                .build())
-//                        .retrieve()
-//                        .bodyToMono(Reservation.class);
-//
-//                rentingAccount.get().getProPay().addReservation(reservation.block());
-//                orderProcess.setReservationId(reservation.block().getId());
+                Mono<Reservation> reservation =  WebClient.create().post().uri(builder ->
+                        builder
+                                .path("localhost:8888/reservation/reserve/" + rentingAccount.get().getUsername() + "/" + ownerAccount.get().getUsername())
+                                .query("amount=" + deposit)
+                                .build())
+                        .retrieve()
+                        .bodyToMono(Reservation.class);
+
+                Reservation localReservation = reservation.block();
+                rentingAccount.get().getProPay().addReservation(localReservation);
+                orderProcess.setReservationId(localReservation.getId());
                 orderProcessRepository.save(orderProcess);
                 break;
-            case FINISHED:
+          /*  case FINISHED:
                 //Kaution wird wieder freigegeben
                 account =  WebClient.create().post().uri(builder ->
                         builder
@@ -79,7 +80,7 @@ public class OrderProcessHandler {
 
                 rentingAccount.get().setProPay(account.block());
                 orderProcessRepository.save(orderProcess);
-                break;
+                break;*/
             default:
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
         }
