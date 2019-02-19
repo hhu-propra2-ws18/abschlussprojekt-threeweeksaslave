@@ -30,9 +30,9 @@ public class OrderProcess {
 
     OrderProcessStatus status;
 
-    @Lob
+    @Temporal(TemporalType.DATE)
     Date from;
-    @Lob
+    @Temporal(TemporalType.DATE)
     Date to;
 
     public void addMessages(List<String> list){
