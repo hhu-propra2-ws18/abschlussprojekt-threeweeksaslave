@@ -468,7 +468,8 @@ public class SharingIsCaringController {
     }
 
     @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=return")
-    public String returnProduct(@PathVariable Long processId) {
+    public String returnProduct(@PathVariable Long processId, Principal user) {
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
         OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.RETURNED);
         orderProcessRepository.save(orderProcess);
@@ -476,6 +477,8 @@ public class SharingIsCaringController {
         Product product = productRepository.findById(orderProcess.getProduct().getId()).get();
         product.setAvailable(true);
         productRepository.save(product);
+
+        orderProcessHandler.payDailyFee(orderProcess, customerRepository);
 
         return "redirect:/requests";
     }

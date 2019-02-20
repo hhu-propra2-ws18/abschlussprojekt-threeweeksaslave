@@ -1,5 +1,6 @@
 package propra2.handler;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
@@ -89,5 +90,17 @@ public class OrderProcessHandler {
     public boolean correctDates(Date from, Date to) {
         if(from.equals(to)) return true;
         return from.before(to);
+    }
+
+    public void payDailyFee(OrderProcess orderProcess, CustomerRepository customerRepository) {
+        double dailyFee = orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate(), orderProcess.getToDate());
+        String rentingAccount = customerRepository.findById(orderProcess.getRequestId()).get().getUsername();
+        String ownerAccount = customerRepository.findById(orderProcess.getOwnerId()).get().getUsername();
+        WebClient.create().post().uri(builder ->
+                builder
+                        .path("localhost:8888/account/" + rentingAccount + "/transfer" + ownerAccount)
+                        .query("amount=" + dailyFee)
+                        .build())
+                .retrieve();
     }
 }
