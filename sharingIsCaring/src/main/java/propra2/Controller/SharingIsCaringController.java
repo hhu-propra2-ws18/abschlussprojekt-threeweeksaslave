@@ -236,10 +236,37 @@ public class SharingIsCaringController {
         model.addAttribute("user", customer);
 
         Product product = productRepository.findById(id).get();
-        model.addAttribute("product", product);
         Customer owner = product.getOwner();
         model.addAttribute("owner", owner);
         return "productDetails";
+    }
+
+
+    @GetMapping("/product/availability/{id}")
+    public String getAvailability(Principal user, Model model, @PathVariable Long id){
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(userId);
+        Product product = productRepository.findById(id).get();
+        model.addAttribute("product", product);
+        model.addAttribute("user", customer.get());
+        model.addAttribute("available", true);
+        return "productAvailability";
+
+    }
+
+    @PostMapping("/product/availability/{id}")
+    public String checkAvailability(Principal user, Model model, @PathVariable Long id, String from, String to){
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(userId);
+        Product product = productRepository.findById(id).get();
+
+        boolean available = orderProcessHandler.checkAvailability(orderProcessRepository, product, from, to);
+
+        model.addAttribute("product", product);
+        model.addAttribute("user", customer.get());
+        model.addAttribute("available", available);
+        return "productAvailability";
+
     }
 
 
@@ -295,19 +322,8 @@ public class SharingIsCaringController {
         customer.get().setAddress(address);
         customer.get().setMail(mail);
         customerRepository.save(customer.get());
-        model.addAttribute("user", customer);
+        model.addAttribute("user", customer.get());
         return "redirect:/profile";
-    }
-
-    @GetMapping("/product/availability/{id}")
-    public String getAvailability(Principal user, Model model, @PathVariable Long id){
-        Long userId = getUserId(user);
-        Optional<Customer> customer = customerRepository.findById(userId);
-        Product product = productRepository.findById(id).get();
-        model.addAttribute("product", product);
-        model.addAttribute("user", user);
-        return "availability";
-
     }
   
   /*********************************************************************************

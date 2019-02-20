@@ -1,15 +1,19 @@
 package propra2.handler;
 
+import org.hibernate.criterion.Order;
 import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
+import propra2.database.Product;
 import propra2.model.ProPayAccount;
 import propra2.model.Reservation;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import reactor.core.publisher.Mono;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class OrderProcessHandler {
@@ -83,5 +87,32 @@ public class OrderProcessHandler {
             default:
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
         }
+    }
+
+    public boolean checkAvailability(OrderProcessRepository orderProcessRepository, Product product, String from, String to){
+        List<OrderProcess> processes = orderProcessRepository.findByProduct(product);
+
+        Date checkFrom = java.sql.Date.valueOf(from);
+        Date checkTo = java.sql.Date.valueOf(to);
+
+        boolean available = true;
+
+        if(processes.isEmpty()){
+            return true;
+        }else{
+            for(int i  = 0; i < processes.size(); i++){
+                Date dateFrom = processes.get(i).getFromDate();
+                Date dateTo = processes.get(i).getToDate();
+                if(dateFrom.before(checkFrom) && dateTo.before(checkFrom)){
+                }else if (dateFrom.after(checkTo) && dateTo.after(checkTo)){
+                }else{
+                    available = false;
+                    break;
+                }
+            }
+        }
+
+        return available;
+
     }
 }

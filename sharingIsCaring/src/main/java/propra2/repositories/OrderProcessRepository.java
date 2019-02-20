@@ -3,6 +3,7 @@ package propra2.repositories;
 import org.springframework.data.repository.CrudRepository;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
+import propra2.database.Product;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -16,4 +17,7 @@ public interface OrderProcessRepository extends CrudRepository<OrderProcess, Lon
     List<OrderProcess> findAllByRequestId(Long id);
     Optional<Customer> findByOwnerId(Long id);
     Optional<Customer> findByRequestId(Long id);
+
+    @Transactional
+    List<OrderProcess> findByProduct(Product product);
 }

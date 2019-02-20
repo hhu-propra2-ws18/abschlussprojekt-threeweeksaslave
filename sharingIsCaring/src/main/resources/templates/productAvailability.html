@@ -13,7 +13,7 @@
         <li><a href="/products">View Products</a></li>
         <li><a href="/product">Add Product</a>
         <li><a href="/messages">Messages</a></li>
-        <li><a th:href="@{'/requests/' + ${user.customerId}}">Requests</a></li>
+        <li><a th:href="@{'/requests'}">Requests</a></li>
         <li><a href="/logout" role="button">Log Out</a></li>
     </ul>
 </nav>
@@ -22,17 +22,24 @@
 
     <form method="post">
         <section id="intro">
-            <h2>Order Process</h2>
+            <h2>Availabilitys</h2>
 
-            *please insert a comment*<br/>
-            <textarea name="message" cols="60" rows="10" th:value="${message}">Write a comment</textarea>
+            <div>
+            *period*
             <br/>
-            *period*<br/>
             <input name="from" type="date" th:value="${from}" required/>
             <br/>
             <input name="to" type="date" th:value="${to}" required/>
-            <br/>
-            <button type="submit">finish order</button>
+            <br>
+            <button type="submit">check period</button>
+            </div>
+            <br>
+            <div th:if="${available}">
+               <b style="color:mediumseagreen">This product is available for your period!</b>
+            </div>
+           <div th:if="${!available}">
+               <b style="color:tomato">This product is not available for your period!</b>
+            </div>
         </section>
     </form>
 
