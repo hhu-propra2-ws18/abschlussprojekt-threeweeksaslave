@@ -236,6 +236,7 @@ public class SharingIsCaringController {
 
         Product product = productRepository.findById(id).get();
         Customer owner = product.getOwner();
+        model.addAttribute("product", product);
         model.addAttribute("owner", owner);
         return "productDetails";
     }
@@ -385,13 +386,15 @@ public class SharingIsCaringController {
      **********************************************************************************/
 
     @GetMapping("/product/{id}/orderProcess")
-    public String startOrderProcess(@PathVariable Long id, final Principal user, Model model, boolean notEnoughMoney, boolean incorrectDates){
+    public String startOrderProcess(@PathVariable Long id, final Principal user, Model model, boolean notEnoughMoney, boolean incorrectDates, boolean ownProduct, boolean availability){
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         Product product = productRepository.findById(id).get();
         model.addAttribute("product", product);
         model.addAttribute("user", customer);
         model.addAttribute("notEnoughMoney", notEnoughMoney);
         model.addAttribute("incorrectDates", incorrectDates);
+        model.addAttribute("ownProduct", ownProduct);
+        model.addAttribute("availability", availability);
         return "orderProcess";
     }
 
@@ -402,11 +405,19 @@ public class SharingIsCaringController {
         double totalAmount = product.getTotalAmount(java.sql.Date.valueOf(from), java.sql.Date.valueOf(to));
 
         if (!customer.hasEnoughMoney(totalAmount)) {
-            return startOrderProcess(id, user, model, true, false);
+            return startOrderProcess(id, user, model, true, false, false, false);
         }
 
         if (!orderProcessHandler.correctDates(java.sql.Date.valueOf(from), java.sql.Date.valueOf(to))) {
-            return startOrderProcess(id, user, model, false, true);
+            return startOrderProcess(id, user, model, false, true, false, false);
+        }
+
+        if(!orderProcessHandler.checkAvailability(orderProcessRepository, product, from, to)){
+            return startOrderProcess(id, user, model, false, false, false, true);
+        }
+
+        if(product.getOwner().getCustomerId().equals(customer.getCustomerId())){
+            return startOrderProcess(id, user, model, false, false, true, false);
         }
 
         OrderProcess orderProcess = new OrderProcess();
