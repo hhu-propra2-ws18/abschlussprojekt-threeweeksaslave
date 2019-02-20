@@ -8,12 +8,13 @@
 
 <nav layout:fragment="nav">
     <ul>
-        <li><a th:href="@{'/home/'}">Home</a></li>
-        <li><a th:href="@{'/profile/'}">Profile</a></li>
+        <li><a th:href="@{'/home'}">Home</a></li>
+        <li><a th:href="@{'/profile'}">Profile</a></li>
         <li><a href="/products">View Products</a></li>
         <li><a href="/product">Add Product</a>
-        <li><a th:href="@{'/requests/'}">Requests</a></li>
-        <li><a th:href="/logout" role="button">Log Out</a></li>
+        <li><a href="/messages">Messages</a></li>
+        <li><a th:href="@{'/requests'}">Requests</a></li>
+        <li><a href="/logout" role="button">Log Out</a></li>
     </ul>
 </nav>
 
@@ -26,7 +27,7 @@
                         Product:
                     </td>
                     <td>
-                        <dd th:text="${product.title}"></dd>
+                        <dd th:text="${product?.title}"></dd>
                     </td>
                 </tr>
                 <tr>
@@ -34,7 +35,7 @@
                         Owner:
                     </td>
                     <td>
-                        <dd th:text="${owner.username}"></dd>
+                        <dd th:text="${owner?.username}"></dd>
                     </td>
                 </tr>
                 <tr>
@@ -42,7 +43,7 @@
                         Emailadress:
                     </td>
                     <td>
-                        <dd th:text="${owner.mail}"></dd>
+                        <dd th:text="${owner?.mail}"></dd>
                     </td>
                 </tr>
                 <tr>
@@ -58,35 +59,43 @@
                         Status:
                     </td>
                     <td>
-                        <dd th:text="${process.status}"></dd>
+                        <dd th:text="${process?.status}"></dd>
                     </td>
                 </tr>
             </table>
 
         <br>
 
+
         <div th:switch="${process.status.name()}">
+
             <div th:case="'DENIED'">
                 <form method="post">
                     <button class="btn btn-outline-danger btn-sm" name="action" type="submit" value="delete">Delete Process</button>
                 </form>
             </div>
+
             <div th:case="'CONFLICT'">
                 <!-- TODO: Konfliktmanagment -->
             </div>
+
             <div th:case="'RETURNED'">
-                <td>Please wait for owners response!</td>
+                <dl>
+                    <dd>Please wait for lender's response!</dd>
+                </dl>
             </div>
+
             <div th:case="'FINISHED'">
                 <form method="post">
                     <button class="btn btn-outline-danger btn-sm" name="action" type="submit" value="delete">Delete Process</button>
                 </form>
             </div>
+
             <div th:case="'ACCEPTED'">
                 <table>
                     <tr>
                         <td>
-                            Bookmarked from:
+                            Checked out from:
                         </td>
                         <td>
                             <dd th:text="${#dates.format(process?.fromDate, 'dd.MM.yyyy')}"></dd>
@@ -94,7 +103,7 @@
                     </tr>
                     <tr>
                         <td>
-                            Bookmarked until:
+                            Checked out until:
                         </td>
                         <td>
                             <dd th:text="${#dates.format(process?.toDate, 'dd.MM.yyyy')}"></dd>
@@ -110,7 +119,7 @@
                 <table>
                     <tr>
                         <td>
-                            Bookmarked from:
+                            Checked out from:
                         </td>
                         <td>
                             <dd th:text="${#dates.format(process?.fromDate, 'dd.MM.yyyy')}"></dd>
@@ -118,7 +127,7 @@
                     </tr>
                     <tr>
                         <td>
-                            Bookmarked until:
+                            Checked out until:
                         </td>
                         <td>
                             <dd th:text="${#dates.format(process?.toDate, 'dd.MM.yyyy')}"></dd>
