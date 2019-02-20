@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title th:text="'New Order: ' + ${product.title}">order</title>
+</head>
+<body>
+
+<nav layout:fragment="nav">
+    <ul>
+        <li><a aria-current="page">Home</a></li>
+        <li><a th:href="@{'/profile'}">Profile</a></li>
+        <li><a href="/products">View Products</a></li>
+        <li><a href="/product">Add Product</a>
+        <li><a href="/messages">Messages</a></li>
+        <li><a th:href="@{'/requests'}">Requests</a></li>
+        <li><a href="/logout" role="button">Log Out</a></li>
+    </ul>
+</nav>
+
+<div layout:fragment="content">
+
+    <form method="post">
+        <section id="intro">
+            <h2>Availabilitys</h2>
+
+            <div>
+            *period*
+            <br/>
+            <input name="from" type="date" th:value="${from}" required/>
+            <br/>
+            <input name="to" type="date" th:value="${to}" required/>
+            <br>
+            <button type="submit">check period</button>
+            </div>
+            <br>
+            <div th:if="${available}">
+               <b style="color:mediumseagreen">This product is available for your period!</b>
+            </div>
+           <div th:if="${!available}">
+               <b style="color:tomato">This product is not available for your period!</b>
+            </div>
+        </section>
+    </form>
+
+</div>
+
+</body>
+</html>
