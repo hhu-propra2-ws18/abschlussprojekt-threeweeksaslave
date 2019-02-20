@@ -29,19 +29,26 @@
 
             <h3><u th:text="${product.title}"></u></h3>
             <br>
-            <div th:text="${#strings.abbreviate(product.description,100)}"></div>
-            <br>
-            <div th:text="'Daily Fee: ' + ${product.dailyFee} + '€'"></div>
-            <br>
+            <table>
+                <td>
+                    <img th:src="'upload-dir/'+${product.id}+'/'+${product.id} + '.jpg'" alt="Product Cover" width="50" height="60">
+                </td>
+                <td>
+                    <div th:text="${#strings.abbreviate(product.description,100)}"></div>
+                    <br>
+                    <div th:text="'Daily Fee: ' + ${product.dailyFee} + '€'"></div>
+                    <br>
 
-            <div th:if="${product.available}">
-                <b style="color:mediumseagreen" th:text="Available"></b>
-            </div>
-            <div th:if="${!product.available}">
-                <b style="color:tomato" th:text="'Borrowed Until' + ${product.date}"></b>
-            </div>
+                    <div th:if="${product.available}">
+                        <b style="color:mediumseagreen" th:text="Available"></b>
+                    </div>
+                    <div th:if="${!product.available}">
+                        <b style="color:tomato" th:text="'Borrowed Until' + ${product.date}"></b>
+                    </div>
+                </td>
+            </table>
             <a th:href="@{/product/{id}(id=${product.id})}">read more</a>
-            <hr>
+                <hr>
         </section>
     </div>
     <div th:if="${products.isEmpty()}">
