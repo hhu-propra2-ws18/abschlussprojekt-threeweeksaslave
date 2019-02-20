@@ -23,7 +23,10 @@
     <section id="intro">
         <h2>Welcome <span>to Sharing is Caring</span></h2>
         <p>
-            Teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeext
+           Notifications:
+            <tr th:each="notification : ${notifications}">
+                <td th:text="${notification.notification}"></td>
+            </tr>
         </p>
     </section>
 

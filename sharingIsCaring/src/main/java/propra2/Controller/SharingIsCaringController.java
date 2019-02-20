@@ -7,10 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import propra2.Security.service.RegistrationService;
 import propra2.Security.validator.CustomerValidator;
-import propra2.database.Customer;
-import propra2.database.OrderProcess;
-import propra2.database.Product;
-import propra2.database.Transaction;
+import propra2.database.*;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.SearchProductHandler;
 import propra2.handler.UserHandler;
@@ -18,10 +15,7 @@ import propra2.model.Address;
 import propra2.model.OrderProcessStatus;
 import propra2.model.TransactionType;
 import propra2.model.UserRegistration;
-import propra2.repositories.CustomerRepository;
-import propra2.repositories.OrderProcessRepository;
-import propra2.repositories.ProductRepository;
-import propra2.repositories.TransactionRepository;
+import propra2.repositories.*;
 
 import java.security.Principal;
 import java.text.ParseException;
@@ -40,6 +34,9 @@ public class SharingIsCaringController {
 
     @Autowired
     OrderProcessRepository orderProcessRepository;
+
+    @Autowired
+    NotificationRepository notificationRepository;
 
     private OrderProcessHandler orderProcessHandler;
     private UserHandler userHandler;
@@ -100,6 +97,8 @@ public class SharingIsCaringController {
     @GetMapping("/home")
     public String home(Principal user, Model model) {
         Customer customer = customerRepository.findByUsername(user.getName()).get();
+        List<Notification> notifications = notificationRepository.findAllByBorrowerId(customer.getCustomerId());
+        model.addAttribute("notifications", notifications);
         model.addAttribute("user", customer);
         return "home";
     }

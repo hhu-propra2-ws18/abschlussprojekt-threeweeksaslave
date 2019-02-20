@@ -17,10 +17,11 @@ public class NotificationHandler {
     @Autowired
     NotificationRepository notificationRepository;
 
-    @Scheduled(fixedRate = 86400000)
+    @Scheduled(fixedRate = 10000)
     public void syncNotifications() {
         try {
             List<OrderProcess> processes = orderProcessRepository.findAll();
+            notificationRepository.deleteAll();
             Date date = new Date();
             java.sql.Date today = new java.sql.Date(date.getTime());
             for (OrderProcess orderProcess : processes) {
