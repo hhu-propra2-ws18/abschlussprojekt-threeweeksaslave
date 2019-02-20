@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Your Requests</title>
+</head>
+<body>
+
+<nav layout:fragment="nav">
+    <ul>
+        <li><a th:href="@{'/home'}">Home</a></li>
+        <li><a th:href="@{'/profile'}">Profile</a></li>
+        <li><a href="/products">View Products</a></li>
+        <li><a href="/product">Add Product</a>
+        <li><a href="/messages">Messages</a></li>
+        <li><a href="/requests">Requests</a></li>
+         <li th:if="${admin}"><a aria-current="page">Conflicts</a></li>
+        <li><a href="/logout" role="button">Log Out</a></li>
+    </ul>
+</nav>
+
+<div layout:fragment="content">
+
+    <section id="intro">
+        <div class="card-body">
+            <p class="card-text">
+
+            <h1>Conflicts</h1>
+        </div>
+
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Status</th>
+                <th>Details</th>
+            </tr>
+            <tr th:each="process : ${processes}">
+                <td th:text="${process.product.title}"></td>
+                <td th:text="${process.status}"></td>
+                <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/conflicts/details/' + ${process.id}}">Details</a></td>
+            </tr>
+        </table>
+    </section>
+
+    </main>
+
+</div>
+</body>
+</html>
+

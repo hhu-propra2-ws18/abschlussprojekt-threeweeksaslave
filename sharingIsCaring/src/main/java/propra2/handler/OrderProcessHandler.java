@@ -28,6 +28,7 @@ public class OrderProcessHandler {
         if(!(oldMessages == null))
         {
             orderProcess.addMessages(oldMessages);
+            System.out.println(orderProcess.getMessages());
         }
 
         Optional<Customer> rentingAccount = customerRepository.findById(orderProcess.getRequestId());
@@ -41,7 +42,7 @@ public class OrderProcessHandler {
             case ACCEPTED:
                 Integer deposit = orderProcess.getProduct().getDeposit();
                 //Propay Kautionsbetrag blocken
-                Mono<Reservation> reservation =  WebClient.create().post().uri(builder ->
+  /*              Mono<Reservation> reservation =  WebClient.create().post().uri(builder ->
                         builder
                                 .path("localhost:8888/reservation/reserve/" + rentingAccount.get().getUsername() + "/" + ownerAccount.get().getUsername())
                                 .query("amount=" + deposit)
@@ -50,29 +51,23 @@ public class OrderProcessHandler {
                         .bodyToMono(Reservation.class);
 
                 rentingAccount.get().getProPay().addReservation(reservation.block());
-                orderProcess.setReservationId(reservation.block().getId());
+                orderProcess.setReservationId(reservation.block().getId());*/
                 orderProcessRepository.save(orderProcess);
                 break;
             case FINISHED:
                 //Kaution wird wieder freigegeben
-                account =  WebClient.create().post().uri(builder ->
+                /*account =  WebClient.create().post().uri(builder ->
                         builder
                                 .path("localhost:8888/reservation/release/" + rentingAccount)
                                 .build())
                         .retrieve()
                         .bodyToMono(ProPayAccount.class);
 
-                rentingAccount.get().setProPay(account.block());
+                rentingAccount.get().setProPay(account.block());*/
                 orderProcessRepository.save(orderProcess);
                 break;
-            case RETURNED:
-                //TODO: Tagessatz wird nicht mehr abgerechnet
-                break;
-            case CONFLICT:
-                //TODO: Konfliktlöser
-                break;
             case PUNISHED:
-                int reservationId = orderProcess.getReservationId();
+             /*   int reservationId = orderProcess.getReservationId();
                 account =  WebClient.create().post().uri(builder ->
                         builder
                                 .path("localhost:8888/reservation/punish/" + rentingAccount)
@@ -81,7 +76,10 @@ public class OrderProcessHandler {
                         .retrieve()
                         .bodyToMono(ProPayAccount.class);
 
-                rentingAccount.get().setProPay(account.block());
+                rentingAccount.get().setProPay(account.block());*/
+                orderProcessRepository.save(orderProcess);
+                break;
+            case CONFLICT:
                 orderProcessRepository.save(orderProcess);
                 break;
             default:
