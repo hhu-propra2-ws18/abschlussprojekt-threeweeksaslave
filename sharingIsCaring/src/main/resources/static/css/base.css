@@ -120,6 +120,10 @@ a.more:after{
     font-weight:bold;
 }
 
+th {
+    text-align: left;
+}
+
 ul.square {
     list-style-type:square;
     color: #999999;
@@ -217,6 +221,7 @@ nav#navigation{
 }
 
 nav a[aria-current=page]{
+    color: whitesmoke;
     background: #aaa;
 }
 
