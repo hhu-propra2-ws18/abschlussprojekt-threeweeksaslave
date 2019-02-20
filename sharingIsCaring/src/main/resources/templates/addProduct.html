@@ -20,7 +20,7 @@
 
 <div layout:fragment="content">
 
-        <form method = "post">
+        <form method = "post" enctype="multipart/form-data">
 
             <section id="intro">
                 <h2>Please <span>enter your product information</span></h2>
@@ -61,10 +61,7 @@
                     <td> city:</td>
                     <td><input name="city" th:value="${product?.address?.city}" type="text" required maxlength="255"></td>
                 </tr>
-                    <form method="POST" enctype="multipart/form-data" action="/">
-                            <tr><td>Upload image:</td><td><input type="file" name="file" /></td></tr>
-                            <tr><td></td><td><input type="submit" value="Upload" /></td></tr>
-                    </form>
+                <tr><td>Upload image:</td><td><input type="file" name="file" accept="image/x-png,image/gif,image/jpeg"/></td></tr>
             </table>
             <br>
             <button type="submit" class="btn btn-default btn-sm">New Product!</button>
