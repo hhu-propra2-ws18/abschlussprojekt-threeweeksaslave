@@ -77,7 +77,7 @@
             </div>
 
             <div th:case="'CONFLICT'">
-                <!-- TODO: Konfliktmanagment -->
+                The owner of the product is not satisfied with your return. An admin is now checking this conflict.
             </div>
 
             <div th:case="'RETURNED'">
@@ -87,6 +87,14 @@
             </div>
 
             <div th:case="'FINISHED'">
+                <form method="post">
+                    <button class="btn btn-outline-danger btn-sm" name="action" type="submit" value="delete">Delete Process</button>
+                </form>
+            </div>
+
+            <div th:case="'PUNISHED'">
+                The blocked Caution was send to the owner of this product.
+                <br/>
                 <form method="post">
                     <button class="btn btn-outline-danger btn-sm" name="action" type="submit" value="delete">Delete Process</button>
                 </form>
