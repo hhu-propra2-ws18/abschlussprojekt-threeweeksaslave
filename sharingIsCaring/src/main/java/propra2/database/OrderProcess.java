@@ -5,7 +5,9 @@ import org.apache.tomcat.util.digester.ArrayStack;
 import propra2.model.OrderProcessStatus;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 @Data
@@ -16,19 +18,23 @@ public class OrderProcess {
     @Id
     Long id;
 
-    @Lob
+    @OneToOne
     Product product;
+
     Long ownerId;
     Long requestId;
 
     int reservationId;
 
     @Lob
-    List<String> messages;
+    ArrayList<String> messages;
 
     OrderProcessStatus status;
 
-    public void addMessages(List<String> list){
+    private Date fromDate;
+    private Date toDate;
+
+    public void addMessages(ArrayList<String> list){
 
         list.addAll(messages);
         this.messages = list;
