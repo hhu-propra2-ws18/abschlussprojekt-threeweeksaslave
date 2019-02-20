@@ -414,9 +414,11 @@ public class SharingIsCaringController {
     public String showRequestBorrowerDetails(@PathVariable Long processId, Model model, Principal user) {
         Optional<OrderProcess> process = orderProcessRepository.findById(processId);
         Product product = process.get().getProduct();
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
         model.addAttribute("process", process.get());
         model.addAttribute("owner", customerRepository.findById(process.get().getOwnerId()));
         model.addAttribute("product", product);
+        model.addAttribute("user", customer);
         return "requestDetailsBorrower";
     }
       
