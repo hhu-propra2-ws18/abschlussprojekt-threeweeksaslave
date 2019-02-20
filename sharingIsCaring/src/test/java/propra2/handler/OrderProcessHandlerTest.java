@@ -51,7 +51,7 @@ public class OrderProcessHandlerTest {
 
         orderProcess.setStatus(OrderProcessStatus.DENIED);
 
-        orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository, customerRepository);
+        //orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository, customerRepository);
 
         Optional<OrderProcess> expectedOrderProcess = orderProcessRepository.findById(orderProcess.getId());
 

@@ -21,14 +21,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileSystemStorageService implements StorageService {
 
     private final Path rootLocation;
+    private final StorageProperties properties;
 
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
+    	this.properties = properties;
         this.rootLocation = Paths.get(properties.getLocation());
     }
 
     @Override
-    public void store(MultipartFile file, String fileName) {
+    public void store(MultipartFile file, String fileName, String productId) {
         String filename = StringUtils.cleanPath(fileName);
         try {
             if (file.isEmpty()) {
@@ -41,7 +43,14 @@ public class FileSystemStorageService implements StorageService {
                                 + filename);
             }
             try (InputStream inputStream = file.getInputStream()) {
-                Files.copy(inputStream, this.rootLocation.resolve(filename),
+            	Path currentRootLocation = Paths.get(properties.getLocation() + "/" + productId );
+				try {
+					Files.createDirectories(currentRootLocation);
+				}
+				catch (IOException e) {
+					throw new StorageException("Could not initialize storage", e);
+				}
+                Files.copy(inputStream, currentRootLocation.resolve(filename),
                     StandardCopyOption.REPLACE_EXISTING);
             }
         }

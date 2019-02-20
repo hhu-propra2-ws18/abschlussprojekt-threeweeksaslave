@@ -25,6 +25,7 @@
                 <td>Upload image:</td>
                 <td><input type="file" name="file" accept="image/x-png,image/gif,image/jpeg"/></td>
                 <input type="hidden" name="fileName" th:value="${product.id}">
+                <input type="hidden" name="productId" th:value="${product.id}">
             </tr>
         </table>
         <button type="submit" class="btn btn-default btn-sm">Upload Image</button>
