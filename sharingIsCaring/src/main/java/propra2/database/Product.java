@@ -36,11 +36,21 @@ public class Product {
 		return this.getTitle() != null &&
 				this.getDeposit() != null &&
 				this.getDescription() != null &&
-				//this.getBorrowedUntil() == null ||
 				this.getOwner() != null ||
 				this.getDailyFee() != null;
 	}
 	public Product() {
 		this.address = new Address();
+	}
+
+	public double getTotalAmount(Date from, Date to) {
+		double totalDailyFee = getTotalDailyFee(from, to);
+		return totalDailyFee+deposit;
+	}
+
+	public double getTotalDailyFee(Date from, Date to){
+		float diff = to.getTime() - from.getTime();
+		float days = (diff / (1000*60*60*24))+1;
+		return days*dailyFee;
 	}
 }

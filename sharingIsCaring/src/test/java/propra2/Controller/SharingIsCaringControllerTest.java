@@ -15,6 +15,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import propra2.Security.service.CustomerService;
 import propra2.Security.service.RegistrationService;
 import propra2.Security.validator.CustomerValidator;
@@ -32,6 +34,7 @@ import propra2.repositories.TransactionRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasProperty;
@@ -366,6 +369,10 @@ public class SharingIsCaringControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/profile"));
     }
+
+    /*********************************************************************************
+     Orders
+     **********************************************************************************/
 
     /*********************************************************************************
      REQUESTS

@@ -2,7 +2,7 @@
 <html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Index</title>
+    <title>Refund</title>
 </head>
 <body>
 
@@ -10,10 +10,11 @@
     <ul>
         <li><a href="/home">Home</a></li>
         <li><a aria-current="page">Profile</a></li>
-        <li><a href="/products">view Products</a></li>
-        <li><a href="/product">add Product</a>
-        <li><a th:href="@{'/profile/requests/' + ${user.customerId}}">requests</a></li>
-        <li><a role="button">logout</a></li>
+        <li><a href="/products">View Products</a></li>
+        <li><a href="/product">Add Product</a>
+        <li><a href="/messages">Messages</a></li>
+        <li><a th:href="@{'/requests/'}">Requests</a></li>
+        <li><a href="/logout" role="button">Log Out</a></li>
     </ul>
 </nav>
 
@@ -25,7 +26,7 @@
         <h2>Recharge Credit</h2>
         <p> please insert your IBAN and the amount you want to send to your ProPayAccount!</p>
         <p>Amount: </p>
-        <input type="number" name="amount" th:value="${amount}">
+        <input type="number" name="amount" th:value="${amount}" min="1">
         <br/>
         <p>IBAN:</p>
         <input type="text" name="iban">

@@ -1,38 +1,36 @@
 package propra2.handler;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.criterion.Order;
 import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
+import propra2.database.Product;
 import propra2.model.ProPayAccount;
 import propra2.model.Reservation;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.net.URL;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class OrderProcessHandler {
+    private UserHandler userHandler;
 
-    @Autowired
-    UserHandler userHandler;
+    public OrderProcessHandler() {
+        this.userHandler = new UserHandler();
+    }
 
-    public void updateOrderProcess(OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, CustomerRepository customerRepository) throws IOException {
-        OrderProcess oldOrderProcess = orderProcessRepository.findById(orderProcess.getId()).get();
+    public void updateOrderProcess(ArrayList<String> oldMessages, OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, CustomerRepository customerRepository) {
 
-        if(!(oldOrderProcess.getMessages() == null))
+        if(!(oldMessages == null))
         {
-            List<String> messages  = oldOrderProcess.getMessages();
-            orderProcess.addMessages(messages);
+            orderProcess.addMessages(oldMessages);
         }
 
-        Optional<Customer> rentingAccount = customerRepository.findById(oldOrderProcess.getRequestId());
+        Optional<Customer> rentingAccount = customerRepository.findById(orderProcess.getRequestId());
         Optional<Customer> ownerAccount = customerRepository.findById(orderProcess.getOwnerId());
         
         Mono<ProPayAccount> account;
@@ -51,7 +49,7 @@ public class OrderProcessHandler {
                         .retrieve()
                         .bodyToMono(Reservation.class);
 
-                rentingAccount.get().setProPay(userHandler.getProPayAccount(rentingAccount.get().getUsername()));
+                rentingAccount.get().getProPay().addReservation(reservation.block());
                 orderProcess.setReservationId(reservation.block().getId());
                 orderProcessRepository.save(orderProcess);
                 break;
@@ -89,5 +87,48 @@ public class OrderProcessHandler {
             default:
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
         }
+    }
+  
+    public boolean checkAvailability(OrderProcessRepository orderProcessRepository, Product product, String from, String to){
+        List<OrderProcess> processes = orderProcessRepository.findByProduct(product);
+
+        Date checkFrom = java.sql.Date.valueOf(from);
+        Date checkTo = java.sql.Date.valueOf(to);
+
+        boolean available = true;
+
+        if(processes.isEmpty()){
+            return true;
+        }else{
+            for(int i  = 0; i < processes.size(); i++){
+                Date dateFrom = processes.get(i).getFromDate();
+                Date dateTo = processes.get(i).getToDate();
+                if(dateFrom.before(checkFrom) && dateTo.before(checkFrom)){
+                }else if (dateFrom.after(checkTo) && dateTo.after(checkTo)){
+                }else{
+                    available = false;
+                    break;
+                }
+            }
+        }
+
+        return available;
+    }
+
+    public boolean correctDates(Date from, Date to) {
+        if(from.equals(to)) return true;
+        return from.before(to);
+    }
+
+    public void payDailyFee(OrderProcess orderProcess, CustomerRepository customerRepository) {
+        double dailyFee = orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate(), orderProcess.getToDate());
+        String rentingAccount = customerRepository.findById(orderProcess.getRequestId()).get().getUsername();
+        String ownerAccount = customerRepository.findById(orderProcess.getOwnerId()).get().getUsername();
+        WebClient.create().post().uri(builder ->
+                builder
+                        .path("localhost:8888/account/" + rentingAccount + "/transfer" + ownerAccount)
+                        .query("amount=" + dailyFee)
+                        .build())
+                .retrieve();
     }
 }

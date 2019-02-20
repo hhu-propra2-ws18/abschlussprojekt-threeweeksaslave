@@ -2,7 +2,7 @@
 <html lang="en" layout:decorate="~{baseLogin}" xmlns:th="http://www.w3.org/1999/xhtml"
       xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Index</title>
+    <title>Registration</title>
 </head>
 
 <body>
@@ -20,10 +20,6 @@
                         <input type="text" name="userName" th:value="${userName}" required minlength="5" maxlength="32">
                     </td>
                 </tr>
-            </table>
-            <br/>
-
-            <table>
                 <tr>
                     <td>
                         Email address:
@@ -31,10 +27,8 @@
                     <td>
                         <input type="text" name="emailAddress" th:value="${emailAddress}" required minlength="6" maxlength="32">
                     </td>
+
                 </tr>
-            </table>
-            <br/>
-            <table>
                 <tr>
                     <td>
                         Password:

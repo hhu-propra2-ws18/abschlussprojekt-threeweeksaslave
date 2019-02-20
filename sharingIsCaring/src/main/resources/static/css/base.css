@@ -26,7 +26,7 @@ header {
     position: relative;
     height: 210px;
     margin: 2em  0  0 3em;
-    background: plum url("../img/P1040115.JPG") no-repeat right;
+    background: plum url("../img/006_DSC_9880.JPG") no-repeat right;
     background-size: contain;
     padding: 0 0 0.5em;
 }
@@ -118,6 +118,10 @@ a.more:after{
     content:" \2192 ";
     font-size:1.2em;
     font-weight:bold;
+}
+
+th {
+    text-align: left;
 }
 
 ul.square {
@@ -217,6 +221,7 @@ nav#navigation{
 }
 
 nav a[aria-current=page]{
+    color: whitesmoke;
     background: #aaa;
 }
 
