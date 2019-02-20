@@ -23,7 +23,6 @@ import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
 import propra2.repositories.TransactionRepository;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -325,8 +324,9 @@ public class SharingIsCaringController {
         model.addAttribute("user", customer.get());
         return "redirect:/profile";
     }
-  
-  /*********************************************************************************
+
+
+    /*********************************************************************************
         ProPayAccount
      **********************************************************************************/
 
@@ -336,7 +336,7 @@ public class SharingIsCaringController {
      * @param model
      * @return
      */
-  @GetMapping("/rechargeCredit")
+    @GetMapping("/rechargeCredit")
     public String getRechargeCredit(Principal user, Model model){
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         model.addAttribute("user", customer);
@@ -385,21 +385,33 @@ public class SharingIsCaringController {
      **********************************************************************************/
 
     @GetMapping("/product/{id}/orderProcess")
-    public String startOrderProcess(@PathVariable Long id, final Principal user, Model model){
+    public String startOrderProcess(@PathVariable Long id, final Principal user, Model model, boolean notEnoughMoney, boolean incorrectDates){
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         Product product = productRepository.findById(id).get();
         model.addAttribute("product", product);
         model.addAttribute("user", customer);
+        model.addAttribute("notEnoughMoney", notEnoughMoney);
+        model.addAttribute("incorrectDates", incorrectDates);
         return "orderProcess";
     }
 
     @PostMapping("/product/{id}/orderProcess")
-    public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user) throws ParseException {
+    public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user, Model model) throws ParseException {
+        Customer customer = customerRepository.findByUsername(user.getName()).get();
         Product product = productRepository.findById(id).get();
+        double totalAmount = product.getTotalAmount(java.sql.Date.valueOf(from), java.sql.Date.valueOf(to));
+
+        if (!customer.hasEnoughMoney(totalAmount)) {
+            return startOrderProcess(id, user, model, true, false);
+        }
+
+        if (!orderProcessHandler.correctDates(java.sql.Date.valueOf(from), java.sql.Date.valueOf(to))) {
+            return startOrderProcess(id, user, model, false, true);
+        }
+
         OrderProcess orderProcess = new OrderProcess();
         orderProcess.setOwnerId(product.getOwner().getCustomerId());
 
-        Customer customer = customerRepository.findByUsername(user.getName()).get();
         orderProcess.setRequestId(customer.getCustomerId());
 
         orderProcess.setProduct(product);
@@ -443,6 +455,7 @@ public class SharingIsCaringController {
     /*********************************************************************************
         REQUESTS
      **********************************************************************************/
+
     @GetMapping("/requests")
     public String showRequests(Principal user, final Model model) {
         Long userId = getUserId(user);
@@ -472,7 +485,29 @@ public class SharingIsCaringController {
         model.addAttribute("user", customer);
         return "requestDetailsBorrower";
     }
-      
+
+    @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=delete")
+    public String deleteByBorrower(@PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcessRepository.delete(orderProcess);
+
+        return "redirect:/requests";
+    }
+
+    @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=return")
+    public String returnProduct(@PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcess.setStatus(OrderProcessStatus.RETURNED);
+        orderProcessRepository.save(orderProcess);
+
+        Product product = productRepository.findById(orderProcess.getProduct().getId()).get();
+        product.setAvailable(true);
+        productRepository.save(product);
+
+        return "redirect:/requests";
+    }
+
+
     @GetMapping("/requests/detailsOwner/{processId}")
     public String showRequestOwnerDetails(@PathVariable Long processId, Principal user, final Model model) {
         Long userId = getUserId(user);
@@ -495,7 +530,31 @@ public class SharingIsCaringController {
         messages.add(message);
         orderProcess.setMessages(messages);
 
+        Product product = productRepository.findById(orderProcess.getProduct().getId()).get();
+        product.setAvailable(false);
+        product.setBorrowedUntil(orderProcess.getToDate());
+
+        productRepository.save(product);
+
+
         orderProcessHandler.updateOrderProcess(oldMessages, orderProcess, orderProcessRepository, customerRepository);
+
+        return "redirect:/requests";
+    }
+
+    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=acceptReturn")
+    public String finishProcess(@PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcess.setStatus(OrderProcessStatus.FINISHED);
+        orderProcessRepository.save(orderProcess);
+
+        return "redirect:/requests";
+    }
+
+    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=deleteProcess")
+    public String deleteByOwner(@PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcessRepository.delete(orderProcess);
 
         return "redirect:/requests";
     }
@@ -514,29 +573,4 @@ public class SharingIsCaringController {
         return "redirect:/requests";
     }
 
-    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=deleteProcess")
-    public String deleteByOwner(@PathVariable Long processId) {
-        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
-        orderProcessRepository.delete(orderProcess);
-
-        return "redirect:/requests";
-    }
-
-    @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=delete")
-    public String deleteByBorrower(@PathVariable Long processId) {
-        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
-        orderProcessRepository.delete(orderProcess);
-
-        return "redirect:/requests";
-    }
-
-    @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=return")
-    public String returnProduct(@PathVariable Long processId) {
-        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
-        orderProcess.setStatus(OrderProcessStatus.FINISHED);
-        orderProcessRepository.save(orderProcess);
-
-        return "redirect:/requests";
-    }
-  
 }

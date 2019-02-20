@@ -88,7 +88,7 @@ public class OrderProcessHandler {
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
         }
     }
-
+  
     public boolean checkAvailability(OrderProcessRepository orderProcessRepository, Product product, String from, String to){
         List<OrderProcess> processes = orderProcessRepository.findByProduct(product);
 
@@ -113,6 +113,10 @@ public class OrderProcessHandler {
         }
 
         return available;
+    }
 
+    public boolean correctDates(Date from, Date to) {
+        if(from.equals(to)) return true;
+        return from.before(to);
     }
 }
