@@ -71,16 +71,42 @@
         <div th:switch="${process.status.name()}">
 
             <div th:case="'DENIED'">
+                <table>
+                    <tr>
+                        <td>Messages</td>
+                    </tr>
+                    <tr th:each="message : ${process.messages}">
+                        <td th:text="${message}"><br></td>
+                    </tr>
+                </table>
                 <form method="post">
                     <button class="btn btn-outline-danger btn-sm" name="action" type="submit" value="delete">Delete Process</button>
                 </form>
             </div>
 
             <div th:case="'CONFLICT'">
+                <table>
+                    <tr>
+                        <td>Messages</td>
+                    </tr>
+                    <tr th:each="message : ${process.messages}">
+                        <td th:text="${message}"><br></td>
+                    </tr>
+                </table>
+                <br/>
                 The owner of the product is not satisfied with your return. An admin is now checking this conflict.
             </div>
 
             <div th:case="'RETURNED'">
+                <table>
+                    <tr>
+                        <td>Messages</td>
+                    </tr>
+                    <tr th:each="message : ${process.messages}">
+                        <td th:text="${message}"><br></td>
+                    </tr>
+                </table>
+                <br/>
                 <dl>
                     <dd>Please wait for lender's response!</dd>
                 </dl>
@@ -117,6 +143,15 @@
                         <td>
                             <dd th:text="${#dates.format(process?.toDate, 'dd.MM.yyyy')}"></dd>
                         </td>
+                    </tr>
+                </table>
+                <br/>
+                <table>
+                    <tr>
+                        <td>Messages</td>
+                    </tr>
+                    <tr th:each="message : ${process.messages}">
+                        <td th:text="${message}"><br></td>
                     </tr>
                 </table>
                 <form method="post">

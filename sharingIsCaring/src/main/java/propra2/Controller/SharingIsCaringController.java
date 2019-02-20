@@ -641,10 +641,16 @@ public class SharingIsCaringController {
     }
 
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=appeal")
-    public String appealProcess(@PathVariable Long processId) {
+    public String appealProcess(@PathVariable Long processId, String message) {
         OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.CONFLICT);
-        orderProcessRepository.save(orderProcess);
+        ArrayList<String> oldMessages = orderProcess.getMessages();
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(message);
+        orderProcess.setMessages(messages);
+
+        System.out.println(message);
+        orderProcessHandler.updateOrderProcess(oldMessages, orderProcess, orderProcessRepository, customerRepository);
 
         return "redirect:/requests";
     }

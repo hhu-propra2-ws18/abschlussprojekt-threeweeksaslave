@@ -28,6 +28,7 @@ public class OrderProcessHandler {
         if(!(oldMessages == null))
         {
             orderProcess.addMessages(oldMessages);
+            System.out.println(orderProcess.getMessages());
         }
 
         Optional<Customer> rentingAccount = customerRepository.findById(orderProcess.getRequestId());
@@ -50,8 +51,8 @@ public class OrderProcessHandler {
                         .bodyToMono(Reservation.class);
 
                 rentingAccount.get().getProPay().addReservation(reservation.block());
-                orderProcess.setReservationId(reservation.block().getId());
-                orderProcessRepository.save(orderProcess);*/
+                orderProcess.setReservationId(reservation.block().getId());*/
+                orderProcessRepository.save(orderProcess);
                 break;
             case FINISHED:
                 //Kaution wird wieder freigegeben
@@ -76,6 +77,9 @@ public class OrderProcessHandler {
                         .bodyToMono(ProPayAccount.class);
 
                 rentingAccount.get().setProPay(account.block());*/
+                orderProcessRepository.save(orderProcess);
+                break;
+            case CONFLICT:
                 orderProcessRepository.save(orderProcess);
                 break;
             default:

@@ -167,8 +167,11 @@
                 </table>
 
                 <br/>
-                There are problems with this product? Deny the product and one of our admins will check this orderProcess!
+                There are problems with this product? Deny the product and one of our admins will check this orderProcess!<br/>
+                Comment: <br/>
+
                 <form method="post">
+                    <textarea name="message" cols="60" rows="10" th:value="${message}">Write a comment</textarea>
                     <button name="action" type="submit" value="acceptReturn">Accept return</button>
                     <button name="action" type="submit" value="appeal">Deny return</button>
                 </form>

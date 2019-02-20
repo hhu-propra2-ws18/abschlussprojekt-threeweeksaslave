@@ -35,11 +35,8 @@ public class OrderProcess {
     private Date toDate;
 
     public void addMessages(ArrayList<String> list){
-
         list.addAll(messages);
         this.messages = list;
-
-
     }
 
     public boolean allValuesSet() {
