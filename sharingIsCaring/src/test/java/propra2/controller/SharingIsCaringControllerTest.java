@@ -77,6 +77,8 @@ public class SharingIsCaringControllerTest {
 
     Customer bendisposto = new Customer();
     Customer customer = new Customer();
+    Product product1 = new Product();
+    Product product2 = new Product();
 
     @Before
     public void setup(){
@@ -103,6 +105,15 @@ public class SharingIsCaringControllerTest {
         customer.setUsername("Kevin");
         customer.setMail("kevin@istdumm.de");
         customer.setPassword("Baumhaus");
+
+
+        product1.setTitle("Baumstamm");
+        product1.setId(34L);
+        product1.setAvailable(false);
+
+        product2.setTitle("Baumlaube");
+        product2.setId(56L);
+        product2.setAvailable(false);
     }
 
     /*********************************************************************************
@@ -128,15 +139,6 @@ public class SharingIsCaringControllerTest {
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
     public void searchProductsTest() throws Exception{
-        Product product1 = new Product();
-        product1.setTitle("Baumstamm");
-        product1.setId(34L);
-        product1.setAvailable(false);
-
-        Product product2 = new Product();
-        product2.setTitle("Baumlaube");
-        product2.setId(56L);
-        product2.setAvailable(false);
 
         Product product3 = new Product();
         product3.setTitle("Gartenhaus");
@@ -199,6 +201,28 @@ public class SharingIsCaringControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("addProduct"))
                 .andExpect(MockMvcResultMatchers.model().attribute("user", customer));
+
+    }
+
+
+    //TODO passende Methode dazu noch nicht fertig
+    @Ignore
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void createProductTest(){
+        Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
+    }
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void searchForProductTest() throws Exception {
+
+        Mockito.when(productRepository.findByTitle("Baum")).thenReturn(Arrays.asList(product1,product2));
+
+        mvc.perform(post("/product/Baum")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
     }
 
