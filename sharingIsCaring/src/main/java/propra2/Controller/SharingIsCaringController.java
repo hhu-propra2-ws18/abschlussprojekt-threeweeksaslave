@@ -14,10 +14,7 @@ import propra2.database.Transaction;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.SearchProductHandler;
 import propra2.handler.UserHandler;
-import propra2.model.Address;
-import propra2.model.OrderProcessStatus;
-import propra2.model.TransactionType;
-import propra2.model.UserRegistration;
+import propra2.model.*;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
@@ -283,8 +280,11 @@ public class SharingIsCaringController {
     @GetMapping("/profile")
     public String getUserDataById(Principal user, Model model) {
         Long loggedInId = getUserId(user);
-        Optional<Customer> customer = customerRepository.findById(loggedInId);
-        model.addAttribute("user", customer.get());
+        Customer customer = customerRepository.findById(loggedInId).get();
+        ProPayAccount newProPayAcc = userHandler.getProPayAccount(customer.getUsername());
+        customer.setProPay(newProPayAcc);
+        customerRepository.save(customer);
+        model.addAttribute("user", customer);
         return "profile";
     }
 

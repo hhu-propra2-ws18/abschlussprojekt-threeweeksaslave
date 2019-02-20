@@ -2,10 +2,10 @@ package propra2.model;
 
 import lombok.Data;
 
-import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 @Data
-public class Reservation {
+public class Reservation implements Serializable {
     private double amount;
     private int id;
 }

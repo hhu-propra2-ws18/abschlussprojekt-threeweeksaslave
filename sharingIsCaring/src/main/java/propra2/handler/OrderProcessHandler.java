@@ -49,7 +49,7 @@ public class OrderProcessHandler {
                         .retrieve()
                         .bodyToMono(Reservation.class);
 
-                rentingAccount.get().getProPay().addReservation(reservation.block());
+                rentingAccount.get().setProPay(userHandler.getProPayAccount(rentingAccount.get().getUsername()));
                 orderProcess.setReservationId(reservation.block().getId());
                 orderProcessRepository.save(orderProcess);
                 break;
