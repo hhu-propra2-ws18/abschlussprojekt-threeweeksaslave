@@ -35,6 +35,8 @@
             <button type="submit">finish order</button>
             <p style="color:red" th:text="${notEnoughMoney}? 'Not enough Money on your ProPay-Account!'"></p>
             <p style="color:red" th:text="${incorrectDates}? 'Please enter valid Dates!'"></p>
+             <p style="color:red" th:text="${availability}? 'This period is not available'"></p>
+            <p style="color:red" th:text="${ownProduct}? 'You are not allowed to lend your own Product!'"></p>
         </section>
     </form>
 
