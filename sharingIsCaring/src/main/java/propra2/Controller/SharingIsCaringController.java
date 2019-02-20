@@ -198,7 +198,7 @@ public class SharingIsCaringController {
     }
 
     @PostMapping("/product")
-    public String createProduct(Principal user, final Product product, final Address address, final Model model) {
+    public String createProduct(Principal user, Product product, final Address address, final Model model) {
 		Long loggedInId = getUserId(user);
 		Optional<Customer> customer = customerRepository.findById(loggedInId);
 		model.addAttribute("user", user);
@@ -213,9 +213,10 @@ public class SharingIsCaringController {
         //TODO set borrowed until
 
         if (product.allValuesSet()) {
-            productRepository.save(product);
+            product = productRepository.save(product);
         }
-        return "redirect:/home";
+        model.addAttribute("product", product);
+        return "addImageToProduct";
     }
 
     /**
