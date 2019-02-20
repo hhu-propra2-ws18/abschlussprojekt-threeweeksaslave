@@ -1,6 +1,5 @@
 package propra2.handler;
 
-import org.hibernate.criterion.Order;
 import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
@@ -25,8 +24,7 @@ public class OrderProcessHandler {
 
     public void updateOrderProcess(ArrayList<String> oldMessages, OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, CustomerRepository customerRepository) {
 
-        if(!(oldMessages == null))
-        {
+        if(!(oldMessages == null)) {
             orderProcess.addMessages(oldMessages);
         }
 
