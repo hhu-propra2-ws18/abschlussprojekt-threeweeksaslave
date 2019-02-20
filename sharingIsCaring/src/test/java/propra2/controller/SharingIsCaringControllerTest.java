@@ -18,10 +18,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import propra2.Security.service.CustomerService;
 import propra2.Security.service.RegistrationService;
 import propra2.Security.validator.CustomerValidator;
 import propra2.database.Customer;
+import propra2.database.OrderProcess;
 import propra2.database.Product;
 import propra2.handler.SearchProductHandler;
 import propra2.model.Address;
@@ -31,7 +35,10 @@ import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
 import propra2.repositories.TransactionRepository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static com.sun.javaws.JnlpxArgs.verify;
 import static org.hamcrest.Matchers.*;
@@ -40,6 +47,8 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static propra2.model.OrderProcessStatus.ACCEPTED;
+import static propra2.model.OrderProcessStatus.PENDING;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -282,6 +291,49 @@ public class SharingIsCaringControllerTest {
                 .requestAttr("user", new Customer()))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/profile"));
+    }
+
+    /*********************************************************************************
+     REQUESTS
+     **********************************************************************************/
+    @Test
+    @WithMockUser(username = "Zoidberg", password = "propra2")
+    public void testShowRequests() throws Exception {
+
+        OrderProcess process1 = new OrderProcess();
+        process1.setId(13L);
+        process1.setOwnerId(2L);
+        process1.setProduct(product1);
+        process1.setRequestId(111L);
+        process1.setStatus(PENDING);
+        List owner = new ArrayList();
+        owner.add(process1);
+
+        OrderProcess process2 = new OrderProcess();
+        process2.setId(17L);
+        process2.setOwnerId(111L);
+        process2.setProduct(product2);
+        process2.setRequestId(2L);
+        process2.setStatus(ACCEPTED);
+        List borrowed = new ArrayList();
+        borrowed.add(process2);
+
+        Mockito.when(orderProcessRepository.findAllByOwnerId(2L)).thenReturn(owner);
+        Mockito.when(orderProcessRepository.findAllByRequestId(2L)).thenReturn(borrowed);
+        Mockito.when(customerRepository.findById(2L)).thenReturn(java.util.Optional.of(bendisposto));
+
+        mvc.perform(get("/requests/{id}"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("requests"))
+                .andExpect(MockMvcResultMatchers.model().attribute("user", allOf(
+                        hasProperty("username", is("Zoidberg")),
+                        hasProperty("mail", is("bendisposto@web.de")))))
+                .andExpect(MockMvcResultMatchers.model().attribute("owner", allOf(
+                        hasProperty("username", is("Zoidberg")),
+                        hasProperty("mail", is("bendisposto@web.de")))))
+                .andExpect(MockMvcResultMatchers.model().attribute("borrower", allOf(
+                hasProperty("username", is("Zoidberg")),
+                hasProperty("mail", is("bendisposto@web.de")))));
     }
 }
 
