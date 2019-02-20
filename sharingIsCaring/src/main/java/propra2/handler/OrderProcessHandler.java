@@ -38,35 +38,10 @@ public class OrderProcessHandler {
                 orderProcessRepository.save(orderProcess);
                 break;
             case ACCEPTED:
-                Integer deposit = orderProcess.getProduct().getDeposit();
-                //Propay Kautionsbetrag blocken
-                Mono<Reservation> reservation =  WebClient.create().post().uri(builder ->
-                        builder
-                                .path("localhost:8888/reservation/reserve/" + rentingAccount.get().getUsername() + "/" + ownerAccount.get().getUsername())
-                                .query("amount=" + deposit)
-                                .build())
-                        .retrieve()
-                        .bodyToMono(Reservation.class);
-
-                rentingAccount.get().setProPay(userHandler.getProPayAccount(rentingAccount.get().getUsername()));
-                orderProcess.setReservationId(reservation.block().getId());
-                orderProcessRepository.save(orderProcess);
+                acceptProcess(orderProcess, orderProcessRepository, rentingAccount, ownerAccount);
                 break;
             case FINISHED:
-                //Kaution wird wieder freigegeben
-                account =  WebClient
-                        .create()
-                        .post()
-                        .uri(builder ->
-                            builder
-                                .path("localhost:8888/reservation/release/" + rentingAccount)
-                                .build())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .retrieve()
-                        .bodyToMono(ProPayAccount.class);
-
-                rentingAccount.get().setProPay(account.block());
-                orderProcessRepository.save(orderProcess);
+                finished(orderProcess, orderProcessRepository, rentingAccount);
                 break;
             case RETURNED:
                 //TODO: Tagessatz wird nicht mehr abgerechnet
@@ -75,23 +50,64 @@ public class OrderProcessHandler {
                 //TODO: Konfliktlöser
                 break;
             case PUNISHED:
-                int reservationId = orderProcess.getReservationId();
-                account =  WebClient.create().post().uri(builder ->
-                        builder
-                                .path("localhost:8888/reservation/punish/" + rentingAccount)
-                                .query("reservationId=" + reservationId)
-                                .build())
-                        .retrieve()
-                        .bodyToMono(ProPayAccount.class);
-
-                rentingAccount.get().setProPay(account.block());
-                orderProcessRepository.save(orderProcess);
+                punished(orderProcess, orderProcessRepository, rentingAccount);
                 break;
             default:
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
         }
     }
-  
+
+    private void punished(OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, Optional<Customer> rentingAccount) {
+        Mono<ProPayAccount> account;
+        int reservationId = orderProcess.getReservationId();
+        account =  WebClient.create().post().uri(builder ->
+                builder
+                        .path("localhost:8888/reservation/punish/" + rentingAccount.get().getUsername())
+                        .query("reservationId=" + reservationId)
+                        .build())
+                .retrieve()
+                .bodyToMono(ProPayAccount.class);
+
+        rentingAccount.get().setProPay(account.block());
+        orderProcessRepository.save(orderProcess);
+    }
+
+    private void finished(OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, Optional<Customer> rentingAccount) {
+        System.out.println("FINISHED BEGIN");
+
+        Mono<ProPayAccount> account;//Kaution wird wieder freigegeben
+        account =  WebClient
+                .create()
+                .post()
+                .uri(builder ->
+                    builder
+                        .path("localhost:8888/reservation/release/" + rentingAccount.get().getUsername())
+                            .query("reservationId=" + orderProcess.getReservationId())
+                        .build())
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .retrieve()
+                .bodyToMono(ProPayAccount.class);
+
+        rentingAccount.get().setProPay(account.block());
+        orderProcessRepository.save(orderProcess);
+    }
+
+    private void acceptProcess(OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, Optional<Customer> rentingAccount, Optional<Customer> ownerAccount) {
+        Integer deposit = orderProcess.getProduct().getDeposit();
+        //Propay Kautionsbetrag blocken
+        Mono<Reservation> reservation =  WebClient.create().post().uri(builder ->
+                builder
+                        .path("localhost:8888/reservation/reserve/" + rentingAccount.get().getUsername() + "/" + ownerAccount.get().getUsername())
+                        .query("amount=" + deposit)
+                        .build())
+                .retrieve()
+                .bodyToMono(Reservation.class);
+
+        rentingAccount.get().setProPay(userHandler.getProPayAccount(rentingAccount.get().getUsername()));
+        orderProcess.setReservationId(reservation.block().getId());
+        orderProcessRepository.save(orderProcess);
+    }
+
     public boolean checkAvailability(OrderProcessRepository orderProcessRepository, Product product, String from, String to){
         List<OrderProcess> processes = orderProcessRepository.findByProduct(product);
 
