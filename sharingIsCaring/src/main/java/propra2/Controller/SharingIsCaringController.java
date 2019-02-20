@@ -487,7 +487,8 @@ public class SharingIsCaringController {
         Customer customer = customerRepository.findById(userId).get();
 
         Optional<OrderProcess> process = orderProcessRepository.findById(processId);
-        Product product = process.get().getProduct();
+        Product product = process.get().getProduct()
+          
         Long ownerId = process.get().getOwnerId();
         Customer owner = customerRepository.findById(ownerId).get();
 

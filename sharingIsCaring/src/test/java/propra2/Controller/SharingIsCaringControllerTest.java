@@ -77,12 +77,12 @@ public class SharingIsCaringControllerTest {
     CustomerService customerService;
 
 
-    private Customer bendisposto = new Customer();
-    private Customer customer = new Customer();
-    private Customer owner = new Customer();
-    private Customer admin = new Customer();
-    private Product product1 = new Product();
-    private Product product2 = new Product();
+    Customer bendisposto = new Customer();
+    Customer customer = new Customer();
+    Customer owner = new Customer();
+    Customer admin = new Customer();
+    Product product1 = new Product();
+    Product product2 = new Product();
 
     @Before
     public void setup(){
@@ -457,8 +457,8 @@ public class SharingIsCaringControllerTest {
                         hasProperty("id", is(34L)))));
     }
 
-    @Test
     @Ignore
+    @Test
     // TODO Fick auch diesen Test(gleicher wie der davor)
     @WithMockUser(username = "Zoidberg", password = "propra2")
     public void testShowRequestDetailsBorrower() throws Exception {
@@ -470,25 +470,22 @@ public class SharingIsCaringControllerTest {
         process.setRequestId(2L);
         process.setStatus(PENDING);
 
+        Customer owner2 = new Customer();
+        owner2.setCustomerId(111L);
+        owner2.setUsername("Luke");
+        owner2.setMail("luke@web.de");
+
         Mockito.when(orderProcessRepository.findById(13L)).thenReturn(java.util.Optional.of(process));
-        //Mockito.when(customerRepository.findByUsername("Zoidberg").get().getCustomerId()).thenReturn(2L);
-        //Mockito.when(customerRepository.findByUsername("Zoidberg")).thenReturn(java.util.Optional.of(bendisposto));
+        Mockito.when(customerRepository.findById(2L)).thenReturn(java.util.Optional.of(bendisposto));
+        Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(owner2));
+        Mockito.when(customerRepository.findByUsername("Zoidberg")).thenReturn(java.util.Optional.of(bendisposto));
 
         mvc.perform(get("/requests/detailsBorrower/{processId}", 13L))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("requestDetailsBorrower"))
-                .andExpect(MockMvcResultMatchers.model().attribute("owner", allOf(
-                        hasProperty("username", is("Kevin")),
-                        hasProperty("mail", is("kevin@istdumm.de")))))
-                .andExpect(MockMvcResultMatchers.model().attribute("process", allOf(
-                        hasProperty("ownerId", is(2L)),
-                        hasProperty("requestId", is(111L)),
-                        hasProperty("product", hasProperty("title", is("Baumstamm"))),
-                        hasProperty("status", is(PENDING)))))
-                .andExpect(MockMvcResultMatchers.model().attribute("product", allOf(
-                        hasProperty("avaiable", is(false)),
-                        hasProperty("title", is("Baumlaube")),
-                        hasProperty("id", is(34L)))));
+                .andExpect(MockMvcResultMatchers.model().attribute("process", process))
+                .andExpect(MockMvcResultMatchers.model().attribute("owner", owner2))
+                .andExpect(MockMvcResultMatchers.model().attribute("product", product1));
 
 
     }
