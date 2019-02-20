@@ -150,7 +150,7 @@ public class SharingIsCaringController {
         return searchProducts("","all",model,user);
     }
 
-    @GetMapping("owner/{customerId}")
+    @GetMapping("/owner/{customerId}")
     public String searchForOwner(@PathVariable Long customerId, Model model, Principal user) {
             Customer owner = customerRepository.findById(customerId).get();
             model.addAttribute("owner", owner);

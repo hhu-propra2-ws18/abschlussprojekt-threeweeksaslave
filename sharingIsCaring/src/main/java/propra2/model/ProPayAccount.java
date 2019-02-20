@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class ProPayAccount {
     private String account;
     private double amount;
 
+    @Embedded
     @ElementCollection
     private List<Reservation> reservations;
 

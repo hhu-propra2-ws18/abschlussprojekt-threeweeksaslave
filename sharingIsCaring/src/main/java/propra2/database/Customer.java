@@ -24,11 +24,9 @@ public class Customer {
     private String password;
     private String mail;
 
-    @Lob
     @Embedded
     private Address address;
 
-    @Lob
     @Embedded
     private ProPayAccount proPay;
 

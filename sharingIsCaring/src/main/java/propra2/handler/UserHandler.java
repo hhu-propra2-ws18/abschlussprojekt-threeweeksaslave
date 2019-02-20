@@ -12,6 +12,8 @@ import propra2.repositories.CustomerRepository;
 import propra2.repositories.TransactionRepository;
 import reactor.core.publisher.Mono;
 
+import javax.transaction.Transactional;
+
 @Service
 public class UserHandler {
     @Autowired
@@ -31,6 +33,7 @@ public class UserHandler {
         return customer;
     }
 
+    @Transactional
     public ProPayAccount getProPayAccount(String username){
         ProPayAccount proPayAccount = getEntity(ProPayAccount.class,username);
 
