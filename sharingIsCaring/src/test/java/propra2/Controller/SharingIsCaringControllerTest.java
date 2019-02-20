@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import propra2.Security.service.CustomerService;
 import propra2.Security.service.RegistrationService;
@@ -43,7 +44,6 @@ import static propra2.model.OrderProcessStatus.PENDING;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration
-        //@WithMockUser(username="admin",roles={"USER","ADMIN"})
 public class SharingIsCaringControllerTest {
 
     @Autowired
@@ -74,10 +74,12 @@ public class SharingIsCaringControllerTest {
     CustomerService customerService;
 
 
-    Customer bendisposto = new Customer();
-    Customer customer = new Customer();
-    Product product1 = new Product();
-    Product product2 = new Product();
+    private Customer bendisposto = new Customer();
+    private Customer customer = new Customer();
+    private Customer owner = new Customer();
+    private Customer admin = new Customer();
+    private Product product1 = new Product();
+    private Product product2 = new Product();
 
     @Before
     public void setup(){
@@ -98,24 +100,84 @@ public class SharingIsCaringControllerTest {
         bendisposto.setPassword("propra2");
         bendisposto.setProPay(account);
 
-        customerRepository.save(bendisposto);
 
 
+        admin.setUsername("admin");
+        admin.setMail("admin@admin.de");
+        admin.setPassword("adminPass");
 
         customer.setCustomerId(111L);
         customer.setUsername("Kevin");
         customer.setMail("kevin@istdumm.de");
         customer.setPassword("Baumhaus");
 
+        owner.setCustomerId(113L);
+        owner.setUsername("Lukas");
+        owner.setMail("lukas@web.de");
+
 
         product1.setTitle("Baumstamm");
         product1.setId(34L);
         product1.setAvailable(false);
+        product1.setOwner(owner);
 
         product2.setTitle("Baumlaube");
         product2.setId(56L);
         product2.setAvailable(false);
     }
+
+    /*********************************************************************************
+     LOGIN AND REGISTRATION, fertig
+     **********************************************************************************/
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void startTest() throws Exception{
+        Mockito.when(customerRepository.findByUsername("admin")).thenReturn(java.util.Optional.of(admin));
+
+        mvc.perform(get("/"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("start"));
+    }
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void homeTest() throws Exception{
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+
+        mvc.perform(get("/home"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
+                .andExpect(MockMvcResultMatchers.view().name("home"));
+    }
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void registrationTest() throws Exception{
+        mvc.perform(get("/registration"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("registration"));
+    }
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void createUserTest() throws Exception{
+        Customer user = new Customer();
+        user.setUsername("Klaus");
+        user.setMail("klaus@web.de");
+        user.setPassword("kuhlerKlaus");
+
+        Mockito.when(customerRepository.findByUsername("Klaus")).thenReturn(java.util.Optional.of(user));
+        Mockito.when(customerRepository.findByMail("klaus@web.de")).thenReturn(java.util.Optional.of(user));
+
+        mvc.perform(MockMvcRequestBuilders.post("/registration")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.view().name("redirect:/home"));
+    }
+
+
+
 
     /*********************************************************************************
      PRODUCTS
@@ -174,13 +236,6 @@ public class SharingIsCaringControllerTest {
     @WithMockUser(username="Kevin", password = "Baumhaus")
     public void searchForOwnerTest() throws Exception{
 
-        Customer owner = new Customer();
-        owner.setCustomerId(113L);
-        owner.setUsername("Lukas");
-        owner.setMail("lukas@web.de");
-
-
-
         Mockito.when(customerRepository.findById(113L)).thenReturn(java.util.Optional.of(owner));
         Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
 
@@ -205,21 +260,52 @@ public class SharingIsCaringControllerTest {
 
     }
 
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void getProductDetailsTest() throws Exception {
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(productRepository.findById(34L)).thenReturn(java.util.Optional.of(product1));
+
+        mvc.perform(get("/product/{id}", 34L))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("productDetails"))
+                .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
+                .andExpect(MockMvcResultMatchers.model().attribute("product", product1))
+                .andExpect(MockMvcResultMatchers.model().attribute("owner", owner));
+    }
+
 
     //TODO passende Methode dazu noch nicht fertig
     @Ignore
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
-    public void createProductTest(){
+    public void createProductTest() throws Exception{
         Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
     }
 
-    @Test
     @Ignore
+    @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
     public void searchForProductTest() throws Exception {
 
         Mockito.when(productRepository.findByTitle("Baum")).thenReturn(Arrays.asList(product1,product2));
+
+
+    }
+
+    @Ignore
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void getProductInformationByIdTest() throws Exception{
+        Mockito.when(productRepository.findById(34L)).thenReturn(java.util.Optional.of(product1));
+
+
+        mvc.perform(post("/product/{id}", 34L)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.view().name("redirect:/home"));
+
     }
 
 
@@ -231,6 +317,7 @@ public class SharingIsCaringControllerTest {
     @WithMockUser(username="Zoidberg", password = "propra2")
     public void testShowProfile() throws Exception {
 
+
         Mockito.when(customerRepository.findByUsername("Zoidberg")).thenReturn(java.util.Optional.of(bendisposto));
         Mockito.when(customerRepository.findById(2L)).thenReturn(java.util.Optional.of(bendisposto));
 
@@ -239,8 +326,8 @@ public class SharingIsCaringControllerTest {
                 .andExpect(MockMvcResultMatchers.view().name("profile"))
                 .andExpect(MockMvcResultMatchers.model().attribute("user", allOf(
                         hasProperty("username", is("Zoidberg")),
-                        hasProperty("mail", is("bendisposto@web.de")),
-                        hasProperty("address", hasProperty("street", is("Unistraße")))
+                        hasProperty("mail", is("bendisposto@web.de"))
+
                 )));
         //verify(customerRepository, times(1)).findById(2L);
     }
@@ -280,12 +367,6 @@ public class SharingIsCaringControllerTest {
     }
 
     /*********************************************************************************
-     ORDERS
-     **********************************************************************************/
-
-
-
-    /*********************************************************************************
      REQUESTS
      **********************************************************************************/
     @Test
@@ -314,94 +395,18 @@ public class SharingIsCaringControllerTest {
         Mockito.when(orderProcessRepository.findAllByRequestId(2L)).thenReturn(borrowed);
         Mockito.when(customerRepository.findById(2L)).thenReturn(java.util.Optional.of(bendisposto));
 
-        System.out.println(bendisposto);
-
-        mvc.perform(get("/requests/{id}", 2L))
+        mvc.perform(get("/requests/{id}"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("requests"))
                 .andExpect(MockMvcResultMatchers.model().attribute("user", allOf(
                         hasProperty("username", is("Zoidberg")),
                         hasProperty("mail", is("bendisposto@web.de")))))
-                .andExpect(MockMvcResultMatchers.model().attribute("owner", hasItem(
-                        allOf(
-                        hasProperty("ownerId", is(2L)),
-                        hasProperty("requestId", is(111L)),
-                        hasProperty("product", hasProperty("title", is("Baumstamm"))),
-                        hasProperty("status", is(PENDING))))))
-                .andExpect(MockMvcResultMatchers.model().attribute("borrower", hasItem(
-                        allOf(
-                        hasProperty("ownerId", is(111L)),
-                        hasProperty("requestId", is(2L)),
-                        hasProperty("product", hasProperty("title", is("Baumlaube"))),
-                        hasProperty("status", is(ACCEPTED))))));
-    }
-
-    @Test
-    //TODO Fick diesen Test...
-    @Ignore
-    @WithMockUser(username = "Zoidberg", password = "propra2")
-    public void testShowRequestDetailsOwner() throws Exception {
-
-        OrderProcess process = new OrderProcess();
-        process.setId(13L);
-        process.setOwnerId(2L);
-        process.setProduct(product1);
-        process.setRequestId(111L);
-        process.setStatus(PENDING);
-
-        Mockito.when(orderProcessRepository.findById(13L)).thenReturn(java.util.Optional.of(process));
-        //Mockito.when(customerRepository.findByUsername("Zoidberg").get().getCustomerId()).thenReturn(2L);
-        Mockito.when(customerRepository.findByUsername("Zoidberg")).thenReturn(java.util.Optional.of(bendisposto));
-
-        mvc.perform(get("/requests/detailsOwner/{processId}", 13L))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("requestDetailsOwner"))
-                .andExpect(MockMvcResultMatchers.model().attribute("borrower", allOf(
-                        hasProperty("username", is("Kevin")),
-                        hasProperty("mail", is("kevin@istdumm.de")))))
-                .andExpect(MockMvcResultMatchers.model().attribute("process", allOf(
-                        hasProperty("ownerId", is(2L)),
-                        hasProperty("requestId", is(111L)),
-                        hasProperty("product", hasProperty("title", is("Baumstamm"))),
-                        hasProperty("status", is(PENDING)))))
-                .andExpect(MockMvcResultMatchers.model().attribute("product", allOf(
-                        hasProperty("avaiable", is(false)),
-                        hasProperty("title", is("Baumlaube")),
-                        hasProperty("id", is(34L)))));
-    }
-
-    @Test
-    @Ignore
-    // TODO Fick auch diesen Test(gleicher wie der davor)
-    @WithMockUser(username = "Zoidberg", password = "propra2")
-    public void testShowRequestDetailsBorrower() throws Exception {
-
-        OrderProcess process = new OrderProcess();
-        process.setId(13L);
-        process.setOwnerId(111L);
-        process.setProduct(product1);
-        process.setRequestId(2L);
-        process.setStatus(PENDING);
-
-        Mockito.when(orderProcessRepository.findById(13L)).thenReturn(java.util.Optional.of(process));
-        //Mockito.when(customerRepository.findByUsername("Zoidberg").get().getCustomerId()).thenReturn(2L);
-        //Mockito.when(customerRepository.findByUsername("Zoidberg")).thenReturn(java.util.Optional.of(bendisposto));
-
-        mvc.perform(get("/requests/detailsBorrower/{processId}", 13L))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("requestDetailsBorrower"))
                 .andExpect(MockMvcResultMatchers.model().attribute("owner", allOf(
-                        hasProperty("username", is("Kevin")),
-                        hasProperty("mail", is("kevin@istdumm.de")))))
-                .andExpect(MockMvcResultMatchers.model().attribute("process", allOf(
-                        hasProperty("ownerId", is(2L)),
-                        hasProperty("requestId", is(111L)),
-                        hasProperty("product", hasProperty("title", is("Baumstamm"))),
-                        hasProperty("status", is(PENDING)))))
-                .andExpect(MockMvcResultMatchers.model().attribute("product", allOf(
-                        hasProperty("avaiable", is(false)),
-                        hasProperty("title", is("Baumlaube")),
-                        hasProperty("id", is(34L)))));
+                        hasProperty("username", is("Zoidberg")),
+                        hasProperty("mail", is("bendisposto@web.de")))))
+                .andExpect(MockMvcResultMatchers.model().attribute("borrower", allOf(
+                hasProperty("username", is("Zoidberg")),
+                hasProperty("mail", is("bendisposto@web.de")))));
     }
 }
 
