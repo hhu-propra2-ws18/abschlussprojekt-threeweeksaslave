@@ -61,6 +61,10 @@
                     <td> city:</td>
                     <td><input name="city" th:value="${product?.address?.city}" type="text" required maxlength="255"></td>
                 </tr>
+                    <form method="POST" enctype="multipart/form-data" action="/">
+                            <tr><td>Upload image:</td><td><input type="file" name="file" /></td></tr>
+                            <tr><td></td><td><input type="submit" value="Upload" /></td></tr>
+                    </form>
             </table>
             <br>
             <button type="submit" class="btn btn-default btn-sm">New Product!</button>
