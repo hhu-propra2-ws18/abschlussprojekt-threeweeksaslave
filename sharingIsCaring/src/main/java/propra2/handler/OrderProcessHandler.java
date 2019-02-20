@@ -9,6 +9,7 @@ import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import reactor.core.publisher.Mono;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -83,5 +84,10 @@ public class OrderProcessHandler {
             default:
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
         }
+    }
+
+    public boolean correctDates(Date from, Date to) {
+        if(from.equals(to)) return true;
+        return from.before(to);
     }
 }

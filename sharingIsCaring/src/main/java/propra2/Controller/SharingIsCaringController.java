@@ -358,20 +358,26 @@ public class SharingIsCaringController {
      **********************************************************************************/
 
     @GetMapping("/product/{id}/orderProcess")
-    public String startOrderProcess(@PathVariable Long id, final Principal user, Model model){
+    public String startOrderProcess(@PathVariable Long id, final Principal user, Model model, boolean notEnoughMoney, boolean incorrectDates){
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         model.addAttribute("user", customer);
+        model.addAttribute("notEnoughMoney", notEnoughMoney);
+        model.addAttribute("incorrectDates", incorrectDates);
         return "orderProcess";
     }
 
     @PostMapping("/product/{id}/orderProcess")
-    public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user) throws ParseException {
+    public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user, Model model) throws ParseException {
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         Product product = productRepository.findById(id).get();
         double totalAmount = product.getTotalAmount(java.sql.Date.valueOf(from), java.sql.Date.valueOf(to));
 
-        if(!customer.hasEnoughMoney(totalAmount)){
-            return "error";
+        if (!customer.hasEnoughMoney(totalAmount)) {
+            return startOrderProcess(id, user, model, true, false);
+        }
+
+        if (!orderProcessHandler.correctDates(java.sql.Date.valueOf(from), java.sql.Date.valueOf(to))) {
+            return startOrderProcess(id, user, model, false, true);
         }
 
         OrderProcess orderProcess = new OrderProcess();
