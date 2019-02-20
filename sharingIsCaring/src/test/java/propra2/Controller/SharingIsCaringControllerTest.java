@@ -326,7 +326,8 @@ public class SharingIsCaringControllerTest {
                 .andExpect(MockMvcResultMatchers.view().name("profile"))
                 .andExpect(MockMvcResultMatchers.model().attribute("user", allOf(
                         hasProperty("username", is("Zoidberg")),
-                        hasProperty("mail", is("bendisposto@web.de"))
+                        hasProperty("mail", is("bendisposto@web.de")),
+                        hasProperty("address", hasProperty("street", is("Unistraße")))
 
                 )));
         //verify(customerRepository, times(1)).findById(2L);
@@ -395,18 +396,94 @@ public class SharingIsCaringControllerTest {
         Mockito.when(orderProcessRepository.findAllByRequestId(2L)).thenReturn(borrowed);
         Mockito.when(customerRepository.findById(2L)).thenReturn(java.util.Optional.of(bendisposto));
 
-        mvc.perform(get("/requests/{id}"))
+        mvc.perform(get("/requests/{id}", 2L))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("requests"))
                 .andExpect(MockMvcResultMatchers.model().attribute("user", allOf(
                         hasProperty("username", is("Zoidberg")),
                         hasProperty("mail", is("bendisposto@web.de")))))
-                .andExpect(MockMvcResultMatchers.model().attribute("owner", allOf(
-                        hasProperty("username", is("Zoidberg")),
-                        hasProperty("mail", is("bendisposto@web.de")))))
+                .andExpect(MockMvcResultMatchers.model().attribute("owner", hasItem(
+                        allOf(
+                                hasProperty("ownerId", is(2L)),
+                                hasProperty("requestId", is(111L)),
+                                hasProperty("product", hasProperty("title", is("Baumstamm"))),
+                                hasProperty("status", is(PENDING))))))
+                .andExpect(MockMvcResultMatchers.model().attribute("borrower", hasItem(
+                        allOf(
+                                hasProperty("ownerId", is(111L)),
+                                hasProperty("requestId", is(2L)),
+                                hasProperty("product", hasProperty("title", is("Baumlaube"))),
+                                hasProperty("status", is(ACCEPTED))))));
+    }
+
+    @Test
+    //TODO Fick diesen Test...
+    @Ignore
+    @WithMockUser(username = "Zoidberg", password = "propra2")
+    public void testShowRequestDetailsOwner() throws Exception {
+
+        OrderProcess process = new OrderProcess();
+        process.setId(13L);
+        process.setOwnerId(2L);
+        process.setProduct(product1);
+        process.setRequestId(111L);
+        process.setStatus(PENDING);
+
+        Mockito.when(orderProcessRepository.findById(13L)).thenReturn(java.util.Optional.of(process));
+        //Mockito.when(customerRepository.findByUsername("Zoidberg").get().getCustomerId()).thenReturn(2L);
+        Mockito.when(customerRepository.findByUsername("Zoidberg")).thenReturn(java.util.Optional.of(bendisposto));
+
+        mvc.perform(get("/requests/detailsOwner/{processId}", 13L))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("requestDetailsOwner"))
                 .andExpect(MockMvcResultMatchers.model().attribute("borrower", allOf(
-                hasProperty("username", is("Zoidberg")),
-                hasProperty("mail", is("bendisposto@web.de")))));
+        hasProperty("username", is("Kevin")),
+                hasProperty("mail", is("kevin@istdumm.de")))))
+                .andExpect(MockMvcResultMatchers.model().attribute("process", allOf(
+                hasProperty("ownerId", is(2L)),
+                hasProperty("requestId", is(111L)),
+                hasProperty("product", hasProperty("title", is("Baumstamm"))),
+                hasProperty("status", is(PENDING)))))
+                .andExpect(MockMvcResultMatchers.model().attribute("product", allOf(
+                        hasProperty("avaiable", is(false)),
+                        hasProperty("title", is("Baumlaube")),
+                        hasProperty("id", is(34L)))));
+    }
+
+    @Test
+    @Ignore
+    // TODO Fick auch diesen Test(gleicher wie der davor)
+    @WithMockUser(username = "Zoidberg", password = "propra2")
+    public void testShowRequestDetailsBorrower() throws Exception {
+
+        OrderProcess process = new OrderProcess();
+        process.setId(13L);
+        process.setOwnerId(111L);
+        process.setProduct(product1);
+        process.setRequestId(2L);
+        process.setStatus(PENDING);
+
+        Mockito.when(orderProcessRepository.findById(13L)).thenReturn(java.util.Optional.of(process));
+        //Mockito.when(customerRepository.findByUsername("Zoidberg").get().getCustomerId()).thenReturn(2L);
+        //Mockito.when(customerRepository.findByUsername("Zoidberg")).thenReturn(java.util.Optional.of(bendisposto));
+
+        mvc.perform(get("/requests/detailsBorrower/{processId}", 13L))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("requestDetailsBorrower"))
+                .andExpect(MockMvcResultMatchers.model().attribute("owner", allOf(
+                        hasProperty("username", is("Kevin")),
+                        hasProperty("mail", is("kevin@istdumm.de")))))
+                .andExpect(MockMvcResultMatchers.model().attribute("process", allOf(
+                        hasProperty("ownerId", is(2L)),
+                        hasProperty("requestId", is(111L)),
+                        hasProperty("product", hasProperty("title", is("Baumstamm"))),
+                        hasProperty("status", is(PENDING)))))
+                .andExpect(MockMvcResultMatchers.model().attribute("product", allOf(
+                        hasProperty("avaiable", is(false)),
+                        hasProperty("title", is("Baumlaube")),
+                        hasProperty("id", is(34L)))));
+
+
     }
 }
 
