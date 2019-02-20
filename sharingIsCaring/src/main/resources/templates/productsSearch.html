@@ -34,11 +34,8 @@
             <div th:text="'Daily Fee: ' + ${product.dailyFee} + '€'"></div>
             <br>
 
-            <div th:if="${product.available}">
-                <b style="color:mediumseagreen" th:text="Available"></b>
-            </div>
-            <div th:if="${!product.available}">
-                <b style="color:tomato" th:text="'Borrowed Until' + ${product.date}"></b>
+            <div>
+                <a style="color:mediumseagreen" th:href="@{/product/availability/{id}(id=${product.id})}">check Availability</a>
             </div>
             <a th:href="@{/product/{id}(id=${product.id})}">read more</a>
             <hr>

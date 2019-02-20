@@ -298,6 +298,17 @@ public class SharingIsCaringController {
         model.addAttribute("user", customer);
         return "redirect:/profile";
     }
+
+    @GetMapping("/product/availability/{id}")
+    public String getAvailability(Principal user, Model model, @PathVariable Long id){
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(userId);
+        Product product = productRepository.findById(id).get();
+        model.addAttribute("product", product);
+        model.addAttribute("user", user);
+        return "availability";
+
+    }
   
   /*********************************************************************************
         ProPayAccount
