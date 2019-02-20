@@ -41,4 +41,8 @@ public class Customer {
         this.address = new Address();
         this.proPay = new ProPayAccount();
     }
+
+    public boolean hasEnoughMoney(double totalAmount) {
+        return totalAmount <= proPay.getAvailableAmount();
+    }
 }
