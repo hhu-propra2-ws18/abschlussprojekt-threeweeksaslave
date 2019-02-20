@@ -1,4 +1,4 @@
-package propra2.controller;
+package propra2.Controller;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -10,17 +10,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import propra2.Security.service.CustomerService;
 import propra2.Security.service.RegistrationService;
 import propra2.Security.validator.CustomerValidator;
@@ -38,13 +32,10 @@ import propra2.repositories.TransactionRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-import static com.sun.javaws.JnlpxArgs.verify;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static propra2.model.OrderProcessStatus.ACCEPTED;
@@ -53,7 +44,6 @@ import static propra2.model.OrderProcessStatus.PENDING;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration
-        //@WithMockUser(username="admin",roles={"USER","ADMIN"})
 public class SharingIsCaringControllerTest {
 
     @Autowired
@@ -84,10 +74,12 @@ public class SharingIsCaringControllerTest {
     CustomerService customerService;
 
 
-    Customer bendisposto = new Customer();
-    Customer customer = new Customer();
-    Product product1 = new Product();
-    Product product2 = new Product();
+    private Customer bendisposto = new Customer();
+    private Customer customer = new Customer();
+    private Customer owner = new Customer();
+    private Customer admin = new Customer();
+    private Product product1 = new Product();
+    private Product product2 = new Product();
 
     @Before
     public void setup(){
@@ -110,20 +102,82 @@ public class SharingIsCaringControllerTest {
 
 
 
+        admin.setUsername("admin");
+        admin.setMail("admin@admin.de");
+        admin.setPassword("adminPass");
+
         customer.setCustomerId(111L);
         customer.setUsername("Kevin");
         customer.setMail("kevin@istdumm.de");
         customer.setPassword("Baumhaus");
 
+        owner.setCustomerId(113L);
+        owner.setUsername("Lukas");
+        owner.setMail("lukas@web.de");
+
 
         product1.setTitle("Baumstamm");
         product1.setId(34L);
         product1.setAvailable(false);
+        product1.setOwner(owner);
 
         product2.setTitle("Baumlaube");
         product2.setId(56L);
         product2.setAvailable(false);
     }
+
+    /*********************************************************************************
+     LOGIN AND REGISTRATION, fertig
+     **********************************************************************************/
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void startTest() throws Exception{
+        Mockito.when(customerRepository.findByUsername("admin")).thenReturn(java.util.Optional.of(admin));
+
+        mvc.perform(get("/"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("start"));
+    }
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void homeTest() throws Exception{
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+
+        mvc.perform(get("/home"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
+                .andExpect(MockMvcResultMatchers.view().name("home"));
+    }
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void registrationTest() throws Exception{
+        mvc.perform(get("/registration"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("registration"));
+    }
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void createUserTest() throws Exception{
+        Customer user = new Customer();
+        user.setUsername("Klaus");
+        user.setMail("klaus@web.de");
+        user.setPassword("kuhlerKlaus");
+
+        Mockito.when(customerRepository.findByUsername("Klaus")).thenReturn(java.util.Optional.of(user));
+        Mockito.when(customerRepository.findByMail("klaus@web.de")).thenReturn(java.util.Optional.of(user));
+
+        mvc.perform(MockMvcRequestBuilders.post("/registration")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.view().name("redirect:/home"));
+    }
+
+
+
 
     /*********************************************************************************
      PRODUCTS
@@ -182,13 +236,6 @@ public class SharingIsCaringControllerTest {
     @WithMockUser(username="Kevin", password = "Baumhaus")
     public void searchForOwnerTest() throws Exception{
 
-        Customer owner = new Customer();
-        owner.setCustomerId(113L);
-        owner.setUsername("Lukas");
-        owner.setMail("lukas@web.de");
-
-
-
         Mockito.when(customerRepository.findById(113L)).thenReturn(java.util.Optional.of(owner));
         Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
 
@@ -213,25 +260,51 @@ public class SharingIsCaringControllerTest {
 
     }
 
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void getProductDetailsTest() throws Exception {
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(productRepository.findById(34L)).thenReturn(java.util.Optional.of(product1));
+
+        mvc.perform(get("/product/{id}", 34L))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("productDetails"))
+                .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
+                .andExpect(MockMvcResultMatchers.model().attribute("product", product1))
+                .andExpect(MockMvcResultMatchers.model().attribute("owner", owner));
+    }
+
 
     //TODO passende Methode dazu noch nicht fertig
     @Ignore
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
-    public void createProductTest(){
+    public void createProductTest() throws Exception{
         Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
     }
 
+    @Ignore
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
     public void searchForProductTest() throws Exception {
 
         Mockito.when(productRepository.findByTitle("Baum")).thenReturn(Arrays.asList(product1,product2));
 
-        mvc.perform(post("/product/Baum")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param
-                .andExpect(MockMvcResultMatchers.status().isOk());
+
+    }
+
+    @Ignore
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void getProductInformationByIdTest() throws Exception{
+        Mockito.when(productRepository.findById(34L)).thenReturn(java.util.Optional.of(product1));
+
+
+        mvc.perform(post("/product/{id}", 34L)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.view().name("redirect:/home"));
 
     }
 
