@@ -44,9 +44,13 @@ public class Product {
 	}
 
 	public double getTotalAmount(Date from, Date to) {
+		double totalDailyFee = getTotalDailyFee(from, to);
+		return totalDailyFee+deposit;
+	}
+
+	public double getTotalDailyFee(Date from, Date to){
 		float diff = to.getTime() - from.getTime();
 		float days = (diff / (1000*60*60*24))+1;
-
-		return (days*dailyFee)+deposit;
+		return days*dailyFee;
 	}
 }
