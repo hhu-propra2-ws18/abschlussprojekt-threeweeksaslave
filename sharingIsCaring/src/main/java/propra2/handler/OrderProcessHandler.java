@@ -1,5 +1,6 @@
 package propra2.handler;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
@@ -53,10 +54,14 @@ public class OrderProcessHandler {
                 break;
             case FINISHED:
                 //Kaution wird wieder freigegeben
-                account =  WebClient.create().post().uri(builder ->
-                        builder
+                account =  WebClient
+                        .create()
+                        .post()
+                        .uri(builder ->
+                            builder
                                 .path("localhost:8888/reservation/release/" + rentingAccount)
                                 .build())
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
                         .retrieve()
                         .bodyToMono(ProPayAccount.class);
 
