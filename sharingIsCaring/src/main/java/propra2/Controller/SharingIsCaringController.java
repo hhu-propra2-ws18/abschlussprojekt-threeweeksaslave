@@ -153,7 +153,7 @@ public class SharingIsCaringController {
         return searchProducts("","all",model,user);
     }
 
-    @GetMapping("owner/{customerId}")
+    @GetMapping("/owner/{customerId}")
     public String searchForOwner(@PathVariable Long customerId, Model model, Principal user) {
             Customer owner = customerRepository.findById(customerId).get();
             model.addAttribute("owner", owner);
@@ -290,7 +290,8 @@ public class SharingIsCaringController {
 
     private Long getUserId(Principal user) {
         String username = user.getName();
-        Long id = customerRepository.findByUsername(username).get().getCustomerId();
+        Optional<Customer> customer = customerRepository.findByUsername(username);
+        Long id = customer.get().getCustomerId();
         return id;
     }
 
@@ -526,7 +527,7 @@ public class SharingIsCaringController {
     public String showRequestOwnerDetails(@PathVariable Long processId, Principal user, final Model model) {
         Long userId = getUserId(user);
         Optional<Customer> customer = customerRepository.findById(userId);
-        Optional<OrderProcess> process = orderProcessRepository.findById(processId);
+
 
         model.addAttribute("user", customer);
         model.addAttribute("product", process.get().getProduct());
