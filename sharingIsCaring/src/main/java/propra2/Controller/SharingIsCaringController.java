@@ -399,7 +399,7 @@ public class SharingIsCaringController {
     }
 
     @PostMapping("/product/{id}/orderProcess")
-    public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user, Model model) throws ParseException {
+    public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user, Model model) {
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         Product product = productRepository.findById(id).get();
         double totalAmount = product.getTotalAmount(java.sql.Date.valueOf(from), java.sql.Date.valueOf(to));
@@ -560,7 +560,8 @@ public class SharingIsCaringController {
     public String finishProcess(@PathVariable Long processId) {
         OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.FINISHED);
-        orderProcessRepository.save(orderProcess);
+
+        orderProcessHandler.updateOrderProcess(orderProcess.getMessages(), orderProcess, orderProcessRepository, customerRepository);
 
         return "redirect:/requests";
     }
