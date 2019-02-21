@@ -19,7 +19,7 @@ public class NotificationHandler {
     @Autowired
     NotificationRepository notificationRepository;
 
-    @Scheduled(fixedRate = 20000)
+    @Scheduled(fixedRate = 12000000)
     public void syncNotifications() {
         try {
             List<OrderProcess> processes = orderProcessRepository.findAll();

@@ -1,0 +1,5 @@
+FROM gradle:jdk11-slim
+USER root
+WORKDIR /code
+COPY . ./
+CMD ./wait-for-it.sh sharingiscaringdb:5432 --timeout=0 -- gradle --no-daemon --stacktrace clean bootRun
