@@ -244,11 +244,11 @@ nav a[aria-current=page]{
         grid-column: 2 / 3;
     }
 
-    .spalte img {
+    /*.spalte img {
         width: 50%;
         float: left;
         margin-right: 0.5em;
-    }
+    }*/
 }
 
 
@@ -280,7 +280,7 @@ nav a[aria-current=page]{
         grid-row:    2 / 3;
     }
 
-    .spalte img {
+    /*.spalte img {
         width: 33%;
-    }
+    }*/
 }

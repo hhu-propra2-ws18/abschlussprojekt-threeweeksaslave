@@ -14,7 +14,7 @@ public interface StorageService {
 
     Stream<Path> loadAll();
 
-    Path load(String filename, String productId);
+    Path load(String filename, String productId, boolean dummyProductPicture);
 
     Resource loadAsResource(String filename, String productId);
 
