@@ -33,7 +33,7 @@ public class ProPayAccount {
         }
         for(OrderProcess orderProcess : orderProcessList){
             if(orderProcess.getStatus()==PENDING || orderProcess.getStatus()==ACCEPTED){
-                result -= orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate(), orderProcess.getToDate());
+                result -= orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate());
             }
         }
         return result;
