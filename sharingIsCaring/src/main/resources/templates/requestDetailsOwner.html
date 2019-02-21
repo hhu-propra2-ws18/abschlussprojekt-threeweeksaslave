@@ -15,6 +15,7 @@
         <li><a href="/product">Add Product</a>
         <li><a href="/messages">Messages</a></li>
         <li><a th:href="@{'/requests'}">Requests</a></li>
+         <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
         <li><a href="/logout" role="button">Log Out</a></li>
     </ul>
 </nav>
@@ -71,6 +72,7 @@
 
             <div th:case="'FINISHED'">
                 <form method="post">
+
                     <button name="action" type="submit" value="deleteProcess">Delete Process</button>
                 </form>
             </div>
@@ -151,7 +153,7 @@
             </div>
 
             <div th:case="'CONFLICT'">
-                <!-- TODO: Konfliktmanagment -->
+                An admin is now checking this conflict.
             </div>
 
             <div th:case="'RETURNED'">
@@ -164,7 +166,12 @@
                     </tr>
                 </table>
 
+                <br/>
+                There are problems with this product? Deny the product and one of our admins will check this orderProcess!<br/>
+                Comment: <br/>
+
                 <form method="post">
+                    <textarea name="message" cols="60" rows="10" th:value="${message}">Write a comment</textarea>
                     <button name="action" type="submit" value="acceptReturn">Accept return</button>
                     <button name="action" type="submit" value="deny">Deny return</button>
                 </form>

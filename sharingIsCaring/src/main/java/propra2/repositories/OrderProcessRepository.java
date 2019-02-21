@@ -4,6 +4,7 @@ import org.springframework.data.repository.CrudRepository;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
 import propra2.database.Product;
+import propra2.model.OrderProcessStatus;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -20,4 +21,7 @@ public interface OrderProcessRepository extends CrudRepository<OrderProcess, Lon
 
     @Transactional
     List<OrderProcess> findByProduct(Product product);
+
+    @Transactional
+    List<OrderProcess> findByStatus(OrderProcessStatus status);
 }

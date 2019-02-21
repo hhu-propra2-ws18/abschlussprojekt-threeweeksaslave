@@ -27,6 +27,7 @@ public class OrderProcessHandler {
 
         if(!(oldMessages == null)) {
             orderProcess.addMessages(oldMessages);
+            System.out.println(orderProcess.getMessages());
         }
 
         Optional<Customer> rentingAccount = customerRepository.findById(orderProcess.getRequestId());
@@ -43,14 +44,10 @@ public class OrderProcessHandler {
             case FINISHED:
                 finished(orderProcess, orderProcessRepository, rentingAccount);
                 break;
-            case RETURNED:
-                //TODO: Tagessatz wird nicht mehr abgerechnet
-                break;
-            case CONFLICT:
-                //TODO: Konfliktlöser
-                break;
             case PUNISHED:
                 punished(orderProcess, orderProcessRepository, rentingAccount);
+            case CONFLICT:
+                orderProcessRepository.save(orderProcess);
                 break;
             default:
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
