@@ -32,4 +32,5 @@ public class ProductTest {
         double response = product.getTotalAmount(from);
         Assertions.assertThat(15.0).isEqualTo(response);
     }
+
 }

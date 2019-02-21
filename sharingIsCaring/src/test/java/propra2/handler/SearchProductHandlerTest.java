@@ -101,7 +101,7 @@ public class SearchProductHandlerTest {
 
 	@Ignore
 	@Test
-	public void findLentByContainingString(){
+	public void findOfferedByContainingString(){
 
 		Customer customer = new Customer();
 		Long id = 69L;
@@ -139,10 +139,10 @@ public class SearchProductHandlerTest {
 		borrowedProductIds.add(product2.getId());
 		borrowedProductIds.add(product3.getId());
 
-		List<Product> allProducts = searchProductHandler.getSearchedProducts("test", "lent", customer, productRepository);
-		List<Product> productTitle1 = searchProductHandler.getSearchedProducts("1", "lent", customer, productRepository);
-		List<Product> productDescriptionOne = searchProductHandler.getSearchedProducts("One", "lent", customer, productRepository);
-		List<Product> kappaProducts = searchProductHandler.getSearchedProducts("kappa", "lent", customer, productRepository);
+		List<Product> allProducts = searchProductHandler.getSearchedProducts("test", "offered", customer, productRepository);
+		List<Product> productTitle1 = searchProductHandler.getSearchedProducts("1", "offered", customer, productRepository);
+		List<Product> productDescriptionOne = searchProductHandler.getSearchedProducts("One", "offered", customer, productRepository);
+		List<Product> kappaProducts = searchProductHandler.getSearchedProducts("kappa", "offered", customer, productRepository);
 
 		//TODO Assert.assertEquals schlägt fehl, wir wissen nicht, was genau die Methode getSearchedProducts tut, aber auf jeden Fall sehen wir dort keine if-Abfrage für den filter: "lent"(haben den solange ignored)
 		Assert.assertEquals(3, allProducts.size());

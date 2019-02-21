@@ -13,6 +13,7 @@ import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @RunWith(SpringRunner.class)
@@ -51,7 +52,12 @@ public class OrderProcessHandlerTest {
 
         orderProcess.setStatus(OrderProcessStatus.DENIED);
 
-        //orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository, customerRepository);
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add("hallo");
+
+        orderProcess.setMessages(messages);
+
+        orderProcessHandler.updateOrderProcess(messages,orderProcess, orderProcessRepository, customerRepository);
 
         Optional<OrderProcess> expectedOrderProcess = orderProcessRepository.findById(orderProcess.getId());
 
