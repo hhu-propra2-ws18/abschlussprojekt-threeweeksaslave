@@ -41,11 +41,12 @@ public class FileUploadController {
 
     @GetMapping("/files/{productId}/{filename}")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename, @PathVariable String productId) {
+    public Resource serveFile(@PathVariable String filename, @PathVariable String productId) {
 		System.out.println(filename + " " + productId + "serveFile");
         Resource file = storageService.loadAsResource(filename, productId);
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+        /*return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + file.getFilename() + "\"").body(file);*/
+        return file;
     }
 
     @PostMapping("/")

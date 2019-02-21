@@ -31,7 +31,7 @@
             <br>
             <table>
                 <td>
-                    <img th:src="'upload-dir/'+${product.id}+'/'+${product.id} + '.jpg'" alt="Product Cover" width="50" height="60">
+                    <img th:src="@{'../upload/files/'+${product.id}+'/'+${product.id} + '.jpg'}" alt="Product Cover" width="50" height="60">
                 </td>
                 <td>
                     <div th:text="${#strings.abbreviate(product.description,100)}"></div>
