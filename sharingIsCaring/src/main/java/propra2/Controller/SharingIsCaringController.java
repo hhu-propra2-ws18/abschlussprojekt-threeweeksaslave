@@ -42,8 +42,13 @@ public class SharingIsCaringController {
     @Autowired
     NotificationRepository notificationRepository;
 
+    @Autowired
     private OrderProcessHandler orderProcessHandler;
+
+    @Autowired
     private UserHandler userHandler;
+
+    @Autowired
     private SearchProductHandler searchProductHandler;
 
     @Autowired
@@ -54,12 +59,6 @@ public class SharingIsCaringController {
 
     @Autowired
     TransactionRepository transactionRepository;
-
-    public SharingIsCaringController() {
-        orderProcessHandler = new OrderProcessHandler();
-        userHandler = new UserHandler();
-        searchProductHandler = new SearchProductHandler();
-    }
 
 
     /*********************************************************************************
@@ -641,7 +640,7 @@ public class SharingIsCaringController {
         productRepository.save(product);
 
 
-        orderProcessHandler.updateOrderProcess(oldMessages, orderProcess, orderProcessRepository, customerRepository);
+        orderProcessHandler.updateOrderProcess(oldMessages, orderProcess);
 
         return "redirect:/requests";
     }
@@ -651,7 +650,7 @@ public class SharingIsCaringController {
         OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.FINISHED);
 
-        orderProcessHandler.updateOrderProcess(orderProcess.getMessages(), orderProcess, orderProcessRepository, customerRepository);
+        orderProcessHandler.updateOrderProcess(orderProcess.getMessages(), orderProcess);
 
         return "redirect:/requests";
     }
@@ -666,7 +665,7 @@ public class SharingIsCaringController {
         orderProcess.setMessages(messages);
 
         System.out.println(message);
-        orderProcessHandler.updateOrderProcess(oldMessages, orderProcess, orderProcessRepository, customerRepository);
+        orderProcessHandler.updateOrderProcess(oldMessages, orderProcess);
 
         return "redirect:/requests";
     }
@@ -688,7 +687,7 @@ public class SharingIsCaringController {
         messages.add(message);
         orderProcess.setMessages(messages);
 
-        orderProcessHandler.updateOrderProcess(oldMessages, orderProcess, orderProcessRepository, customerRepository);
+        orderProcessHandler.updateOrderProcess(oldMessages, orderProcess);
 
         return "redirect:/requests";
     }
@@ -735,7 +734,7 @@ public class SharingIsCaringController {
     public String confirmConflict(@PathVariable Long processId) {
         OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.PUNISHED);
-        orderProcessHandler.updateOrderProcess(new ArrayList<>(), orderProcess, orderProcessRepository, customerRepository);
+        orderProcessHandler.updateOrderProcess(new ArrayList<>(), orderProcess);
 
         return "redirect:/conflicts";
     }
@@ -744,7 +743,7 @@ public class SharingIsCaringController {
     public String rejectConflict(@PathVariable Long processId) {
         OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.FINISHED);
-        orderProcessHandler.updateOrderProcess(new ArrayList<>(), orderProcess, orderProcessRepository, customerRepository);
+        orderProcessHandler.updateOrderProcess(new ArrayList<>(), orderProcess);
 
         return "redirect:/conflicts";
     }
