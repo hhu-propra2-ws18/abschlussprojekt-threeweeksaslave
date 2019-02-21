@@ -143,11 +143,13 @@ public class OrderProcessHandler {
         double dailyFee = orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate(), orderProcess.getToDate());
         String rentingAccount = customerRepository.findById(orderProcess.getRequestId()).get().getUsername();
         String ownerAccount = customerRepository.findById(orderProcess.getOwnerId()).get().getUsername();
-        WebClient.create().post().uri(builder ->
+        Mono<String> response = WebClient.create().post().uri(builder ->
                 builder
-                        .path("localhost:8888/account/" + rentingAccount + "/transfer" + ownerAccount)
+                        .path("localhost:8888/account/" + rentingAccount + "/transfer/" + ownerAccount)
                         .query("amount=" + dailyFee)
                         .build())
-                .retrieve();
+                .retrieve()
+                .bodyToMono(String.class);
+        response.block();
     }
 }
