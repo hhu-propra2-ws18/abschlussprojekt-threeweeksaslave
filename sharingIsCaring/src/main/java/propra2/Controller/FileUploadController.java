@@ -39,11 +39,11 @@ public class FileUploadController {
         return "uploadForm";
     }
 
-    @GetMapping("/files/{filename:.+}")
+    @GetMapping("/files/{productId}/{filename}")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
-
-        Resource file = storageService.loadAsResource(filename);
+    public ResponseEntity<Resource> serveFile(@PathVariable String filename, @PathVariable String productId) {
+		System.out.println(filename + " " + productId + "serveFile");
+        Resource file = storageService.loadAsResource(filename, productId);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
@@ -54,7 +54,7 @@ public class FileUploadController {
 
         String originalFilename = file.getOriginalFilename();
         storageService.store(file, fileName + originalFilename.
-                substring(originalFilename.length()-4,originalFilename.length()), productId);
+                substring(originalFilename.length()-4), productId);
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 

@@ -43,7 +43,7 @@ public class FileSystemStorageService implements StorageService {
                                 + filename);
             }
             try (InputStream inputStream = file.getInputStream()) {
-            	Path currentRootLocation = Paths.get(properties.getLocation() + "/" + productId );
+            	Path currentRootLocation = Paths.get(properties.getLocation() + "/" + productId);
 				try {
 					Files.createDirectories(currentRootLocation);
 				}
@@ -73,14 +73,17 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public Path load(String filename) {
-        return rootLocation.resolve(filename);
+    public Path load(String filename, String productId) {
+		System.out.println(filename + " " + productId + "load");
+		Path currentRootLocation = Paths.get(properties.getLocation() + "/" + productId);
+        return currentRootLocation.resolve(filename);
     }
 
     @Override
-    public Resource loadAsResource(String filename) {
+    public Resource loadAsResource(String filename, String productId) {
+    	System.out.println(filename + " " + productId + "loadAsResource");
         try {
-            Path file = load(filename);
+            Path file = load(filename, productId);
             Resource resource = new UrlResource(file.toUri());
             if (resource.exists() || resource.isReadable()) {
                 return resource;
