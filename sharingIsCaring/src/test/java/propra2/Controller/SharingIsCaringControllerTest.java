@@ -26,10 +26,7 @@ import propra2.database.Product;
 import propra2.handler.SearchProductHandler;
 import propra2.model.Address;
 import propra2.model.ProPayAccount;
-import propra2.repositories.CustomerRepository;
-import propra2.repositories.OrderProcessRepository;
-import propra2.repositories.ProductRepository;
-import propra2.repositories.TransactionRepository;
+import propra2.repositories.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +48,9 @@ public class SharingIsCaringControllerTest {
 
     @Autowired
     MockMvc mvc;
+
+    @MockBean
+    NotificationRepository notificationRepository;
 
     @MockBean
     CustomerRepository customerRepository;

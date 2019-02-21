@@ -59,6 +59,7 @@ public class OrderProcessHandlerTest {
 
         orderProcessHandler.updateOrderProcess(messages,orderProcess, orderProcessRepository, customerRepository);
 
+
         Optional<OrderProcess> expectedOrderProcess = orderProcessRepository.findById(orderProcess.getId());
 
         Assertions.assertThat(expectedOrderProcess.get().getStatus().toString()).isEqualTo("DENIED");

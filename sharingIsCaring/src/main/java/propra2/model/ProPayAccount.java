@@ -1,12 +1,16 @@
 package propra2.model;
 
 import lombok.Data;
+import propra2.database.OrderProcess;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import java.util.ArrayList;
 import java.util.List;
+
+import static propra2.model.OrderProcessStatus.ACCEPTED;
+import static propra2.model.OrderProcessStatus.PENDING;
 
 @Data
 @Embeddable
@@ -22,10 +26,15 @@ public class ProPayAccount {
         reservations.add(reservation);
     }
 
-    public int getAvailableAmount(){
+    public int getAvailableAmount(List<OrderProcess> orderProcessList){
         int result= (int) amount;
         for(Reservation reservation : reservations){
             result -= reservation.getAmount();
+        }
+        for(OrderProcess orderProcess : orderProcessList){
+            if(orderProcess.getStatus()==PENDING || orderProcess.getStatus()==ACCEPTED){
+                result -= orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate(), orderProcess.getToDate());
+            }
         }
         return result;
     }

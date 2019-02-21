@@ -40,7 +40,7 @@ public class Customer {
         this.proPay = new ProPayAccount();
     }
 
-    public boolean hasEnoughMoney(double totalAmount) {
-        return totalAmount <= proPay.getAvailableAmount();
+    public boolean hasEnoughMoney(double totalAmount, List<OrderProcess> orderProcessList) {
+        return totalAmount <= proPay.getAvailableAmount(orderProcessList);
     }
 }

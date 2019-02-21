@@ -1,6 +1,8 @@
 package propra2.handler;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
@@ -14,98 +16,112 @@ import reactor.core.publisher.Mono;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+@Service
 public class OrderProcessHandler {
+    @Autowired
+    private CustomerRepository customerRepo;
+
+    @Autowired
+    private OrderProcessRepository orderProcessRepo;
+
+    @Autowired
     private UserHandler userHandler;
 
-    public OrderProcessHandler() {
-        this.userHandler = new UserHandler();
-    }
 
-    public void updateOrderProcess(ArrayList<String> oldMessages, OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, CustomerRepository customerRepository) {
+    public void updateOrderProcess(ArrayList<String> oldMessages, OrderProcess orderProcess) {
 
-        if(!(oldMessages == null)) {
+        if (!(oldMessages == null)) {
             orderProcess.addMessages(oldMessages);
-            System.out.println(orderProcess.getMessages());
         }
 
-        Optional<Customer> rentingAccount = customerRepository.findById(orderProcess.getRequestId());
-        Optional<Customer> ownerAccount = customerRepository.findById(orderProcess.getOwnerId());
-        
-        Mono<ProPayAccount> account;
+        Customer rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get();
+        Customer ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get();
+
         switch (orderProcess.getStatus()) {
             case DENIED:
-                orderProcessRepository.save(orderProcess);
+                orderProcessRepo.save(orderProcess);
                 break;
             case ACCEPTED:
-                acceptProcess(orderProcess, orderProcessRepository, rentingAccount, ownerAccount);
+                acceptProcess(orderProcess, rentingAccount, ownerAccount);
                 break;
             case FINISHED:
-                finished(orderProcess, orderProcessRepository, rentingAccount);
+                finished(orderProcess, rentingAccount);
+                break;
+            case RETURNED:
+                //TODO: Tagessatz wird nicht mehr abgerechnet
+                break;
+            case CONFLICT:
+                //TODO: Konfliktlöser
                 break;
             case PUNISHED:
-                punished(orderProcess, orderProcessRepository, rentingAccount);
-            case CONFLICT:
-                orderProcessRepository.save(orderProcess);
+                punished(orderProcess, rentingAccount);
                 break;
             default:
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
         }
     }
 
-    private void punished(OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, Optional<Customer> rentingAccount) {
-        Mono<ProPayAccount> account;
-        int reservationId = orderProcess.getReservationId();
-        account =  WebClient.create().post().uri(builder ->
-                builder
-                        .path("localhost:8888/reservation/punish/" + rentingAccount.get().getUsername())
-                        .query("reservationId=" + reservationId)
-                        .build())
-                .retrieve()
-                .bodyToMono(ProPayAccount.class);
-
-        rentingAccount.get().setProPay(account.block());
-        orderProcessRepository.save(orderProcess);
-    }
-
-    private void finished(OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, Optional<Customer> rentingAccount) {
-        System.out.println("FINISHED BEGIN");
-
-        Mono<ProPayAccount> account;//Kaution wird wieder freigegeben
-        account =  WebClient
+    private void acceptProcess(OrderProcess orderProcess, Customer rentingAccount, Customer ownerAccount) {
+        Integer deposit = orderProcess.getProduct().getDeposit();
+        //Propay Kautionsbetrag blocken
+        Mono<Reservation> reservation = WebClient
                 .create()
                 .post()
                 .uri(builder ->
-                    builder
-                        .path("localhost:8888/reservation/release/" + rentingAccount.get().getUsername())
-                            .query("reservationId=" + orderProcess.getReservationId())
+                        builder.scheme("http")
+                                .host("localhost")
+                                .port(8888)
+                                .path("/reservation/reserve/")
+                                .pathSegment(rentingAccount.getUsername())
+                                .pathSegment(ownerAccount.getUsername())
+                                .queryParam("amount", deposit)
+                                .build())
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .retrieve()
+                .bodyToMono(Reservation.class);
+
+        rentingAccount.setProPay(userHandler.getProPayAccount(rentingAccount.getUsername()));
+        orderProcess.setReservationId(reservation.block().getId());
+        orderProcessRepo.save(orderProcess);
+    }
+
+    private void finished(OrderProcess orderProcess, Customer rentingAccount) {
+        //Kaution wird wieder freigegeben
+        Mono<ProPayAccount> account = WebClient
+                .create()
+                .post()
+                .uri(builder ->
+                        builder.scheme("http")
+                                .host("localhost")
+                                .port(8888)
+                                .path("/reservation/release/" + rentingAccount.getUsername())
+                                .queryParam("reservationId", orderProcess.getReservationId())
+                                .build())
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .retrieve()
+                .bodyToMono(ProPayAccount.class);
+
+        rentingAccount.setProPay(account.block());
+        orderProcessRepo.save(orderProcess);
+    }
+
+    private void punished(OrderProcess orderProcess, Customer rentingAccount) {
+        int reservationId = orderProcess.getReservationId();
+        Mono<ProPayAccount> account = WebClient.create().post().uri(builder ->
+                builder
+                        .path("localhost:8888/reservation/punish/" + rentingAccount.getUsername())
+                        .queryParam("reservationId", reservationId)
                         .build())
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .retrieve()
                 .bodyToMono(ProPayAccount.class);
 
-        rentingAccount.get().setProPay(account.block());
-        orderProcessRepository.save(orderProcess);
+        rentingAccount.setProPay(account.block());
+        orderProcessRepo.save(orderProcess);
     }
 
-    private void acceptProcess(OrderProcess orderProcess, OrderProcessRepository orderProcessRepository, Optional<Customer> rentingAccount, Optional<Customer> ownerAccount) {
-        Integer deposit = orderProcess.getProduct().getDeposit();
-        //Propay Kautionsbetrag blocken
-        Mono<Reservation> reservation =  WebClient.create().post().uri(builder ->
-                builder
-                        .path("localhost:8888/reservation/reserve/" + rentingAccount.get().getUsername() + "/" + ownerAccount.get().getUsername())
-                        .query("amount=" + deposit)
-                        .build())
-                .retrieve()
-                .bodyToMono(Reservation.class);
-
-        rentingAccount.get().setProPay(userHandler.getProPayAccount(rentingAccount.get().getUsername()));
-        orderProcess.setReservationId(reservation.block().getId());
-        orderProcessRepository.save(orderProcess);
-    }
-
-    public boolean checkAvailability(OrderProcessRepository orderProcessRepository, Product product, String from, String to){
+    public boolean checkAvailability(OrderProcessRepository orderProcessRepository, Product product, String from, String to) {
         List<OrderProcess> processes = orderProcessRepository.findByProduct(product);
 
         Date checkFrom = java.sql.Date.valueOf(from);
@@ -113,15 +129,15 @@ public class OrderProcessHandler {
 
         boolean available = true;
 
-        if(processes.isEmpty()){
+        if (processes.isEmpty()) {
             return true;
-        }else{
-            for(int i  = 0; i < processes.size(); i++){
-                Date dateFrom = processes.get(i).getFromDate();
-                Date dateTo = processes.get(i).getToDate();
-                if(dateFrom.before(checkFrom) && dateTo.before(checkFrom)){
-                }else if (dateFrom.after(checkTo) && dateTo.after(checkTo)){
-                }else{
+        } else {
+            for (OrderProcess process : processes) {
+                Date dateFrom = process.getFromDate();
+                Date dateTo = process.getToDate();
+                if (dateFrom.before(checkFrom) && dateTo.before(checkFrom)) {
+                } else if (dateFrom.after(checkTo) && dateTo.after(checkTo)) {
+                } else {
                     available = false;
                     break;
                 }
@@ -132,19 +148,25 @@ public class OrderProcessHandler {
     }
 
     public boolean correctDates(Date from, Date to) {
-        if(from.equals(to)) return true;
+        if (from.equals(to)) return true;
         return from.before(to);
     }
 
-    public void payDailyFee(OrderProcess orderProcess, CustomerRepository customerRepository) {
+    public void payDailyFee(OrderProcess orderProcess) {
         double dailyFee = orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate());
-        String rentingAccount = customerRepository.findById(orderProcess.getRequestId()).get().getUsername();
-        String ownerAccount = customerRepository.findById(orderProcess.getOwnerId()).get().getUsername();
-        Mono<String> response = WebClient.create().post().uri(builder ->
-                builder
-                        .path("localhost:8888/account/" + rentingAccount + "/transfer/" + ownerAccount)
-                        .query("amount=" + dailyFee)
-                        .build())
+        String rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get().getUsername();
+        String ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get().getUsername();
+        Mono<String> response = WebClient
+                .create()
+                .post()
+                .uri(builder ->
+                        builder.scheme("http")
+                                .host("localhost")
+                                .port(8888)
+                                .path("/account/" + rentingAccount + "/transfer/" + ownerAccount)
+                                .queryParam("amount", dailyFee)
+                                .build())
+                .accept(MediaType.APPLICATION_JSON_UTF8)
                 .retrieve()
                 .bodyToMono(String.class);
         response.block();
