@@ -23,28 +23,12 @@
     <div th:if="${query != ''}">
         <b th:text="${'Results for ' + '&quot;'+ query + '&quot;'}"></b>
     </div>
-<<<<<<< HEAD
-    <div th:if="${products?.isEmpty() == false}">
-=======
     <div th:if="${products.isEmpty() == false}" style="width:500px">
->>>>>>> imageUpload
         <hr>
         <section th:each="product : ${products}" style="width:500px">
 
             <h3><u th:text="${product?.title}"></u></h3>
             <br>
-<<<<<<< HEAD
-            <div th:text="${#strings.abbreviate(product?.description,100)}"></div>
-            <br>
-            <div th:text="'Daily Fee: ' + ${product?.dailyFee} + '€'"></div>
-            <br>
-
-            <div>
-                <a style="color:mediumseagreen" th:href="@{/product/availability/{id}(id=${product.id})}">check Availability</a>
-            </div>
-            <a th:href="@{/product/{id}(id=${product?.id})}">read more</a>
-            <hr>
-=======
             <table>
                 <td valign="top">
                     <img th:src="@{'../upload/files/'+${product.id}+'/'+${product.id} + '.jpg'}" alt="Product Cover" style="width:100px; max-height:170px; height:auto">
@@ -65,7 +49,6 @@
             </table>
             <a th:href="@{/product/{id}(id=${product.id})}">read more</a>
                 <hr>
->>>>>>> imageUpload
         </section>
     </div>
     <div th:if="${products?.isEmpty()}">

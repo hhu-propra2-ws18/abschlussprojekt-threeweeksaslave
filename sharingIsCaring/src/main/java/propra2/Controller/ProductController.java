@@ -134,7 +134,7 @@ public class ProductController {
         if (product.allValuesSet()) {
             productRepo.save(product);
         }
-        return "redirect:/home";
+        return "addImageToProduct";
     }
 
     private Long getUserId(Principal user) {
