@@ -473,7 +473,8 @@ public class SharingIsCaringController {
     public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user, Model model) {
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         Product product = productRepository.findById(id).get();
-        double totalAmount = product.getTotalAmount(java.sql.Date.valueOf(from), java.sql.Date.valueOf(to));
+      
+        double totalAmount = product.getTotalAmount(java.sql.Date.valueOf(from));
         List<OrderProcess> orderProcessesOfRequester = orderProcessRepository.findAllByRequestId(customer.getCustomerId());
 
         if (!customer.hasEnoughMoney(totalAmount, orderProcessesOfRequester)) {

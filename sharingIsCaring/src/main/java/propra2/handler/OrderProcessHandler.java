@@ -153,7 +153,7 @@ public class OrderProcessHandler {
     }
 
     public void payDailyFee(OrderProcess orderProcess) {
-        double dailyFee = orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate(), orderProcess.getToDate());
+        double dailyFee = orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate());
         String rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get().getUsername();
         String ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get().getUsername();
         Mono<String> response = WebClient

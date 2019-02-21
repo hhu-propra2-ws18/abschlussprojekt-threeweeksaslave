@@ -4,6 +4,8 @@ import lombok.Data;
 import propra2.model.Address;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Data
@@ -43,14 +45,14 @@ public class Product {
 		this.address = new Address();
 	}
 
-	public double getTotalAmount(Date from, Date to) {
-		double totalDailyFee = getTotalDailyFee(from, to);
+	public double getTotalAmount(Date from) {
+		double totalDailyFee = getTotalDailyFee(from);
 		return totalDailyFee+deposit;
 	}
 
-	public double getTotalDailyFee(Date from, Date to){
-		float diff = to.getTime() - from.getTime();
-		float days = (diff / (1000*60*60*24))+1;
-		return days*dailyFee;
+	public double getTotalDailyFee(Date from){
+		java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
+		long days = ChronoUnit.DAYS.between(LocalDate.parse(from.toString()), LocalDate.parse(date.toString()));
+		return (days+1)*dailyFee;
 	}
 }
