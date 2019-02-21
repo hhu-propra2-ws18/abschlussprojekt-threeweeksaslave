@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>New Product</title>
+</head>
+<body>
+
+<nav layout:fragment="nav">
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li><a th:href="@{'/profile'}">Profile</a></li>
+        <li><a href="/products">View Products</a></li>
+        <li><a aria-current="page">Add Product</a>
+        <li><a href="/messages">Messages</a></li>
+        <li><a th:href="@{'/requests/'}">Requests</a></li>
+        <li><a href="/logout" role="button">Log Out</a></li>
+    </ul>
+</nav>
+
+<div layout:fragment="content">
+    <form method="post" enctype="multipart/form-data" action="/upload/">
+        <table>
+            <tr>
+                <td>Upload image:</td>
+                <td><input type="file" name="file" accept="image/x-png,image/gif,image/jpeg"/></td>
+                <input type="hidden" name="fileName" th:value="${product.id}">
+                <input type="hidden" name="productId" th:value="${product.id}">
+            </tr>
+        </table>
+        <button type="submit" class="btn btn-default btn-sm">Upload Image</button>
+    </form>
+
+</div>
+
+</body>
+</html>

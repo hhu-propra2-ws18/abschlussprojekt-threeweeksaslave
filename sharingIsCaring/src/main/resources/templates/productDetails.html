@@ -25,7 +25,14 @@
 
 
         <br>
+<<<<<<< HEAD
         <table bgcolor="#f5f5f5" class="table">
+=======
+        <table class="table">
+            <tr valign="top">
+                <img th:src="@{'../upload/files/'+${product.id}+'/'+${product.id} + '.jpg'}" alt="Product Cover" style="width:auto; max-width:500px; max-height:600px; height:auto">
+            </tr>
+>>>>>>> imageUpload
             <tr bgcolor="#f5f5f5">
                 <th>Owner: </th>
                 <td>
@@ -33,12 +40,31 @@
                 </td>
             </tr>
             <tr bgcolor="#f5f5f5">
+<<<<<<< HEAD
                 <th valign="top">Description: </th>
                 <td valign="top" th:text="${product?.description}">Description</td>
             </tr>
 
             <tr bgcolor="#f5f5f5">
                 <th>Address: </th>
+=======
+                <td valign="top" ><b>Description: </b></td>
+                <td valign="top" style="word-break:break-all"
+                            th:text="${product?.description}">Description</td>
+
+            </tr>
+
+            <tr bgcolor="#f5f5f5">
+                <td><b>Availability: </b></td>
+                <td th:text="${product?.available}? 'Available' : 'Not available'">Status</td>
+            </tr>
+            <tr th:if="${!product?.available}" bgcolor="#f5f5f5">
+                <td th:text="${product?.available}? 'Borrowed until' : ''"></td>
+                <td th:text="${product?.available}? ${product.borrowedUntil} : ''"></td>
+            </tr>
+            <tr bgcolor="#f5f5f5">
+                <td><b>Address:</b></td>
+>>>>>>> imageUpload
                 <td th:text="${product.address.street} + ' ' + ${product.address.houseNumber} + ', ' + ${product.address.postCode} + ' ' + ${product.address.city}"></td>
             </tr>
             <tr bgcolor="#f5f5f5">
