@@ -14,6 +14,7 @@
         <li><a href="/product">Add Product</a>
         <li><a href="/messages">Messages</a></li>
         <li><a th:href="@{'/requests'}">Requests</a></li>
+         <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
         <li><a href="/logout" role="button">Log Out</a></li>
     </ul>
 </nav>
@@ -106,11 +107,10 @@
             </tr>
         </table>
         <br/>
-        <a th:href="@{'/rechargeCredit'}">recharge credit</a>
+        <a th:href="@{'/rechargeCredit'}">Recharge credit</a>
         <br/>
         <a th:href="@{'/transactions'}">Transaction Overview</a>
     </section>
-    <a th:href="@{''}">view your actual borrowed products</a>
 </div>
 
 </body>

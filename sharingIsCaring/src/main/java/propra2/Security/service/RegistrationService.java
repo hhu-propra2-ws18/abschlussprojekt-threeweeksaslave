@@ -24,7 +24,7 @@ public class RegistrationService {
 
     public void saveCredentials(UserRegistration user) {
         Customer customer = new Customer();
-        customer.setRole("ROLE_USER");
+        customer.setRole(user.getRole());
         customer.setUsername(user.getUserName());
         customer.setMail(user.getEmailAddress());
         customer.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));

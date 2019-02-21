@@ -16,7 +16,11 @@ import propra2.model.OrderProcessStatus;
 import propra2.model.TransactionType;
 import propra2.model.UserRegistration;
 import propra2.repositories.*;
-
+import propra2.model.*;
+import propra2.repositories.CustomerRepository;
+import propra2.repositories.OrderProcessRepository;
+import propra2.repositories.ProductRepository;
+import propra2.repositories.TransactionRepository;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -69,6 +73,7 @@ public class SharingIsCaringController {
             admin.setEmailAddress("admin@admin.de");
             admin.setPassword("adminPass");
             admin.setPasswordConfirm("adminPass");
+            admin.setRole("ADMIN");
             registrationService.saveCredentials(admin);
         }
 
@@ -100,6 +105,11 @@ public class SharingIsCaringController {
         List<Notification> notifications = notificationRepository.findAllByBorrowerId(customer.getCustomerId());
         model.addAttribute("notifications", notifications);
         model.addAttribute("user", customer);
+        boolean admin = false;
+        if(customer.getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
         return "home";
     }
 
@@ -128,6 +138,8 @@ public class SharingIsCaringController {
         if (bindingResult.hasErrors()) {
             return "registration";
         }
+
+        user.setRole("ROLE_USER");
         registrationService.saveCredentials(user);
 
         return "redirect:/home";
@@ -148,16 +160,26 @@ public class SharingIsCaringController {
     public String showProducts(Model model, Principal user) {
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         model.addAttribute("user", customer);
+        boolean admin = false;
+        if(customer.getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
 
         return searchProducts("","all",model,user);
     }
 
-    @GetMapping("owner/{customerId}")
+    @GetMapping("/customer/{customerId}")
     public String searchForOwner(@PathVariable Long customerId, Model model, Principal user) {
             Customer owner = customerRepository.findById(customerId).get();
             model.addAttribute("owner", owner);
             Customer customer = customerRepository.findByUsername(user.getName()).get();
             model.addAttribute("user", customer);
+            boolean admin = false;
+            if(customer.getRole().equals("ADMIN")){
+                admin = true;
+            }
+            model.addAttribute("admin", admin);
             return "customer";
     }
 
@@ -176,6 +198,11 @@ public class SharingIsCaringController {
 		model.addAttribute("query",query);
 		model.addAttribute("products", products);
 		model.addAttribute("filter",filter);
+        boolean admin = false;
+        if(customer.getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
 		return "productsSearch";
 	}
     
@@ -191,6 +218,11 @@ public class SharingIsCaringController {
     public String getProduct(Principal user, Model model) {
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         model.addAttribute("user", customer);
+        boolean admin = false;
+        if(customer.getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
 
         return "addProduct";
     }
@@ -237,6 +269,11 @@ public class SharingIsCaringController {
         Customer owner = product.getOwner();
         model.addAttribute("product", product);
         model.addAttribute("owner", owner);
+        boolean admin = false;
+        if(customer.getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
         return "productDetails";
     }
 
@@ -249,6 +286,11 @@ public class SharingIsCaringController {
         model.addAttribute("product", product);
         model.addAttribute("user", customer.get());
         model.addAttribute("available", true);
+        boolean admin = false;
+        if(customer.get().getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
         return "productAvailability";
 
     }
@@ -282,14 +324,25 @@ public class SharingIsCaringController {
     @GetMapping("/profile")
     public String getUserDataById(Principal user, Model model) {
         Long loggedInId = getUserId(user);
-        Optional<Customer> customer = customerRepository.findById(loggedInId);
-        model.addAttribute("user", customer.get());
+
+        Customer customer = customerRepository.findById(loggedInId).get();
+        ProPayAccount newProPayAcc = userHandler.getProPayAccount(customer.getUsername());
+        customer.setProPay(newProPayAcc);
+        customerRepository.save(customer);
+        model.addAttribute("user", customer);
+      
+        boolean admin = false;
+        if(customer.getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
         return "profile";
     }
 
     private Long getUserId(Principal user) {
         String username = user.getName();
-        Long id = customerRepository.findByUsername(username).get().getCustomerId();
+        Optional<Customer> customer = customerRepository.findByUsername(username);
+        Long id = customer.get().getCustomerId();
         return id;
     }
 
@@ -304,6 +357,11 @@ public class SharingIsCaringController {
         Long userId = getUserId(user);
         Optional<Customer> customer = customerRepository.findById(userId);
         model.addAttribute("user", customer.get());
+        boolean admin = false;
+        if(customer.get().getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
         return "profileUpdate";
     }
 
@@ -340,6 +398,11 @@ public class SharingIsCaringController {
     public String getRechargeCredit(Principal user, Model model){
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         model.addAttribute("user", customer);
+        boolean admin = false;
+        if(customer.getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
         return "rechargeCredit";
     }
 
@@ -376,6 +439,11 @@ public class SharingIsCaringController {
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         model.addAttribute("user", customer);
         model.addAttribute("transactions", transactions);
+        boolean admin = false;
+        if(customer.getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
         return "transactions";
     }
 
@@ -394,11 +462,16 @@ public class SharingIsCaringController {
         model.addAttribute("incorrectDates", incorrectDates);
         model.addAttribute("ownProduct", ownProduct);
         model.addAttribute("availability", availability);
+        boolean admin = false;
+        if(customer.getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
         return "orderProcess";
     }
 
     @PostMapping("/product/{id}/orderProcess")
-    public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user, Model model) throws ParseException {
+    public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user, Model model) {
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         Product product = productRepository.findById(id).get();
         double totalAmount = product.getTotalAmount(java.sql.Date.valueOf(from), java.sql.Date.valueOf(to));
@@ -476,6 +549,11 @@ public class SharingIsCaringController {
         model.addAttribute("user", customer.get());
         model.addAttribute("ownerOrderProcesses", ownerOrderProcesses);
         model.addAttribute("borrower", borrower);
+        boolean admin = false;
+        if(customer.get().getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
         return "requests";
     }
 
@@ -486,6 +564,7 @@ public class SharingIsCaringController {
 
         Optional<OrderProcess> process = orderProcessRepository.findById(processId);
         Product product = process.get().getProduct();
+          
         Long ownerId = process.get().getOwnerId();
         Customer owner = customerRepository.findById(ownerId).get();
 
@@ -493,6 +572,11 @@ public class SharingIsCaringController {
         model.addAttribute("product", product);
         model.addAttribute("process", process.get());
         model.addAttribute("user", customer);
+        boolean admin = false;
+        if(customer.getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
         return "requestDetailsBorrower";
     }
 
@@ -527,10 +611,16 @@ public class SharingIsCaringController {
         Optional<Customer> customer = customerRepository.findById(userId);
         Optional<OrderProcess> process = orderProcessRepository.findById(processId);
 
+
         model.addAttribute("user", customer);
         model.addAttribute("product", process.get().getProduct());
         model.addAttribute("process", process.get());
         model.addAttribute("borrower", customerRepository.findById(process.get().getRequestId()).get());
+        boolean admin = false;
+        if(customer.get().getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
         return "requestDetailsOwner";
     }
 
@@ -559,7 +649,23 @@ public class SharingIsCaringController {
     public String finishProcess(@PathVariable Long processId) {
         OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.FINISHED);
-        orderProcessRepository.save(orderProcess);
+
+        orderProcessHandler.updateOrderProcess(orderProcess.getMessages(), orderProcess, orderProcessRepository, customerRepository);
+
+        return "redirect:/requests";
+    }
+
+    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=appeal")
+    public String appealProcess(@PathVariable Long processId, String message) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcess.setStatus(OrderProcessStatus.CONFLICT);
+        ArrayList<String> oldMessages = orderProcess.getMessages();
+        ArrayList<String> messages = new ArrayList<>();
+        messages.add(message);
+        orderProcess.setMessages(messages);
+
+        System.out.println(message);
+        orderProcessHandler.updateOrderProcess(oldMessages, orderProcess, orderProcessRepository, customerRepository);
 
         return "redirect:/requests";
     }
@@ -584,6 +690,62 @@ public class SharingIsCaringController {
         orderProcessHandler.updateOrderProcess(oldMessages, orderProcess, orderProcessRepository, customerRepository);
 
         return "redirect:/requests";
+    }
+
+    /*********************************************************************************
+     CONFLICTS
+     **********************************************************************************/
+
+    @GetMapping("/conflicts")
+    public String getConflicts(Principal user, Model model){
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(userId);
+        List<OrderProcess> processes = orderProcessRepository.findByStatus(OrderProcessStatus.CONFLICT);
+        model.addAttribute("processes", processes);
+        boolean admin = false;
+        if(customer.get().getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
+        return "conflict";
+    }
+
+
+    @GetMapping("/conflicts/details/{processId}")
+    public String showConflictDetails(@PathVariable Long processId, Principal user, final Model model) {
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepository.findById(userId);
+        Optional<OrderProcess> process = orderProcessRepository.findById(processId);
+
+        model.addAttribute("user", customer.get());
+        model.addAttribute("product", process.get().getProduct());
+        model.addAttribute("process", process.get());
+        model.addAttribute("owner", customerRepository.findById(process.get().getOwnerId()).get());
+        model.addAttribute("borrower", customerRepository.findById(process.get().getRequestId()).get());
+        boolean admin = false;
+        if(customer.get().getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
+        return "conflictDetails";
+    }
+
+    @RequestMapping(value="/conflicts/details/{processId}", method=RequestMethod.POST, params="action=confirm")
+    public String confirmConflict(@PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcess.setStatus(OrderProcessStatus.PUNISHED);
+        orderProcessHandler.updateOrderProcess(new ArrayList<>(), orderProcess, orderProcessRepository, customerRepository);
+
+        return "redirect:/conflicts";
+    }
+
+    @RequestMapping(value="/conflicts/details/{processId}", method=RequestMethod.POST, params="action=reject")
+    public String rejectConflict(@PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepository.findById(processId).get();
+        orderProcess.setStatus(OrderProcessStatus.FINISHED);
+        orderProcessHandler.updateOrderProcess(new ArrayList<>(), orderProcess, orderProcessRepository, customerRepository);
+
+        return "redirect:/conflicts";
     }
 
 }

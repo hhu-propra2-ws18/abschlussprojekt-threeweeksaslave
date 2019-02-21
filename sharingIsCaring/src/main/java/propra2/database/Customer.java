@@ -1,12 +1,10 @@
 package propra2.database;
 
 import lombok.Data;
-import org.springframework.web.reactive.function.client.WebClient;
 import propra2.model.Address;
 import propra2.model.ProPayAccount;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.util.List;
 
 @Data
@@ -24,11 +22,9 @@ public class Customer {
     private String password;
     private String mail;
 
-    @Lob
     @Embedded
     private Address address;
 
-    @Lob
     @Embedded
     private ProPayAccount proPay;
 
