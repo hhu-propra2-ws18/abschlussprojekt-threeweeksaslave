@@ -599,7 +599,7 @@ public class SharingIsCaringController {
         product.setAvailable(true);
         productRepository.save(product);
 
-        orderProcessHandler.payDailyFee(orderProcess, customerRepository);
+        orderProcessHandler.payDailyFee(orderProcess);
 
         return "redirect:/requests";
     }

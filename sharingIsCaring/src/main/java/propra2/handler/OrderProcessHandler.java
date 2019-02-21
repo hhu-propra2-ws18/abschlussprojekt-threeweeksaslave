@@ -152,10 +152,10 @@ public class OrderProcessHandler {
         return from.before(to);
     }
 
-    public void payDailyFee(OrderProcess orderProcess, CustomerRepository customerRepository) {
+    public void payDailyFee(OrderProcess orderProcess) {
         double dailyFee = orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate(), orderProcess.getToDate());
-        String rentingAccount = customerRepository.findById(orderProcess.getRequestId()).get().getUsername();
-        String ownerAccount = customerRepository.findById(orderProcess.getOwnerId()).get().getUsername();
+        String rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get().getUsername();
+        String ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get().getUsername();
         Mono<String> response = WebClient
                 .create()
                 .post()
