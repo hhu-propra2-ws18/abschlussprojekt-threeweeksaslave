@@ -475,8 +475,9 @@ public class SharingIsCaringController {
         Customer customer = customerRepository.findByUsername(user.getName()).get();
         Product product = productRepository.findById(id).get();
         double totalAmount = product.getTotalAmount(java.sql.Date.valueOf(from), java.sql.Date.valueOf(to));
+        List<OrderProcess> orderProcessesOfRequester = orderProcessRepository.findAllByRequestId(customer.getCustomerId());
 
-        if (!customer.hasEnoughMoney(totalAmount)) {
+        if (!customer.hasEnoughMoney(totalAmount, orderProcessesOfRequester)) {
             return startOrderProcess(id, user, model, true, false, false, false);
         }
 
