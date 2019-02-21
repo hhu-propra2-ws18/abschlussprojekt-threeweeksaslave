@@ -115,6 +115,14 @@
             </div>
 
             <div th:case="'FINISHED'">
+                <table>
+                    <tr>
+                        <td>Messages</td>
+                    </tr>
+                    <tr th:each="message : ${process.messages}">
+                        <td th:text="${message}"><br></td>
+                    </tr>
+                </table>
                 <form method="post">
                     <button class="btn btn-outline-danger btn-sm" name="action" type="submit" value="delete">Delete Process</button>
                 </form>

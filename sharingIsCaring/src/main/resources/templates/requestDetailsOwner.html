@@ -71,10 +71,14 @@
         <div th:switch="${process?.status.name()}">
 
             <div th:case="'FINISHED'">
-                <form method="post">
-
-                    <button name="action" type="submit" value="deleteProcess">Delete Process</button>
-                </form>
+                <table>
+                    <tr>
+                        <td>Messages</td>
+                    </tr>
+                    <tr th:each="message : ${process.messages}">
+                        <td th:text="${message}"><br></td>
+                    </tr>
+                </table>
             </div>
 
             <div th:case="'ACCEPTED'">
@@ -147,9 +151,14 @@
             </div>
 
             <div th:case="'DENIED'">
-                <form method="post">
-                    <button name="action" type="submit" value="deleteProcess">Delete Process</button>
-                </form>
+                <table>
+                    <tr>
+                        <td>Messages</td>
+                    </tr>
+                    <tr th:each="message : ${process.messages}">
+                        <td th:text="${message}"><br></td>
+                    </tr>
+                </table>
             </div>
 
             <div th:case="'CONFLICT'">
