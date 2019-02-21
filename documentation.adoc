@@ -1,7 +1,84 @@
-# AbschlussProjekt- TheWeeksASlave
+# AbschlussProjekt- ThreeWeeksASlave
+
+image:./sharingIsCaring/src/main/resources/static/img/006_DSC_9880.JPG[]
+
+## Aufbau der Anwendung
+
+
+
+### Erklärung der Klassen
+Um eine klare Struktur zu haben, sind die einzelnen Klassen nach ihren Aufgaben in
+Packages geordnet. Es folgt ein kurzer Überblick über die Funktionen der Klassen
+und Packages.
+
+* *Package Controller:* +
+Mehrere Controller-Klassen (mehr Text)
+
+* *Package database:* +
+In diesem Package befinden sich die Klassen zu den Entitäten unserer Datenbank.
+Unser Datenbankmodell wird im nächsten Abschnitt genauer erläutert.
+(Hier noch mehr Text, alle Klassen mit ihrer Funktion kurz erklären)
+
+* *Package handler:* +
+(Hier muss Text hin, alle Klassen und das Package kurz erkären)
+
+* *Package model:* +
+In diesem Package sind unter anderem Klassen, die für die Modellierung der Datenbank
+da sind. So stellt beispielsweise die Klasse Adresse eine vollständige Adresse dar.
+Sowohl die Entity Customer, als auch die Entity Product benötigen als Attribut eine
+Adresse. Den gleichen Zweck haben auch die Klassen OrderProcessStatus, TransactionType
+und ProPayAccount. Gleichzeitig werden diese Klassen alle in der gesamten Anwendung
+benötigt. (mehr?)
+
+* *Package repositories:* +
+Um die Datenbankklassen zu verwalten, haben wir für jede Entity
+
+* *Package Security:* +
+Text
+
+** *Package service:* +
+hier steht auch was
+
+** *Package validator:* +
+Bei der Registrierung muss geprüft werden, ob die eingegebenen Wörter unseren
+Anforderungen (bestimmte Wortlänge und Eindeutigkeit) entsprechen. Das geschieht
+in der Klasse CustomerValidator.
+
+### Datenbank
+Datenbank ist Postgres, TestDatenbank ist H2
+
+#### Datenbank-Aufbau
+Entities: Customer, OrderProcess, Product, Transaction
+
+Beziehungen:
+One-To-Many zwischen Customer und Product: einem Customer können mehrere Products
+zugeordnet werden
+One-To-One zwischen OrderProcess und Product: jedem OrderProcess kann nur ein Product
+zugeordnet werden
+
+
 
 ## Minimalanorderungen
 
+
+
+### Benutzerverwaltung
+
+### Übersichtsseite der Artikel
+
+### Detailansicht
+
+### Einstellen eines Artikels
+
+### Ausleihprozess
+
+### Bezahlvorgang
+
+### Benutzerkontenverwaltung
+
+### Konfliktlösungsstelle
+
+### Propay
 
 
 ## Erweiterungen
@@ -11,3 +88,6 @@
 ### Erweiterte Benutzerverwaltung
 Passwörter
 Konten haben verschiedene Rollen (Admin und normaler User)
+
+
+## Tests
