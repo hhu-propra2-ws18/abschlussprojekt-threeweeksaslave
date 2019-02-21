@@ -1,5 +1,6 @@
 package propra2.handler;
 
+import org.springframework.stereotype.Service;
 import propra2.database.Customer;
 import propra2.database.Product;
 import propra2.repositories.ProductRepository;
@@ -7,6 +8,7 @@ import propra2.repositories.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class SearchProductHandler {
 
 	public List<Product> getSearchedProducts(final String query, String filter,  Customer customer, ProductRepository productRepository){
