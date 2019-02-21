@@ -4,7 +4,7 @@ import lombok.Data;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
-import javax.persistence.Lob;
+import javax.persistence.Embedded;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +14,9 @@ public class ProPayAccount {
     private String account;
     private double amount;
 
-    @Lob
+    @Embedded
     @ElementCollection
-    private List<Reservation> reservations = new ArrayList<>();
+    private List<Reservation> reservations;
 
     public void addReservation(Reservation reservation) {
         reservations.add(reservation);
@@ -28,5 +28,9 @@ public class ProPayAccount {
             result -= reservation.getAmount();
         }
         return result;
+    }
+
+    public void setReservations(ArrayList<Reservation> reservations) {
+        this.reservations = reservations;
     }
 }
