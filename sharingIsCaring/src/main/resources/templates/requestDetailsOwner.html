@@ -37,7 +37,7 @@
                     Borrower:
                 </td>
                 <td>
-                    <dd th:text="${borrower?.username}"></dd>
+                    <a th:text="${borrower?.username}" th:href="@{'/customer/' + ${borrower?.customerId}}"></a>
                 </td>
             </tr>
             <tr>
