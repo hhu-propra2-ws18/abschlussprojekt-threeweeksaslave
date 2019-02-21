@@ -45,7 +45,7 @@ public class Product {
 		this.address = new Address();
 	}
 
-	public double getTotalAmount(Date from, Date to) {
+	public double getTotalAmount(Date from) {
 		double totalDailyFee = getTotalDailyFee(from);
 		return totalDailyFee+deposit;
 	}
