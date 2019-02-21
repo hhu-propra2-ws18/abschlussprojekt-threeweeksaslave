@@ -26,6 +26,9 @@
 
         <br>
         <table class="table">
+            <tr valign="top">
+                <img th:src="@{'../upload/files/'+${product.id}+'/'+${product.id} + '.jpg'}" alt="Product Cover" style="width:auto; max-width:500px; max-height:600px; height:auto">
+            </tr>
             <tr bgcolor="#f5f5f5">
                 <td>
                     <b>Owner: </b>
@@ -50,7 +53,7 @@
                 <td th:text="${product?.available}? ${product.borrowedUntil} : ''"></td>
             </tr>
             <tr bgcolor="#f5f5f5">
-                <td>Address:</td>
+                <td><b>Address:</b></td>
                 <td th:text="${product.address.street} + ' ' + ${product.address.houseNumber} + ', ' + ${product.address.postCode} + ' ' + ${product.address.city}"></td>
             </tr>
             <tr bgcolor="#f5f5f5">
