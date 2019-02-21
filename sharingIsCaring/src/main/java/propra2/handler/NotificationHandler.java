@@ -2,6 +2,7 @@ package propra2.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import propra2.database.Notification;
 import propra2.database.OrderProcess;
 import propra2.database.Product;
@@ -11,13 +12,14 @@ import propra2.repositories.OrderProcessRepository;
 import java.util.Date;
 import java.util.List;
 
+@Component
 public class NotificationHandler {
     @Autowired
     OrderProcessRepository orderProcessRepository;
     @Autowired
     NotificationRepository notificationRepository;
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 20000)
     public void syncNotifications() {
         try {
             List<OrderProcess> processes = orderProcessRepository.findAll();
@@ -26,16 +28,16 @@ public class NotificationHandler {
             java.sql.Date today = new java.sql.Date(date.getTime());
             for (OrderProcess orderProcess : processes) {
                 String product = orderProcess.getProduct().getTitle();
-                if(orderProcess.getToDate().compareTo(today) == -1){
-                    String message = "You have to return your product: " + product + "tomorrow!";
+                if(orderProcess.getToDate().compareTo(today) == 1){
+                    String message = "You have to return your product: '" + product + "' tomorrow!";
                     createNotification(message, orderProcess);
                 }
                 else if (orderProcess.getToDate().compareTo(today) == 0){
-                    String message = "You have to return your product: " + product + "today!";
+                    String message = "You have to return your product: '" + product + "' today!";
                     createNotification(message, orderProcess);
                 }
-                else if(orderProcess.getToDate().compareTo(today) > 0) {
-                    String message = "You forgot to return your product: " + product + ". Please return it as fast as possible!";
+                else if(orderProcess.getToDate().compareTo(today) < 0) {
+                    String message = "You forgot to return your product: '" + product + "'. Please return it as fast as possible!";
                     createNotification(message, orderProcess);
                 }
             }
@@ -43,8 +45,8 @@ public class NotificationHandler {
         catch (Exception e) {
             e.getMessage();
         }
-
     }
+
     private void createNotification(String message, OrderProcess orderProcess){
         Notification notification = new Notification();
         notification.setNotification(message);
