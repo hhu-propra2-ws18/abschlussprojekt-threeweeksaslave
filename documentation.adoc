@@ -1,0 +1,13 @@
+# AbschlussProjekt- TheWeeksASlave
+
+## Minimalanorderungen
+
+
+
+## Erweiterungen
+
+### Suche/Filter
+
+### Erweiterte Benutzerverwaltung
+Passwörter
+Konten haben verschiedene Rollen (Admin und normaler User)
