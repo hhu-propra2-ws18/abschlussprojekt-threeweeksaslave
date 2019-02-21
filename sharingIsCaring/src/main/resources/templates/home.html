@@ -24,10 +24,20 @@
     <section id="intro">
         <h2>Welcome <span>to Sharing is Caring</span></h2>
         <p>
-            Teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeext
+            Teeeeeeeeeeext
         </p>
     </section>
 
+    <section class="spalte">
+        <h2>Notifications</h2>
+        <tr th:each="notification : ${notifications}">
+            <br>
+            <div class="alert">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                <span>&#9888;</span> <td th:text="${notification.notification}"></td>
+            </div>
+        </tr>
+    </section>
 
     <section class="spalte">
         <h2>Motivation</h2>
