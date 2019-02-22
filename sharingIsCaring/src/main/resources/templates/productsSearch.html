@@ -23,22 +23,32 @@
     <div th:if="${query != ''}">
         <b th:text="${'Results for ' + '&quot;'+ query + '&quot;'}"></b>
     </div>
-    <div th:if="${products?.isEmpty() == false}">
+    <div th:if="${products.isEmpty() == false}" style="width:500px">
         <hr>
-        <section th:each="product : ${products}">
+        <section th:each="product : ${products}" style="width:500px">
 
             <h3><u th:text="${product?.title}"></u></h3>
             <br>
-            <div th:text="${#strings.abbreviate(product?.description,100)}"></div>
-            <br>
-            <div th:text="'Daily Fee: ' + ${product?.dailyFee} + '€'"></div>
-            <br>
+            <table>
+                <td valign="top">
+                    <img th:src="@{'../upload/files/'+${product.id}+'/'+${product.id} + '.jpg'}" alt="Product Cover" style="width:100px; max-height:170px; height:auto">
+                </td>
+                <td valign="top">
+                    <div th:text="${#strings.abbreviate(product.description,100)}" style="word-break:break-all"></div>
+                    <br>
+                    <div th:text="'Daily Fee: ' + ${product.dailyFee} + '€'"></div>
+                    <br>
 
-            <div>
-                <a style="color:mediumseagreen" th:href="@{/product/availability/{id}(id=${product.id})}">check Availability</a>
-            </div>
-            <a th:href="@{/product/{id}(id=${product?.id})}">read more</a>
-            <hr>
+                    <div th:if="${product.available}">
+                        <b style="color:mediumseagreen" th:text="Available"></b>
+                    </div>
+                    <div th:if="${!product.available}">
+                        <b style="color:tomato" th:text="'Borrowed Until' + ${product.date}"></b>
+                    </div>
+                </td>
+            </table>
+            <a th:href="@{/product/{id}(id=${product.id})}">read more</a>
+                <hr>
         </section>
     </div>
     <div th:if="${products?.isEmpty()}">

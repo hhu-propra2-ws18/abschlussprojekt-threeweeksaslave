@@ -47,13 +47,7 @@ public class ProductController {
      */
     @GetMapping("/products")
     public String showProducts(Model model, Principal user) {
-        Customer customer = customerRepo.findByUsername(user.getName()).get();
-        model.addAttribute("user", customer);
-        boolean admin = false;
-        if (customer.getRole().equals("ADMIN")) {
-            admin = true;
-        }
-        model.addAttribute("admin", admin);
+		addUserAndAdmin(user, model);
 
         return searchProducts("", "all", model, user);
     }
@@ -86,13 +80,7 @@ public class ProductController {
     public String searchForOwner(@PathVariable Long customerId, Model model, Principal user) {
         Customer owner = customerRepo.findById(customerId).get();
         model.addAttribute("owner", owner);
-        Customer customer = customerRepo.findByUsername(user.getName()).get();
-        model.addAttribute("user", customer);
-        boolean admin = false;
-        if (customer.getRole().equals("ADMIN")) {
-            admin = true;
-        }
-        model.addAttribute("admin", admin);
+		addUserAndAdmin(user, model);
         return "customer";
     }
 
@@ -105,13 +93,21 @@ public class ProductController {
      */
     @GetMapping("/product")
     public String getProduct(Principal user, Model model) {
-        Customer customer = customerRepo.findByUsername(user.getName()).get();
-        model.addAttribute("user", customer);
-        boolean admin = false;
-        if (customer.getRole().equals("ADMIN")) {
-            admin = true;
-        }
-        model.addAttribute("admin", admin);
+        addUserAndAdmin(user, model);
+
+        Product product = new Product();
+        product.setTitle("TestTitle");
+//        product.setDescription("TestDescription");
+        product.setDeposit(0);
+        product.setDailyFee(0);
+        Address address = new Address();
+        address.setCity("TestCity");
+        address.setHouseNumber(1);
+        address.setPostCode(1);
+        address.setStreet("TestStreet");
+        product.setAddress(address);
+
+        model.addAttribute("product",product);
 
         return "addProduct";
     }
@@ -134,8 +130,21 @@ public class ProductController {
         if (product.allValuesSet()) {
             productRepo.save(product);
         }
-        return "redirect:/home";
+        return "addImageToProduct";
     }
+
+	@GetMapping("/product/edit/{id}")
+	public String editProduct(Principal user, Model model, @PathVariable Long id) {
+		addUserAndAdmin(user, model);
+		Optional<Product> product = productRepo.findById(id);
+		if(product.isPresent()){
+			model.addAttribute(product.get());
+		}
+		else{
+			return"redirect:/home";
+		}
+		return "editProduct";
+	}
 
     private Long getUserId(Principal user) {
         String username = user.getName();
@@ -143,6 +152,16 @@ public class ProductController {
         Long id = customer.get().getCustomerId();
         return id;
     }
+
+    private void addUserAndAdmin(Principal user, Model model){
+		Customer customer = customerRepo.findByUsername(user.getName()).get();
+		model.addAttribute("user", customer);
+		boolean admin = false;
+		if (customer.getRole().equals("ADMIN")) {
+			admin = true;
+		}
+		model.addAttribute("admin", admin);
+	}
 
     /**
      * return a list of products with a specific title

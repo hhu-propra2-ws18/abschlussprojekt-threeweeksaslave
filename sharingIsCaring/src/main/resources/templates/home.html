@@ -1,34 +1,44 @@
-<!doctype html>
-<html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/base.css">
+
     <title>Home</title>
 </head>
 <body>
 
-<nav layout:fragment="nav">
-    <ul>
-        <li><a aria-current="page">Home</a></li>
-        <li><a th:href="@{'/profile'}">Profile</a></li>
-        <li><a href="/products">View Products</a></li>
-        <li><a href="/product">Add Product</a>
-        <li><a th:href="@{'/requests'}">Requests</a></li>
-        <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
-        <li><a href="/logout" role="button">Log Out</a></li>
-    </ul>
-</nav>
+<header>
+    <a class="ribbon" tabindex="-1" title="zurück zur Startseite!" href="/home">
+        <h1 id="logo">Sharing is Caring</h1>
+        <p>Ing. Three Weeks a Slave GmbH</p>
+    </a>
+</header>
 
-<div layout:fragment="content">
+<main>
+    <nav  id="navigation">
+        <ul>
+            <li><a aria-current="page">Home</a></li>
+            <li><a th:href="@{'/profile'}">Profile</a></li>
+            <li><a href="/products">View Products</a></li>
+            <li><a href="/product">Add Product</a>
+            <li><a th:href="@{'/requests'}">Requests</a></li>
+            <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
+            <li><a href="/logout" role="button">Log Out</a></li>
+        </ul>
+    </nav>
 
     <section id="intro">
         <h2>Welcome <span>to Sharing is Caring</span></h2>
-        <p>
-            Teeeeeeeeeeext
-        </p>
+        <td th:text="'Hi '+ ${user.username} + ', nice to see you!'">user name</td>
     </section>
 
     <section class="spalte">
         <h2>Notifications</h2>
+        <tr th:if="${notifications!=null and notifications.isEmpty()}">
+            <td th:text="${'You do not have any notifications.'}"></td>
+        </tr>
         <tr th:each="notification : ${notifications}">
             <br>
             <div class="alert">
@@ -36,24 +46,35 @@
                 <span>&#9888;</span> <td th:text="${notification.notification}"></td>
             </div>
         </tr>
+        <br>
+        <br>
+        <tr>
+            <h2>Motivation</h2>
+                Antoine the little rhino dreams of being a member of the flatshare but he has a problem: He is too big to fit through the small apartment door!
+                <br>
+                We do not have a jackhammer for Antoine,- but for you we have thousands of products to lend.
+                <br>
+                Share, don't buy! That's our currency to declare war to the disposable society!
+                <br>
+        </tr>
     </section>
 
     <section class="spalte">
-        <h2>Motivation</h2>
-        <p>
-            <img src="" alt="">
-            Antoine das Nashorn träumt davon Teil der WG zu sein - nur passt er nicht durch die Tür. Bei Sharing is Caring haben wir zwar keinen Presslufthammer für Antoine, aber über 1000 Produkte für Sie! Teilen statt Kaufen! Eine Kampfansage an die Wegwerfgesellschaft<br>
-        </p>
+         <img src="../img/nashornPresslufthammer.png" alt="" style="width: 80%; height: auto">
     </section>
 
 
-    <section class="spalte">
-        <h2>Lorem ipsum</h2>
-        <p>
-            Lorem ipsum dolor sit amet consectetiu eradipiscing elit sed diam.
-        </p>
-    </section>
-</div>
+</main>
+
+<footer class="grid">
+    <ul id="footer-nav">
+    </ul>
+    <p>
+        Design: ThreeWeeksASlave<br>
+        technical implementation: ThreeWeeksASlave
+    </p>
+</footer>
+
 
 </body>
 </html>

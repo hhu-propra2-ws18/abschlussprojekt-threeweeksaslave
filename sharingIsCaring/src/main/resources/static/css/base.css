@@ -26,7 +26,7 @@ header {
     position: relative;
     height: 210px;
     margin: 2em  0  0 3em;
-    background: plum url("../img/006_DSC_9880.JPG") no-repeat right;
+    background: plum url("../img/nashorn3.png") no-repeat right;
     background-size: contain;
     padding: 0 0 0.5em;
 }
@@ -249,11 +249,11 @@ nav a[aria-current=page]{
         grid-column: 2 / 3;
     }
 
-    .spalte img {
+    /*.spalte img {
         width: 50%;
         float: left;
         margin-right: 0.5em;
-    }
+    }*/
 }
 
 
@@ -285,9 +285,9 @@ nav a[aria-current=page]{
         grid-row:    2 / 3;
     }
 
-    .spalte img {
+    /*.spalte img {
         width: 33%;
-    }
+    }*/
 
     /* The alert message box */
     .alert {
