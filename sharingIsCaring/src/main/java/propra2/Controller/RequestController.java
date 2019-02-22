@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import propra2.database.Customer;
+import propra2.database.Notification;
 import propra2.database.OrderProcess;
 import propra2.database.Product;
 import propra2.handler.OrderProcessHandler;
@@ -30,6 +31,9 @@ public class RequestController {
 
     @Autowired
     ProductRepository productRepo;
+
+    @Autowired
+    NotificationRepository notificationRepository;
 
     @Autowired
     private OrderProcessHandler orderProcessHandler;
@@ -96,6 +100,11 @@ public class RequestController {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.RETURNED);
         orderProcessRepo.save(orderProcess);
+
+        Optional<Notification> notification = notificationRepository.findByProcessId(processId);
+        if(notification.isPresent()) {
+            notificationRepository.delete(notification.get());
+        }
 
         Product product = productRepo.findById(orderProcess.getProduct().getId()).get();
         product.setAvailable(true);
