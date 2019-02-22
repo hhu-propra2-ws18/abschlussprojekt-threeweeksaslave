@@ -22,13 +22,14 @@
 
     <section id="intro">
         <h2>Welcome <span>to Sharing is Caring</span></h2>
-        <p>
-            Teeeeeeeeeeext
-        </p>
+        <td th:text="'Hi, '+ ${user.username} + ', nice to see you!'">user name</td>
     </section>
 
     <section class="spalte">
         <h2>Notifications</h2>
+        <tr th:if="${notifications!=null and notifications.isEmpty()}">
+            <td th:text="${'You do not have any notifications.'}"></td>
+        </tr>
         <tr th:each="notification : ${notifications}">
             <br>
             <div class="alert">
@@ -40,20 +41,14 @@
 
     <section class="spalte">
         <h2>Motivation</h2>
-        <p>
-            <img src="" alt="">
-            Antoine das Nashorn träumt davon Teil der WG zu sein - nur passt er nicht durch die Tür. Bei Sharing is Caring haben wir zwar keinen Presslufthammer für Antoine, aber über 1000 Produkte für Sie! Teilen statt Kaufen! Eine Kampfansage an die Wegwerfgesellschaft<br>
-        </p>
-    </section>
-
-
-    <section class="spalte">
-        <h2>Lorem ipsum</h2>
-        <p>
-            Lorem ipsum dolor sit amet consectetiu eradipiscing elit sed diam.
-        </p>
+        <img src="" alt="">
+        Antoine the little rhino dreams of being a member of the flatshare but he has a problem: He is too big to fit through the small apartment door!
+        <br>
+        With Sharing is Caring Antoine is able to find a jackhammer and thousands of other products to lend.
+        <br>
+        Share, don't buy! That's our currency to declare war to the disposable society!
+        <br>
     </section>
 </div>
-
 </body>
 </html>

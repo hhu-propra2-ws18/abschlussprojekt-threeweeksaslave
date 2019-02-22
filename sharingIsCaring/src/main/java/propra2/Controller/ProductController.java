@@ -94,6 +94,21 @@ public class ProductController {
     @GetMapping("/product")
     public String getProduct(Principal user, Model model) {
         addUserAndAdmin(user, model);
+
+        Product product = new Product();
+        product.setTitle("TestTitle");
+//        product.setDescription("TestDescription");
+        product.setDeposit(0);
+        product.setDailyFee(0);
+        Address address = new Address();
+        address.setCity("TestCity");
+        address.setHouseNumber(1);
+        address.setPostCode(1);
+        address.setStreet("TestStreet");
+        product.setAddress(address);
+
+        model.addAttribute("product",product);
+
         return "addProduct";
     }
 
