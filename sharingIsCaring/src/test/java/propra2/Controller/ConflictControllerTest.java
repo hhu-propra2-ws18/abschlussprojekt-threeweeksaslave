@@ -187,5 +187,5 @@ public class ConflictControllerTest {
                 .andExpect(MockMvcResultMatchers.model().attribute("admin", false))
                 .andExpect(MockMvcResultMatchers.view().name("conflictDetails"));
     }
-    
+
 }

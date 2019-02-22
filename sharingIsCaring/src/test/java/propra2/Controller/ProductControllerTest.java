@@ -30,7 +30,9 @@ import propra2.model.Address;
 import propra2.model.ProPayAccount;
 import propra2.repositories.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasProperty;
@@ -133,7 +135,6 @@ public class ProductControllerTest {
     }
 
 
-    @Ignore //Leo fragen
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
     public void showProductsTest() throws Exception{
@@ -142,13 +143,12 @@ public class ProductControllerTest {
 
         mvc.perform(get("/products"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("customer"));
+                .andExpect(MockMvcResultMatchers.view().name("productsSearch"));
 
 
 
     }
 
-    @Ignore //Leo fragen
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
     public void searchProductsTest() throws Exception{
@@ -158,27 +158,23 @@ public class ProductControllerTest {
         product3.setId(78L);
         product3.setAvailable(false);
 
+        List<Product> products = new ArrayList<>();
+        products.add(product3);
+        products.add(product1);
+
 
         Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
-        Mockito.when(searchProductHandler.getSearchedProducts("Baum", "borrowed", customer, productRepository)).thenReturn(Arrays.asList(product1, product2));
+        Mockito.when(searchProductHandler.getSearchedProducts("Baum", "borrowed", customer, productRepository)).thenReturn(products);
 
-        mvc.perform(get("/searchProducts"))
+        mvc.perform(get("/searchProducts")
+                .param("query", "Baum")
+                .param("filter", "borrowed"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("productsSearch"))
                 .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
-                .andExpect(MockMvcResultMatchers.model().attribute("query", "borrowed" ))
-                .andExpect(MockMvcResultMatchers.model().attribute("products",hasItem(
-                        allOf(
-                                hasProperty("id", is("34L")),
-                                hasProperty("title", is("Baumstamm"))
-                        )
-                )))
-                .andExpect(MockMvcResultMatchers.model().attribute("products", hasItem(
-                        allOf(
-                                hasProperty("id", is("56L")),
-                                hasProperty("title", is("Baumlaube"))
-                        )
-                )));
+                .andExpect(MockMvcResultMatchers.model().attribute("query", "Baum" ))
+                .andExpect(MockMvcResultMatchers.model().attribute("products", products))
+                .andExpect(MockMvcResultMatchers.model().attribute("filter", "borrowed"));
     }
 
 
@@ -238,29 +234,41 @@ public class ProductControllerTest {
         Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
     }
 
-    @Ignore
+    
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
-    public void searchForProductTest() throws Exception {
+    public void editProductTest() throws Exception{
 
-        Mockito.when(productRepository.findByTitle("Baum")).thenReturn(Arrays.asList(product1,product2));
-
-
-    }
-
-    @Ignore
-    @Test
-    @WithMockUser(username="Kevin", password = "Baumhaus")
-    public void getProductInformationByIdTest() throws Exception{
         Mockito.when(productRepository.findById(34L)).thenReturn(java.util.Optional.of(product1));
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
 
+        mvc.perform(get("/product/edit/34"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.model().attribute("product", product1))
+                .andExpect(MockMvcResultMatchers.view().name("editProduct"));
 
-        mvc.perform(post("/product/{id}", 34L)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.view().name("redirect:/home"));
 
     }
+
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void searchForProductsTest(){
+
+    }
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void getAvailabilityTest(){
+
+    }
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void checkAvailabilityTest(){
+
+    }
+
 
 
 
