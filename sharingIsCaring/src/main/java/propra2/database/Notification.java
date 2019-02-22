@@ -15,4 +15,5 @@ public class Notification {
 
     String notification;
     Long borrowerId;
+    Long processId;
 }
