@@ -85,7 +85,6 @@ public class ProductControllerTest {
     @MockBean
     CustomerService customerService;
 
-
     Customer bendisposto = new Customer();
     Customer customer = new Customer();
     Customer owner = new Customer();
@@ -215,12 +214,20 @@ public class ProductControllerTest {
 
         Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
 
-        mvc.perform(get("/product"))
+        mvc.perform(MockMvcRequestBuilders.get("/product"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("addProduct"))
                 .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
                 .andExpect(MockMvcResultMatchers.model().attribute("admin", false));
 
+    }
+
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void retrieveStatus() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/product"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
