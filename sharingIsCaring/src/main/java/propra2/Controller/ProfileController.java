@@ -38,10 +38,10 @@ public class ProfileController {
         customerRepo.save(customer);
         model.addAttribute("user", customer);
 
-        boolean admin = false;
-        if (customer.getRole().equals("ADMIN")) {
-            admin = true;
-        }
+         boolean admin = false;
+         if (customer.getRole().equals("ADMIN")) {
+              admin = true;
+            }
         model.addAttribute("admin", admin);
         return "profile";
     }
