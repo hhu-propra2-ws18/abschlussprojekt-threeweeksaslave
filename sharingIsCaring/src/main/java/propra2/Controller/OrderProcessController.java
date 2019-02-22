@@ -57,7 +57,7 @@ public class OrderProcessController {
     public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user, Model model) {
         Customer customer = customerRepo.findByUsername(user.getName()).get();
         Product product = productRepo.findById(id).get();
-        double totalAmount = product.getTotalAmount(Date.valueOf(from));
+        double totalAmount = product.getExpectedTotalAmount(Date.valueOf(from), Date.valueOf(to));
         List<OrderProcess> orderProcessesOfRequester = orderProcessRepo.findAllByRequestId(customer.getCustomerId());
 
         if (!customer.hasEnoughMoney(totalAmount, orderProcessesOfRequester)) {

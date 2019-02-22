@@ -45,9 +45,15 @@ public class Product {
 		this.address = new Address();
 	}
 
-	public double getTotalAmount(Date from) {
-		double totalDailyFee = getTotalDailyFee(from);
+	public double getExpectedTotalAmount(Date from, Date to) {
+		double totalDailyFee = getExpectedTotalDailyFee(from, to);
 		return totalDailyFee+deposit;
+	}
+
+	private double getExpectedTotalDailyFee(Date from, Date to) {
+		long days = ChronoUnit.DAYS.between(LocalDate.parse(from.toString()), LocalDate.parse(to.toString()));
+		if(days<0) return 0;
+		return (days+1)*dailyFee;
 	}
 
 	public double getTotalDailyFee(Date from){
