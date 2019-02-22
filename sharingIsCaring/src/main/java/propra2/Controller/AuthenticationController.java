@@ -14,6 +14,8 @@ import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.NotificationRepository;
 
+import java.io.File;
+import java.net.URL;
 import java.security.Principal;
 import java.util.List;
 
