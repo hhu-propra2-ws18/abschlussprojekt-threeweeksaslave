@@ -11,16 +11,16 @@ import propra2.repositories.CustomerRepository;
 
 @Service
 public class RegistrationService {
+
     @Autowired
     CustomerRepository customerRepo;
+
+    @Autowired
     private UserHandler userHandler;
 
     @Autowired
     PasswordEncoder bCryptPasswordEncoder;
 
-    public RegistrationService() {
-        userHandler = new UserHandler();
-    }
 
     public void saveCredentials(UserRegistration user) {
         Customer customer = new Customer();
