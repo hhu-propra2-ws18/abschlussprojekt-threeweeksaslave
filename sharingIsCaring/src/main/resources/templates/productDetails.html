@@ -59,7 +59,8 @@
             </tr>
         </table>
         <br>
-        <a th:href="@{'/product/' + ${product.id} + '/orderProcess'}">Borrow it!</a>
+        <a th:if="${!user.equals(owner)}" th:href="@{'/product/' + ${product.id} + '/orderProcess'}">Borrow it!</a>
+        <a th:if="${user.equals(owner)}" th:href="@{'/product/edit/' + ${product.id}}">Edit it!</a>
         <hr>
         <a href="javascript:history.back()">Back to search page</a>
     </section>
