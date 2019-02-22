@@ -104,7 +104,7 @@ public class ProductController {
         Address address = new Address();
         address.setCity("TestCity");
         address.setHouseNumber(1);
-        address.setPostCode(1);
+        address.setPostcode(1);
         address.setStreet("TestStreet");
         product.setAddress(address);
 
