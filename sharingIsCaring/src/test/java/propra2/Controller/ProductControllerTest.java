@@ -234,7 +234,7 @@ public class ProductControllerTest {
         Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
     }
 
-    
+
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
     public void editProductTest() throws Exception{
