@@ -18,6 +18,7 @@ import propra2.Security.service.RegistrationService;
 import propra2.Security.validator.CustomerValidator;
 import propra2.database.Customer;
 import propra2.handler.SearchProductHandler;
+import propra2.handler.UserHandler;
 import propra2.model.Address;
 import propra2.model.ProPayAccount;
 import propra2.repositories.CustomerRepository;
@@ -31,13 +32,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = ProfileController.class)
 @ContextConfiguration
-public class ProfileControllerTests {
+public class ProfileControllerTest {
 
     @Autowired
     MockMvc mvc;
 
     @MockBean
     CustomerRepository customerRepository;
+
+    @MockBean
+    UserHandler userHandler;
 
     @MockBean
     SearchProductHandler searchProductHandler;
@@ -52,6 +56,7 @@ public class ProfileControllerTests {
     CustomerService customerService;
 
     Customer bendisposto = new Customer();
+    ProPayAccount account = new ProPayAccount();
 
     @Before
     public void setup() {
@@ -61,7 +66,6 @@ public class ProfileControllerTests {
         address.setHouseNumber(1);
         address.setCity("Ddorf");
 
-        ProPayAccount account = new ProPayAccount();
         account.setAccount("Zoidberg");
         account.setAmount(100);
 
@@ -71,7 +75,7 @@ public class ProfileControllerTests {
         bendisposto.setAddress(address);
         bendisposto.setPassword("propra2");
         bendisposto.setProPay(account);
-        bendisposto.setRole("User");
+        bendisposto.setRole("USER");
     }
 
     @Test
@@ -80,6 +84,7 @@ public class ProfileControllerTests {
 
         Mockito.when(customerRepository.findByUsername("Zoidberg")).thenReturn(java.util.Optional.of(bendisposto));
         Mockito.when(customerRepository.findById(2L)).thenReturn(java.util.Optional.of(bendisposto));
+        Mockito.when(userHandler.getProPayAccount("Zoidberg")).thenReturn(account);
 
         mvc.perform(get("/profile"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
