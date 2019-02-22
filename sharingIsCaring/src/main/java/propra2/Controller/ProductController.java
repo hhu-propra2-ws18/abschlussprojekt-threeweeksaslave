@@ -97,7 +97,7 @@ public class ProductController {
 
         Product product = new Product();
 
-       /* product.setTitle("TestTitle");
+        product.setTitle("TestTitle");
 //        product.setDescription("TestDescription");
         product.setDeposit(0);
         product.setDailyFee(0);
@@ -106,14 +106,14 @@ public class ProductController {
         address.setHouseNumber(1);
         address.setPostCode(1);
         address.setStreet("TestStreet");
-        product.setAddress(address);*/
+        product.setAddress(address);
 
         model.addAttribute("product",product);
         return "addProduct";
     }
 
     @PostMapping("/product")
-    public String createProduct(Principal user, final Product product, /*final Address address,*/ final Model model) {
+    public String createProduct(Principal user, final Product product, final Address address, final Model model) {
         Long loggedInId = getUserId(user);
         Optional<Customer> customer = customerRepo.findById(loggedInId);
         model.addAttribute("user", user);
@@ -124,7 +124,7 @@ public class ProductController {
 
         //product.setOwnerId(loggedInId);
         product.setAvailable(true);
-        //product.setAddress(address);
+        product.setAddress(address);
         //TODO set borrowed until
 
         if (product.allValuesSet()) {
@@ -150,12 +150,16 @@ public class ProductController {
 	public String saveProduct(Principal user, Model model, final Product product, final Address address, @PathVariable Long productId)
 	{
 		Product oldProduct = productRepo.findById(productId).get();
-		product.setOwner(oldProduct.getOwner());
-		product.setAvailable(oldProduct.isAvailable());
-		product.setAddress(address);
-		product.setId(productId);
-		productRepo.save(product);
-		return("redirect:/product/"+product.getId());
+		Customer owner = oldProduct.getOwner();
+		if(owner.getCustomerId().equals(getUserId(user))){
+			product.setOwner(owner);
+			product.setAvailable(oldProduct.isAvailable());
+			product.setAddress(address);
+			product.setId(productId);
+			productRepo.save(product);
+			return("redirect:/product/"+product.getId());
+		}
+		return("redirect:/home");
 	}
 
     private Long getUserId(Principal user) {
