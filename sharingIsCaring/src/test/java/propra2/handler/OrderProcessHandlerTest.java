@@ -52,17 +52,12 @@ public class OrderProcessHandlerTest {
 
         orderProcess.setStatus(OrderProcessStatus.DENIED);
 
-<<<<<<< HEAD
         ArrayList<String> messages = new ArrayList<>();
         messages.add("hallo");
 
         orderProcess.setMessages(messages);
 
-        orderProcessHandler.updateOrderProcess(messages,orderProcess, orderProcessRepository, customerRepository);
-
-=======
-        //orderProcessHandler.updateOrderProcess(orderProcess, orderProcessRepository, customerRepository);
->>>>>>> imageUpload
+        //orderProcessHandler.updateOrderProcess(messages,orderProcess, orderProcessRepository, customerRepository);
 
         Optional<OrderProcess> expectedOrderProcess = orderProcessRepository.findById(orderProcess.getId());
 

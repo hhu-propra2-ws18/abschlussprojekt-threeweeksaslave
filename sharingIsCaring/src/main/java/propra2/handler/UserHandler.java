@@ -2,6 +2,7 @@ package propra2.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
@@ -13,6 +14,7 @@ import propra2.repositories.TransactionRepository;
 import reactor.core.publisher.Mono;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class UserHandler {
@@ -66,5 +68,15 @@ public class UserHandler {
         transaction.setUserName(userName);
 
         transactionRepository.save(transaction);
+    }
+    
+    @Scheduled(fixedRate = 60000)
+    public void syncProPayAcounts(){
+        List<Customer> customers = customerRepo.findAll();
+
+        for (Customer customer : customers) {
+            customer.setProPay(getProPayAccount(customer.getUsername()));
+            customerRepo.save(customer);
+        }
     }
 }
