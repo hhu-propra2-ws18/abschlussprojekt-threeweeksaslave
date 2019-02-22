@@ -26,7 +26,7 @@ header {
     position: relative;
     height: 210px;
     margin: 2em  0  0 3em;
-    background: plum url("../img/006_DSC_9880.JPG") no-repeat right;
+    background: plum url("../img/nashorn3.png") no-repeat right;
     background-size: contain;
     padding: 0 0 0.5em;
 }
@@ -316,7 +316,4 @@ nav a[aria-current=page]{
     .closebtn:hover {
         color: black;
     }
-=======
-    }*/
->>>>>>> imageUpload
 }
