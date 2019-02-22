@@ -62,7 +62,7 @@ public class ProfileControllerTest {
     public void setup() {
         Address address = new Address();
         address.setStreet("Unistraße");
-        address.setPostCode(34509);
+        address.setPostcode(34509);
         address.setHouseNumber(1);
         address.setCity("Ddorf");
 
