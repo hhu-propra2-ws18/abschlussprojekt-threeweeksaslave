@@ -27,30 +27,13 @@ import propra2.repositories.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest
-@ContextConfiguration
+@WebMvcTest(controllers = AuthenticationController.class)
+//@ContextConfiguration
 public class AuthenticationControllerTest {
 
     @Autowired
     MockMvc mvc;
 
-    @MockBean
-    RequestController requestController;
-
-    @MockBean
-    ProfileController profileController;
-
-    @MockBean
-    ProductController productController;
-
-    @MockBean
-    ProPayController proPayController;
-
-    @MockBean
-    ConflictController conflictController;
-
-    @MockBean
-    OrderProcessController orderProcessController;
 
     @MockBean
     NotificationRepository notificationRepository;

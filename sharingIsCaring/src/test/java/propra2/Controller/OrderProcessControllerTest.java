@@ -20,30 +20,12 @@ import propra2.model.ProPayAccount;
 import propra2.repositories.*;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest
-@ContextConfiguration
+@WebMvcTest(controllers =OrderProcessController.class)
+//@ContextConfiguration
 public class OrderProcessControllerTest {
 
     @Autowired
     MockMvc mvc;
-
-    @MockBean
-    RequestController requestController;
-
-    @MockBean
-    ProfileController profileController;
-
-    @MockBean
-    ProductController productController;
-
-    @MockBean
-    ProPayController proPayController;
-
-    @MockBean
-    ConflictController conflictController;
-
-    @MockBean
-    OrderProcessController orderProcessController;
 
     @MockBean
     NotificationRepository notificationRepository;

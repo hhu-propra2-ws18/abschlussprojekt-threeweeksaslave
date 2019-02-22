@@ -29,26 +29,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest
+@WebMvcTest(controllers = ProfileController.class)
 @ContextConfiguration
 public class ProfileControllerTests {
 
     @Autowired
     MockMvc mvc;
-    @MockBean
-    AuthenticationController authenticationController;
-    @MockBean
-    ConflictController conflictController;
-    @MockBean
-    OrderProcessController orderProcessController;
-    @MockBean
-    ProPayController proPayController;
-    @MockBean
-    ProductController productController;
-    @MockBean
-    ProfileController profileController;
-    @MockBean
-    RequestController requestController;
+
     @MockBean
     CustomerRepository customerRepository;
 

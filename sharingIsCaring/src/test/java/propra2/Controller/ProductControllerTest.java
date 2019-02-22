@@ -6,8 +6,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.AliasFor;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,6 +24,7 @@ import propra2.Security.service.RegistrationService;
 import propra2.Security.validator.CustomerValidator;
 import propra2.database.Customer;
 import propra2.database.Product;
+import propra2.handler.OrderProcessHandler;
 import propra2.handler.SearchProductHandler;
 import propra2.model.Address;
 import propra2.model.ProPayAccount;
@@ -34,29 +39,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest
-@ContextConfiguration
+@WebMvcTest(controllers = ProductController.class)
+//@ContextConfiguration
 public class ProductControllerTest {
     @Autowired
     MockMvc mvc;
-
-    @MockBean
-    RequestController requestController;
-
-    @MockBean
-    ProfileController profileController;
-
-    @MockBean
-    ProductController productController;
-
-    @MockBean
-    ProPayController proPayController;
-
-    @MockBean
-    ConflictController conflictController;
-
-    @MockBean
-    OrderProcessController orderProcessController;
 
     @MockBean
     NotificationRepository notificationRepository;
@@ -84,6 +71,9 @@ public class ProductControllerTest {
 
     @MockBean
     CustomerService customerService;
+
+    @MockBean
+    OrderProcessHandler orderProcessHandler;
 
     Customer bendisposto = new Customer();
     Customer customer = new Customer();
@@ -214,21 +204,14 @@ public class ProductControllerTest {
 
         Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
 
-        mvc.perform(MockMvcRequestBuilders.get("/product"))
+        mvc.perform(get("/product"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("addProduct"))
                 .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
-                .andExpect(MockMvcResultMatchers.model().attribute("admin", false));
+                .andExpect(MockMvcResultMatchers.model().attribute("admin", false))
+                .andExpect(MockMvcResultMatchers.view().name("addProduct"));
 
     }
 
-
-    @Test
-    @WithMockUser(username="Kevin", password = "Baumhaus")
-    public void retrieveStatus() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/product"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
 
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")

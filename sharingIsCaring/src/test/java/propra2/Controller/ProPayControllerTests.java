@@ -8,8 +8,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest
-@ContextConfiguration
+@WebMvcTest(controllers = ProPayController.class)
+//@ContextConfiguration
 public class ProPayControllerTests {
 
     @Autowired
