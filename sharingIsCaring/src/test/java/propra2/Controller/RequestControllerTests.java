@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -73,7 +72,7 @@ public class RequestControllerTests {
     public void setup() {
         Address address = new Address();
         address.setStreet("Unistraße");
-        address.setPostCode(34509);
+        address.setPostcode(34509);
         address.setHouseNumber(1);
         address.setCity("Ddorf");
 

@@ -2,7 +2,7 @@
 <html lang="en" layout:decorate="~{base}" xmlns:th="http://www.w3.org/1999/xhtml"
       xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Updating your Profile...</title>
+    <title>Update your Profile</title>
 </head>
 <body>
 
@@ -13,7 +13,7 @@
         <li><a href="/products">View Products</a></li>
         <li><a href="/product">Add Product</a>
         <li><a th:href="@{'/requests'}">Requests</a></li>
-         <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
+        <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
         <li><a href="/logout" role="button">Log Out</a></li>
     </ul>
 </nav>
@@ -26,18 +26,19 @@
         <table>
             <tr>
                 <td>
-                    userName:
+                    Username:
                 </td>
                 <td>
-                    <dd th:text="${user?.username}">user name</dd>
+                    <dd th:text="${user?.username}">Username</dd>
                 </td>
             </tr>
             <tr>
                 <td>
-                    emailAddress:
+                    Email address:
                 </td>
                 <td>
-                    <input type="text" name="mail" th:value="${user?.mail}">
+                    <input type="email" name="mail" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                           th:value="${user?.mail}" required minlength="6" maxlength="32">
                 </td>
             </tr>
         </table>
@@ -50,15 +51,15 @@
             </tr>
             <tr>
                 <td>
-                    street:
+                    Street:
                 </td>
                 <td>
-                    <input type="text" name="street" th:value="${user?.address.street}">
+                    <input type="text" name="street" pattern="[^0-9]+" th:value="${user?.address.street}">
                 </td>
             </tr>
             <tr>
                 <td>
-                    houseNr:
+                    House No.:
                 </td>
                 <td>
                     <input type="number" name="houseNumber" th:value="${user?.address.houseNumber}">
@@ -66,18 +67,18 @@
             </tr>
             <tr>
                 <td>
-                    postCode:
+                    Postcode:
                 </td>
                 <td>
-                    <input type="number" name="postCode" th:value="${user?.address.postCode}">
+                    <input type="number" name="postcode" th:value="${user?.address.postcode}">
                 </td>
             </tr>
             <tr>
                 <td>
-                    city:
+                    City:
                 </td>
                 <td>
-                    <input type="text" name="city" th:value="${user?.address.city}">
+                    <input type="text" name="city" pattern="[^0-9]+" th:value="${user?.address.city}">
                 </td>
             </tr>
         </table>

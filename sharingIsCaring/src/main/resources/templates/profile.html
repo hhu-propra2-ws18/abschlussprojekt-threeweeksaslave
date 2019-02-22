@@ -27,7 +27,7 @@
                     Username:
                 </td>
                 <td>
-                    <dd th:text="${user.username}">user name</dd>
+                    <dd th:text="${user?.username}">user name</dd>
                 </td>
             </tr>
             <tr>
@@ -35,7 +35,7 @@
                     Email address:
                 </td>
                 <td>
-                    <dd th:text="${user.mail}">mail</dd>
+                    <dd th:text="${user?.mail}">mail</dd>
                 </td>
             </tr>
         </table>
@@ -51,7 +51,7 @@
                     Street:
                 </td>
                 <td>
-                    <dd th:text="${user.address.street}">street</dd>
+                    <dd th:text="${user?.address.street}">street</dd>
                 </td>
             </tr>
             <tr>
@@ -59,7 +59,7 @@
                     House No.:
                 </td>
                 <td>
-                    <dd th:text="${user.address.houseNumber}">houseNumber</dd>
+                    <dd th:text="${user?.address.houseNumber}">houseNumber</dd>
                 </td>
             </tr>
             <tr>
@@ -67,7 +67,7 @@
                     Postal code:
                 </td>
                 <td>
-                    <dd th:text="${user.address.postCode}">postCode</dd>
+                    <dd th:text="${user?.address.postcode}">postCode</dd>
                 </td>
             </tr>
             <tr>
@@ -75,13 +75,13 @@
                     City:
                 </td>
                 <td>
-                    <dd th:text="${user.address.city}">city</dd>
+                    <dd th:text="${user?.address.city}">city</dd>
                 </td>
             </tr>
         </table>
 
         <br/>
-        <a th:href="@{'/profile/update/'}" role="button">change profile</a>
+        <a th:href="@{'/profile/update'}" role="button">Change profile</a>
 
     </section>
     <section class="spalte">
@@ -89,20 +89,20 @@
         <table>
             <tr>
                 <td>
-                    amount:
+                    Amount:
                 </td>
                 <td>
-                    <dd th:text="${user.proPay.amount} + '€'">amount</dd>
+                    <dd th:text="${#numbers.formatInteger(user?.proPay?.amount, 1, 'POINT')} + ' €'">Amount</dd>
                 </td>
             </tr>
             <tr>
                 <td>
-                    blocked deposit:
+                    Blocked deposit:
                 </td>
             </tr>
             <tr th:each="reservation:${user.proPay.reservations}">
                 <td th:text="'Nr: ' + ${reservation.id}">Nr: 0</td>
-                <td th:text="'Amount: ' + ${reservation.amount} + '€'">Amount: 0€</td>
+                <td th:text="${#numbers.formatInteger(reservation?.amount, 1, 'POINT')} + ' €'">Amount: 0€</td>
             </tr>
         </table>
         <br/>

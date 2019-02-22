@@ -34,8 +34,8 @@
                 <th>Details</th>
             </tr>
             <tr th:each="process : ${processes}">
-                <td th:text="${process.product.title}"></td>
-                <td th:text="${process.status}"></td>
+                <td th:text="${process?.product.title}"></td>
+                <td th:text="${process?.status}"></td>
                 <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/conflicts/details/' + ${process.id}}">Details</a></td>
             </tr>
         </table>
