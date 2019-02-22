@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,11 +20,13 @@ import propra2.Security.validator.CustomerValidator;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
 import propra2.database.Product;
+import propra2.handler.OrderProcessHandler;
 import propra2.handler.SearchProductHandler;
 import propra2.model.Address;
 import propra2.model.ProPayAccount;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
+import propra2.repositories.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +58,10 @@ public class RequestControllerTests {
     OrderProcessRepository orderProcessRepository;
     @MockBean
     CustomerRepository customerRepository;
+    @MockBean
+    ProductRepository productRepository;
+    @MockBean
+    OrderProcessHandler orderProcessHandler;
 
     Customer bendisposto = new Customer();
     Customer kevin = new Customer();
@@ -98,8 +105,8 @@ public class RequestControllerTests {
         product2.setAvailable(false);
     }
 
-    @Ignore
     @Test
+    @Ignore
     @WithMockUser(username = "Zoidberg", password = "propra2")
     public void testShowRequests() throws Exception {
 
@@ -109,7 +116,7 @@ public class RequestControllerTests {
         process1.setProduct(product1);
         process1.setRequestId(111L);
         process1.setStatus(PENDING);
-        List owner = new ArrayList();
+        List<OrderProcess> owner = new ArrayList();
         owner.add(process1);
 
         OrderProcess process2 = new OrderProcess();
@@ -118,39 +125,35 @@ public class RequestControllerTests {
         process2.setProduct(product2);
         process2.setRequestId(2L);
         process2.setStatus(ACCEPTED);
-        List borrowed = new ArrayList();
+        List<OrderProcess> borrowed = new ArrayList();
         borrowed.add(process2);
 
-        Mockito.when(orderProcessRepository.findAllByOwnerId(2L)).thenReturn(owner);
-        Mockito.when(orderProcessRepository.findAllByRequestId(2L)).thenReturn(borrowed);
         Mockito.when(customerRepository.findById(2L)).thenReturn(java.util.Optional.of(bendisposto));
+        Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(kevin));
+        Mockito.when(orderProcessRepository.findById(13L)).thenReturn(java.util.Optional.of(process1));
+        Mockito.when(customerRepository.findByUsername("Zoidberg")).thenReturn(java.util.Optional.of(bendisposto));
 
-        mvc.perform(get("/requests"))
+        mvc.perform(get("/requests/detailsOwner/{processId}", 13L))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("requests"))
-                .andExpect(MockMvcResultMatchers.model().attribute("user", bendisposto))
-                .andExpect(MockMvcResultMatchers.model().attribute("ownerOrderProcess", owner ))
-                .andExpect(MockMvcResultMatchers.model().attribute("borrower", process2))
-                /*
-                .andExpect(MockMvcResultMatchers.model().attribute("owner", hasItem(
-                        allOf(
-                                hasProperty("ownerId", is(2L)),
-                                hasProperty("requestId", is(111L)),
-                                hasProperty("product", hasProperty("title", is("Baumstamm"))),
-
-                                hasProperty("status", is(PENDING))))))
-                .andExpect(MockMvcResultMatchers.model().attribute("borrower", hasItem(
-                        allOf(
-                                hasProperty("ownerId", is(111L)),
-                                hasProperty("requestId", is(2L)),
-                                hasProperty("product", hasProperty("title", is("Baumlaube"))),
-                                hasProperty("status", is(ACCEPTED))))))*/
-                .andExpect(MockMvcResultMatchers.model().attribute("admin", false));
+                .andExpect(MockMvcResultMatchers.view().name("requestDetailsOwner"))
+                .andExpect(MockMvcResultMatchers.model().attribute("owner", allOf(
+                        hasProperty("username", is("Luke")),
+                        hasProperty("mail", is("luke@web.de")))))
+                .andExpect(MockMvcResultMatchers.model().attribute("product", allOf(
+                        hasProperty("available", is(false)),
+                        hasProperty("title", is("Baumstamm")),
+                        hasProperty("id", is(34L)))))
+                .andExpect(MockMvcResultMatchers.model().attribute("process", allOf(
+                        hasProperty("ownerId", is(2L)),
+                        hasProperty("requestId", is(111L)),
+                        hasProperty("product", hasProperty("title", is("Baumstamm"))),
+                        hasProperty("status", is(PENDING)))))
+                .andExpect(MockMvcResultMatchers.model().attribute("owner", allOf(
+                        hasProperty("username", is("Luke")),
+                        hasProperty("mail", is("luke@web.de")))));
     }
 
     @Test
-    //TODO Fick diesen Test...
-    @Ignore
     @WithMockUser(username = "Zoidberg", password = "propra2")
     public void testShowRequestDetailsOwner() throws Exception {
 
@@ -162,8 +165,9 @@ public class RequestControllerTests {
         process.setStatus(PENDING);
 
         Mockito.when(orderProcessRepository.findById(13L)).thenReturn(java.util.Optional.of(process));
-        //Mockito.when(customerRepository.findByUsername("Zoidberg").get().getCustomerId()).thenReturn(2L);
         Mockito.when(customerRepository.findByUsername("Zoidberg")).thenReturn(java.util.Optional.of(bendisposto));
+        Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(kevin));
+        Mockito.when(customerRepository.findById(2L)).thenReturn(java.util.Optional.of(bendisposto));
 
         mvc.perform(get("/requests/detailsOwner/{processId}", 13L))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -177,14 +181,13 @@ public class RequestControllerTests {
                         hasProperty("product", hasProperty("title", is("Baumstamm"))),
                         hasProperty("status", is(PENDING)))))
                 .andExpect(MockMvcResultMatchers.model().attribute("product", allOf(
-                        hasProperty("avaiable", is(false)),
-                        hasProperty("title", is("Baumlaube")),
+                        hasProperty("available", is(false)),
+                        hasProperty("title", is("Baumstamm")),
                         hasProperty("id", is(34L)))));
     }
 
-    @Ignore
+
     @Test
-    // TODO Fick auch diesen Test(gleicher wie der davor)
     @WithMockUser(username = "Zoidberg", password = "propra2")
     public void testShowRequestDetailsBorrower() throws Exception {
 
@@ -208,9 +211,18 @@ public class RequestControllerTests {
         mvc.perform(get("/requests/detailsBorrower/{processId}", 13L))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("requestDetailsBorrower"))
-                .andExpect(MockMvcResultMatchers.model().attribute("process", process))
-                .andExpect(MockMvcResultMatchers.model().attribute("owner", owner2))
-                .andExpect(MockMvcResultMatchers.model().attribute("product", product1));
+                .andExpect(MockMvcResultMatchers.model().attribute("owner", allOf(
+                        hasProperty("username", is("Luke")),
+                        hasProperty("mail", is("luke@web.de")))))
+                .andExpect(MockMvcResultMatchers.model().attribute("process", allOf(
+                        hasProperty("ownerId", is(111L)),
+                        hasProperty("requestId", is(2L)),
+                        hasProperty("product", hasProperty("title", is("Baumstamm"))),
+                        hasProperty("status", is(PENDING)))))
+                .andExpect(MockMvcResultMatchers.model().attribute("product", allOf(
+                        hasProperty("available", is(false)),
+                        hasProperty("title", is("Baumstamm")),
+                        hasProperty("id", is(34L)))));
 
 
     }

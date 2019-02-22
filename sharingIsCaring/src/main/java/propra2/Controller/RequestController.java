@@ -44,10 +44,10 @@ public class RequestController {
         Optional<Customer> customer = customerRepo.findById(userId);
 
         List<OrderProcess> ownerOrderProcesses = orderProcessRepo.findAllByOwnerId(userId);
-        List<OrderProcess> borrower = orderProcessRepo.findAllByRequestId(userId);
+        List<OrderProcess> borrowerOrderProcesses = orderProcessRepo.findAllByRequestId(userId);
         model.addAttribute("user", customer.get());
         model.addAttribute("ownerOrderProcesses", ownerOrderProcesses);
-        model.addAttribute("borrower", borrower);
+        model.addAttribute("borrowerOrderProcesses", borrowerOrderProcesses);
         boolean admin = false;
         if(customer.get().getRole().equals("ADMIN")){
             admin = true;
@@ -58,8 +58,9 @@ public class RequestController {
 
     private Long getUserId(Principal user) {
         String username = user.getName();
-        Optional<Customer> customer = customerRepo.findByUsername(username);
-        Long id = customer.get().getCustomerId();
+        Long id = customerRepo.findByUsername(username).get().getCustomerId();
+        //Optional<Customer> customer = customerRepo.findByUsername(username);
+        //Long id = customer.get().getCustomerId();
         return id;
     }
 
