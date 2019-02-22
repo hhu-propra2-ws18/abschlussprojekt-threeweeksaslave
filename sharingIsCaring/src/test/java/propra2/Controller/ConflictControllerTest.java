@@ -19,18 +19,22 @@ import propra2.Security.validator.CustomerValidator;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
 import propra2.database.Product;
+import propra2.handler.OrderProcessHandler;
 import propra2.handler.SearchProductHandler;
 import propra2.model.Address;
 import propra2.model.ProPayAccount;
 import propra2.repositories.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static propra2.model.OrderProcessStatus.ACCEPTED;
+import static propra2.model.OrderProcessStatus.CONFLICT;
 import static propra2.model.OrderProcessStatus.DENIED;
 
 
@@ -69,6 +73,9 @@ public class ConflictControllerTest {
 
     @MockBean
     CustomerService customerService;
+
+    @MockBean
+    OrderProcessHandler orderProcessHandler;
 
 
     Customer bendisposto = new Customer();
@@ -131,37 +138,54 @@ public class ConflictControllerTest {
     public void getConflictTest() throws Exception{
         OrderProcess orderProcess = new OrderProcess();
         orderProcess.setId(5L);
-        orderProcess.setStatus(DENIED);
+        orderProcess.setStatus(CONFLICT);
+        orderProcess.setProduct(product2);
 
         OrderProcess orderProcess2 = new OrderProcess();
         orderProcess2.setId(6L);
-        orderProcess2.setStatus(DENIED);
+        orderProcess2.setStatus(CONFLICT);
+        orderProcess2.setProduct(product1);
 
         OrderProcess orderProcess3 = new OrderProcess();
         orderProcess3.setId(7L);
         orderProcess3.setStatus(ACCEPTED);
 
+        List<OrderProcess> processList = new ArrayList<>();
+        processList.add(orderProcess);
+        processList.add(orderProcess2);
+
         Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
-        Mockito.when(orderProcessRepository.findByStatus(DENIED)).thenReturn(Arrays.asList(orderProcess,orderProcess2));
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(orderProcessRepository.findByStatus(CONFLICT)).thenReturn(processList);
 
         mvc.perform(get("/conflicts"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.model().attribute("processes", hasItem(
-                        allOf(
-                                hasProperty("id", is(5L)),
-                                hasProperty("id", is(6L))
-                        ))))
-                .andExpect(MockMvcResultMatchers.model().attribute("admin", admin))
+                .andExpect(MockMvcResultMatchers.model().attribute("processes", processList))
                 .andExpect(MockMvcResultMatchers.model().attribute("admin", false))
                 .andExpect(MockMvcResultMatchers.view().name("conflict"));
     }
 
-
-
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
-    public void retrieveStatus() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/conflicts"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+    public void testShowConflictDetails() throws Exception{
+        OrderProcess orderProcess = new OrderProcess();
+        orderProcess.setId(5L);
+        orderProcess.setStatus(CONFLICT);
+        orderProcess.setProduct(product2);
+        orderProcess.setOwnerId(111L);
+        orderProcess.setRequestId(111L);
+
+        Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(orderProcessRepository.findById(5L)).thenReturn(java.util.Optional.of(orderProcess));
+
+        mvc.perform(get("/conflicts/details/5"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
+                .andExpect(MockMvcResultMatchers.model().attribute("product", orderProcess.getProduct()))
+                .andExpect(MockMvcResultMatchers.model().attribute("process", orderProcess))
+                .andExpect(MockMvcResultMatchers.model().attribute("admin", false))
+                .andExpect(MockMvcResultMatchers.view().name("conflictDetails"));
     }
+    
 }
