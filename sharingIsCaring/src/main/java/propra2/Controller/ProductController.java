@@ -157,7 +157,8 @@ public class ProductController {
 			product.setAddress(address);
 			product.setId(productId);
 			productRepo.save(product);
-			return("redirect:/product/"+product.getId());
+			model.addAttribute(product);
+			return"addImageToProduct";
 		}
 		return("redirect:/home");
 	}
