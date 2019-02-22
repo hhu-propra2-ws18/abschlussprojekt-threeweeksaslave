@@ -54,11 +54,11 @@ public class FileUploadController {
 								   @RequestParam("productId") String productId, RedirectAttributes redirectAttributes) {
 
         String originalFilename = file.getOriginalFilename();
-        storageService.store(file, fileName + originalFilename.
-                substring(originalFilename.length()-4), productId);
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
-
+        if(originalFilename.length() >= 4) {
+			storageService.store(file, fileName + originalFilename.substring(originalFilename.length() - 4), productId);
+			redirectAttributes.addFlashAttribute("message",
+					"You successfully uploaded " + file.getOriginalFilename() + "!");
+		}
         return "redirect:/home";
     }
 

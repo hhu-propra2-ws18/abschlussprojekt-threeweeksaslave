@@ -96,6 +96,7 @@ public class ProductController {
         addUserAndAdmin(user, model);
 
         Product product = new Product();
+
         product.setTitle("TestTitle");
 //        product.setDescription("TestDescription");
         product.setDeposit(0);
@@ -108,7 +109,6 @@ public class ProductController {
         product.setAddress(address);
 
         model.addAttribute("product",product);
-
         return "addProduct";
     }
 
@@ -138,12 +138,29 @@ public class ProductController {
 		addUserAndAdmin(user, model);
 		Optional<Product> product = productRepo.findById(id);
 		if(product.isPresent()){
-			model.addAttribute(product.get());
+			model.addAttribute("product",product.get());
 		}
 		else{
 			return"redirect:/home";
 		}
 		return "editProduct";
+	}
+
+	@PostMapping("/product/edit/{productId}")
+	public String saveProduct(Principal user, Model model, final Product product, final Address address, @PathVariable Long productId)
+	{
+		Product oldProduct = productRepo.findById(productId).get();
+		Customer owner = oldProduct.getOwner();
+		if(owner.getCustomerId().equals(getUserId(user))){
+			product.setOwner(owner);
+			product.setAvailable(oldProduct.isAvailable());
+			product.setAddress(address);
+			product.setId(productId);
+			productRepo.save(product);
+			model.addAttribute(product);
+			return"addImageToProduct";
+		}
+		return("redirect:/home");
 	}
 
     private Long getUserId(Principal user) {

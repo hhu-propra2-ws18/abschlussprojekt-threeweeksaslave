@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>New Product</title>
+</head>
+<body>
+
+<nav layout:fragment="nav">
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li><a th:href="@{'/profile'}">Profile</a></li>
+        <li><a href="/products">View Products</a></li>
+        <li><a href="/product">Add Product</a>
+        <li><a th:href="@{'/requests'}">Requests</a></li>
+         <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
+        <li><a href="/logout" role="button">Log Out</a></li>
+    </ul>
+</nav>
+
+<div layout:fragment="content">
+
+    <form method="post">
+        <h2>Please <span>enter your product information</span></h2>
+        <table>
+            <tr>
+                <td> Title:</td>
+                <td><input name="title" th:value="${product?.title}" type="text" required maxlength="255"></td>
+            </tr>
+            <tr>
+                <td valign="top"> Description:</td>
+                <td valign="top"><textarea name="description" th:value="${product?.description}"
+                                           required maxlength="255" rows="6" cols="40">TestDescription</textarea></td>
+            </tr>
+            <tr>
+                <td> Deposit:</td>
+                <td><input name="deposit" th:value="${product?.deposit}" type="number" required min="0"></td>
+            </tr>
+            <tr>
+                <td> Daily Fee:</td>
+                <td><input name="dailyFee" th:value="${product?.dailyFee}" type="number" required min="0"></td>
+            </tr>
+            <tr>
+                <td> Address:</td>
+            </tr>
+            <tr>
+                <td> street:</td>
+                <td><input name="street" th:value="${product?.address?.street}" type="text" required maxlength="255">
+                </td>
+            </tr>
+            <tr>
+                <td> houseNr:</td>
+                <td><input name="houseNumber" th:value="${product?.address?.houseNumber}" type="number" required
+                           min="1"></td>
+            </tr>
+            <tr>
+                <td> postCode:</td>
+                <td><input name="postCode" th:value="${product?.address?.postCode}" type="number" required min="1"></td>
+            </tr>
+            <tr>
+                <td> city:</td>
+                <td><input name="city" th:value="${product?.address?.city}" type="text" required maxlength="255"></td>
+            </tr>
+        </table>
+        <br>
+        <button type="submit" class="btn btn-default btn-sm">Save Product!</button>
+    </form>
+</div>
+
+</body>
+</html>
