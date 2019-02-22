@@ -57,7 +57,8 @@ public class OrderProcessHandlerTest {
 
         orderProcess.setMessages(messages);
 
-        //orderProcessHandler.updateOrderProcess(messages,orderProcess, orderProcessRepository, customerRepository);
+        orderProcessHandler.updateOrderProcess(messages,orderProcess);
+
 
         Optional<OrderProcess> expectedOrderProcess = orderProcessRepository.findById(orderProcess.getId());
 

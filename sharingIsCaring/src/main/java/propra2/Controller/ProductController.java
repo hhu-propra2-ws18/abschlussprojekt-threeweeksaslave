@@ -47,13 +47,7 @@ public class ProductController {
      */
     @GetMapping("/products")
     public String showProducts(Model model, Principal user) {
-        Customer customer = customerRepo.findByUsername(user.getName()).get();
-        model.addAttribute("user", customer);
-        boolean admin = false;
-        if (customer.getRole().equals("ADMIN")) {
-            admin = true;
-        }
-        model.addAttribute("admin", admin);
+		addUserAndAdmin(user, model);
 
         return searchProducts("", "all", model, user);
     }
@@ -86,13 +80,7 @@ public class ProductController {
     public String searchForOwner(@PathVariable Long customerId, Model model, Principal user) {
         Customer owner = customerRepo.findById(customerId).get();
         model.addAttribute("owner", owner);
-        Customer customer = customerRepo.findByUsername(user.getName()).get();
-        model.addAttribute("user", customer);
-        boolean admin = false;
-        if (customer.getRole().equals("ADMIN")) {
-            admin = true;
-        }
-        model.addAttribute("admin", admin);
+		addUserAndAdmin(user, model);
         return "customer";
     }
 
@@ -105,15 +93,10 @@ public class ProductController {
      */
     @GetMapping("/product")
     public String getProduct(Principal user, Model model) {
-        Customer customer = customerRepo.findByUsername(user.getName()).get();
-        model.addAttribute("user", customer);
-        boolean admin = false;
-        if (customer.getRole().equals("ADMIN")) {
-            admin = true;
-        }
-        model.addAttribute("admin", admin);
+        addUserAndAdmin(user, model);
 
         Product product = new Product();
+
         product.setTitle("TestTitle");
 //        product.setDescription("TestDescription");
         product.setDeposit(0);
@@ -126,7 +109,6 @@ public class ProductController {
         product.setAddress(address);
 
         model.addAttribute("product",product);
-
         return "addProduct";
     }
 
@@ -151,12 +133,52 @@ public class ProductController {
         return "addImageToProduct";
     }
 
+	@GetMapping("/product/edit/{id}")
+	public String editProduct(Principal user, Model model, @PathVariable Long id) {
+		addUserAndAdmin(user, model);
+		Optional<Product> product = productRepo.findById(id);
+		if(product.isPresent()){
+			model.addAttribute("product",product.get());
+		}
+		else{
+			return"redirect:/home";
+		}
+		return "editProduct";
+	}
+
+	@PostMapping("/product/edit/{productId}")
+	public String saveProduct(Principal user, Model model, final Product product, final Address address, @PathVariable Long productId)
+	{
+		Product oldProduct = productRepo.findById(productId).get();
+		Customer owner = oldProduct.getOwner();
+		if(owner.getCustomerId().equals(getUserId(user))){
+			product.setOwner(owner);
+			product.setAvailable(oldProduct.isAvailable());
+			product.setAddress(address);
+			product.setId(productId);
+			productRepo.save(product);
+			model.addAttribute(product);
+			return"addImageToProduct";
+		}
+		return("redirect:/home");
+	}
+
     private Long getUserId(Principal user) {
         String username = user.getName();
         Optional<Customer> customer = customerRepo.findByUsername(username);
         Long id = customer.get().getCustomerId();
         return id;
     }
+
+    private void addUserAndAdmin(Principal user, Model model){
+		Customer customer = customerRepo.findByUsername(user.getName()).get();
+		model.addAttribute("user", customer);
+		boolean admin = false;
+		if (customer.getRole().equals("ADMIN")) {
+			admin = true;
+		}
+		model.addAttribute("admin", admin);
+	}
 
     /**
      * return a list of products with a specific title

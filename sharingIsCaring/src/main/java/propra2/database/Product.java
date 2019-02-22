@@ -53,6 +53,7 @@ public class Product {
 	public double getTotalDailyFee(Date from){
 		java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
 		long days = ChronoUnit.DAYS.between(LocalDate.parse(from.toString()), LocalDate.parse(date.toString()));
+		if(days<0) return 0;
 		return (days+1)*dailyFee;
 	}
 }
