@@ -136,9 +136,10 @@ public class ProductController {
 	@GetMapping("/product/edit/{id}")
 	public String editProduct(Principal user, Model model, @PathVariable Long id) {
 		addUserAndAdmin(user, model);
-		Optional<Product> product = productRepo.findById(id);
-		if(product.isPresent()){
-			model.addAttribute("product",product.get());
+		Optional<Product> productOptional = productRepo.findById(id);
+		if(productOptional.isPresent()){
+		    Product product = productRepo.save(productOptional.get());
+			model.addAttribute("product",product);
 		}
 		else{
 			return"redirect:/home";
@@ -147,7 +148,7 @@ public class ProductController {
 	}
 
 	@PostMapping("/product/edit/{productId}")
-	public String saveProduct(Principal user, Model model, final Product product, final Address address, @PathVariable Long productId)
+	public String saveProduct(Principal user, Model model, Product product, final Address address, @PathVariable Long productId)
 	{
 		Product oldProduct = productRepo.findById(productId).get();
 		Customer owner = oldProduct.getOwner();
@@ -156,9 +157,9 @@ public class ProductController {
 			product.setAvailable(oldProduct.isAvailable());
 			product.setAddress(address);
 			product.setId(productId);
-			productRepo.save(product);
-			model.addAttribute(product);
-			return"addImageToProduct";
+			product = productRepo.save(product);
+			/*model.addAttribute(product);*/
+			return"editProductImage";
 		}
 		return("redirect:/home");
 	}

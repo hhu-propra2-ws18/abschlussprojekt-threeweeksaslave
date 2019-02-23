@@ -33,6 +33,10 @@
         </table>
         <button type="submit" class="btn btn-default btn-sm">Upload Image</button>
     </form>
+    <br>
+    <form method="post" th:action="'/upload/' +${product.id}+'/deleteCurrentImage'">
+        <button type="submit" class="btn btn-default btn-sm">Delete Current Image</button>
+    </form>
     <hr>
     <a th:href="@{'/product/'+${product.id}}">Back to product details</a>
 

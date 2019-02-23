@@ -73,7 +73,7 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public Path load(String filename, String productId, boolean searchDummyProductPicture) {
+    public Path load(String filename, Long productId, boolean searchDummyProductPicture) {
 		Path currentRootLocation = Paths.get(properties.getLocation() + "/" + productId);
 		if(!searchDummyProductPicture) {
 			return currentRootLocation.resolve(filename);
@@ -84,7 +84,7 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public Resource loadAsResource(String filename, String productId) {
+    public Resource loadAsResource(String filename, Long productId) {
         try {
             Path file = load(filename, productId,false);
             Resource resource = new UrlResource(file.toUri());
@@ -111,6 +111,12 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
+    }
+
+    @Override
+    public void deleteFile(Long productId){
+        Path fileLocation = Paths.get(rootLocation.toString()+ "/"+ productId);
+        FileSystemUtils.deleteRecursively(fileLocation.toFile());
     }
 
     @Override

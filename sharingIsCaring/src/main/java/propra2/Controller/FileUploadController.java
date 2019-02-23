@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import propra2.database.Product;
+import propra2.repositories.ProductRepository;
 import propra2.storage.StorageFileNotFoundException;
 import propra2.storage.StorageService;
 
@@ -22,6 +24,9 @@ import propra2.storage.StorageService;
 public class FileUploadController {
 
     private final StorageService storageService;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Autowired
     public FileUploadController(StorageService storageService) {
@@ -41,7 +46,7 @@ public class FileUploadController {
 
     @GetMapping("/files/{productId}/{filename}")
     @ResponseBody
-    public Resource serveFile(@PathVariable String filename, @PathVariable String productId) {
+    public Resource serveFile(@PathVariable String filename, @PathVariable Long productId) {
 		System.out.println(filename + " " + productId + "serveFile");
         Resource file = storageService.loadAsResource(filename, productId);
         /*return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
@@ -50,7 +55,7 @@ public class FileUploadController {
     }
 
     @PostMapping("/")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("fileName") String fileName,
+    public String handleFileUpload(Model model, @RequestParam("file") MultipartFile file, @RequestParam("fileName") String fileName,
 								   @RequestParam("productId") String productId, RedirectAttributes redirectAttributes) {
 
         String originalFilename = file.getOriginalFilename();
@@ -59,7 +64,18 @@ public class FileUploadController {
 			redirectAttributes.addFlashAttribute("message",
 					"You successfully uploaded " + file.getOriginalFilename() + "!");
 		}
-        return "redirect:/home";
+
+        Product product = productRepository.findById(Long.parseLong(productId)).get();
+        model.addAttribute(product);
+        return "editProductImage";
+    }
+
+    @PostMapping("/{productId}/deleteCurrentImage")
+    public String deleteCurrentImage(@PathVariable Long productId, Model model){
+        storageService.deleteFile(productId);
+        Product product = productRepository.findById(productId).get();
+        model.addAttribute(product);
+        return "editProductImage";
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)
