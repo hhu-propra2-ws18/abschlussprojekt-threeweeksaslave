@@ -62,7 +62,10 @@
         <a th:if="${!user.equals(owner)}" th:href="@{'/product/' + ${product.id} + '/orderProcess'}">Borrow it!</a>
         <a th:if="${user.equals(owner)}" th:href="@{'/product/edit/' + ${product.id}}">Edit it!</a>
         <hr>
-        <a href="javascript:history.back()">Back to search page</a>
+        <!--<a href="javascript:history.back()">Back to search page</a>
+          Macht Probleme, wenn man von der ImageUpload Seite kommt-->
+        <a href="/products">To search page</a>
+
     </section>
 </div>
 
