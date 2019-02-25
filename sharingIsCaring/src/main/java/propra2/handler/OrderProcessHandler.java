@@ -52,8 +52,7 @@ public class OrderProcessHandler {
                 //TODO: Tagessatz wird nicht mehr abgerechnet
                 break;
             case CONFLICT:
-                //TODO: Konfliktlöser
-                break;
+                orderProcessRepo.save(orderProcess);
             case PUNISHED:
                 punished(orderProcess, rentingAccount);
                 break;

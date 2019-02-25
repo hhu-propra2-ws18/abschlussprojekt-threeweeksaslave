@@ -9,11 +9,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import propra2.database.Customer;
-import propra2.model.ProPayAccount;
 import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
-
-import java.util.ArrayList;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -47,7 +44,7 @@ public class RegistrationServiceTest {
         Assertions.assertThat(testCustomer.getAddress().getCity()).isEqualTo("-");
         Assertions.assertThat(testCustomer.getAddress().getStreet()).isEqualTo("-");
         Assertions.assertThat(testCustomer.getAddress().getHouseNumber()).isEqualTo(0);
-        Assertions.assertThat(testCustomer.getAddress().getPostCode()).isEqualTo(0);
+        Assertions.assertThat(testCustomer.getAddress().getPostcode()).isEqualTo(0);
         Assertions.assertThat(testCustomer.getProPay().getAccount()).isEqualTo("peter");
         Assertions.assertThat(testCustomer.getProPay().getAmount()).isEqualTo(0);
         Assertions.assertThat(testCustomer.getProPay().getReservations().size()).isEqualTo(0);

@@ -47,7 +47,7 @@ public class RequestController {
         List<OrderProcess> borrowerOrderProcesses = orderProcessRepo.findAllByRequestId(userId);
         model.addAttribute("user", customer.get());
         model.addAttribute("ownerOrderProcesses", ownerOrderProcesses);
-        model.addAttribute("borrowerOrderProcesses", borrowerOrderProcesses);
+        model.addAttribute("borrower", borrowerOrderProcesses);
         boolean admin = false;
         if(customer.get().getRole().equals("ADMIN")){
             admin = true;

@@ -32,7 +32,7 @@ public class RegistrationService {
         Address address = new Address();
         address.setStreet("-");
         address.setHouseNumber(0);
-        address.setPostCode(0);
+        address.setPostcode(0);
         address.setCity("-");
         customer.setAddress(address);
 

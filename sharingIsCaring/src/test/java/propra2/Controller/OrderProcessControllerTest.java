@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import propra2.Security.service.CustomerService;
@@ -66,7 +65,7 @@ public class OrderProcessControllerTest {
     public void setup(){
         Address address = new Address();
         address.setStreet("Unistraße");
-        address.setPostCode(34509);
+        address.setPostcode(34509);
         address.setHouseNumber(1);
         address.setCity("Ddorf");
 
