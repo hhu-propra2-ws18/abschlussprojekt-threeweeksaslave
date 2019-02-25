@@ -29,7 +29,7 @@ public class ProductTest {
     @Test
     public void testGetTotalAmount(){
         java.sql.Date from = new java.sql.Date(System.currentTimeMillis());
-        double response = product.getTotalAmount(from);
+        double response = product.getExpectedTotalAmount(from, from);
         Assertions.assertThat(15.0).isEqualTo(response);
     }
 
