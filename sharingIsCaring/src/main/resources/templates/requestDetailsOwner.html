@@ -72,6 +72,24 @@
             <div th:case="'FINISHED'">
                 <table>
                     <tr>
+                        <td>
+                            Checked out from:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.fromDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Checked out until:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.toDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
                         <td>Messages</td>
                     </tr>
                     <tr th:each="message : ${process.messages}">
@@ -152,6 +170,24 @@
             <div th:case="'DENIED'">
                 <table>
                     <tr>
+                        <td>
+                            Checked out from:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.fromDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Checked out until:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.toDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
                         <td>Messages</td>
                     </tr>
                     <tr th:each="message : ${process.messages}">
@@ -165,6 +201,24 @@
             </div>
 
             <div th:case="'RETURNED'">
+                <table>
+                    <tr>
+                        <td>
+                            Checked out from:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.fromDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Checked out until:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.toDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                </table>
                 <table>
                     <tr>
                         <td>Messages</td>

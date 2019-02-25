@@ -116,6 +116,24 @@
             <div th:case="'FINISHED'">
                 <table>
                     <tr>
+                        <td>
+                            Checked out from:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.fromDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Checked out until:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.toDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
                         <td>Messages</td>
                     </tr>
                     <tr th:each="message : ${process.messages}">
@@ -128,6 +146,25 @@
             </div>
 
             <div th:case="'PUNISHED'">
+                <table>
+                    <tr>
+                        <td>
+                            Checked out from:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.fromDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Checked out until:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.toDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
                 The blocked Caution was send to the owner of this product.
                 <br/>
                 <form method="post">

@@ -100,6 +100,7 @@ public class RequestController {
         Customer customer = customerRepo.findByUsername(user.getName()).get();
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.RETURNED);
+        orderProcess.setToDate(new java.sql.Date(System.currentTimeMillis()));
         orderProcessRepo.save(orderProcess);
 
         Optional<Notification> notification = notificationRepository.findByProcessId(processId);
