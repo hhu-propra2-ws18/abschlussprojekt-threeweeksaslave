@@ -82,6 +82,12 @@ public class ProPayController {
         Customer customer = customerRepo.findByUsername(user.getName()).get();
         model.addAttribute("user", customer);
         model.addAttribute("transactions", transactions);
+        if(transactions.size()==0){
+            model.addAttribute("transactionsExist", false);
+        }else{
+            model.addAttribute("transactionsExist", true);
+        }
+        
         boolean admin = false;
         if (customer.getRole().equals("ADMIN")) {
             admin = true;
