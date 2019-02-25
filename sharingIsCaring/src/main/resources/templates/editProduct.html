@@ -44,12 +44,12 @@
                 <td> Address:</td>
             </tr>
             <tr>
-                <td> street:</td>
+                <td> Street:</td>
                 <td><input name="street" th:value="${product?.address?.street}" type="text" required maxlength="255">
                 </td>
             </tr>
             <tr>
-                <td> houseNr:</td>
+                <td> HouseNr:</td>
                 <td><input name="houseNumber" th:value="${product?.address?.houseNumber}" type="number" required
                            min="1"></td>
             </tr>
@@ -58,7 +58,7 @@
                 <td><input name="postcode" th:value="${product?.address?.postcode}" type="number" required min="1"></td>
             </tr>
             <tr>
-                <td> city:</td>
+                <td> City:</td>
                 <td><input name="city" th:value="${product?.address?.city}" type="text" required maxlength="255"></td>
             </tr>
         </table>
