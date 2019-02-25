@@ -28,7 +28,7 @@ public class UserHandler {
 
        Mono<ProPayAccount> account =  WebClient.create().post().uri(builder ->
                 builder
-                        .path("localhost:8888/account/" + customer.getUsername())
+                        .path("propay:8888/account/" + customer.getUsername())
                         .query("amount=" + amount)
                         .build())
                .retrieve()
@@ -52,7 +52,7 @@ public class UserHandler {
                     .get()
                     .uri(builder ->
                             builder
-                                    .path("localhost:8888/account/" + username)
+                                    .path("propay:8888/account/" + username)
                                     .build())
                     .accept(MediaType.APPLICATION_JSON_UTF8)
                     .retrieve()

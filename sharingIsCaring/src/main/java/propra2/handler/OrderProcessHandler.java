@@ -68,7 +68,7 @@ public class OrderProcessHandler {
                 .post()
                 .uri(builder ->
                         builder.scheme("http")
-                                .host("localhost")
+                                .host("propay")
                                 .port(8888)
                                 .path("/reservation/reserve/")
                                 .pathSegment(rentingAccount.getUsername())
@@ -91,7 +91,7 @@ public class OrderProcessHandler {
                 .post()
                 .uri(builder ->
                         builder.scheme("http")
-                                .host("localhost")
+                                .host("propay")
                                 .port(8888)
                                 .path("/reservation/release/" + rentingAccount.getUsername())
                                 .queryParam("reservationId", orderProcess.getReservationId())
@@ -111,7 +111,7 @@ public class OrderProcessHandler {
         try {
             Mono<ProPayAccount> account = WebClient.create().post().uri(builder ->
                     builder
-                            .path("localhost:8888/reservation/punish/" + rentingAccount.getUsername())
+                            .path("propay:8888/reservation/punish/" + rentingAccount.getUsername())
                             .queryParam("reservationId", reservationId)
                             .build())
                     .accept(MediaType.APPLICATION_JSON_UTF8)
@@ -168,7 +168,7 @@ public class OrderProcessHandler {
                 .post()
                 .uri(builder ->
                         builder.scheme("http")
-                                .host("localhost")
+                                .host("propay")
                                 .port(8888)
                                 .path("/account/" + rentingAccount + "/transfer/" + ownerAccount)
                                 .queryParam("amount", dailyFee)
