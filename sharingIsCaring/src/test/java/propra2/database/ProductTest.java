@@ -26,12 +26,6 @@ public class ProductTest {
         Assertions.assertThat(diff).isEqualTo(response);
     }
 
-    @Test
-    public void testGetTotalAmount(){
-        java.sql.Date from = new java.sql.Date(System.currentTimeMillis());
-        double response = product.getTotalAmount(from);
-        Assertions.assertThat(15.0).isEqualTo(response);
-    }
 
     @Test
     public void allValuesSetFalse(){
