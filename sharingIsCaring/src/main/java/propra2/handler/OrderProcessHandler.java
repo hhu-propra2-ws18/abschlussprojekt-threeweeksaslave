@@ -107,16 +107,18 @@ public class OrderProcessHandler {
 
     private void punished(OrderProcess orderProcess, Customer rentingAccount) {
         int reservationId = orderProcess.getReservationId();
-        Mono<ProPayAccount> account = WebClient.create().post().uri(builder ->
-                builder
-                        .path("localhost:8888/reservation/punish/" + rentingAccount.getUsername())
-                        .queryParam("reservationId", reservationId)
-                        .build())
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .retrieve()
-                .bodyToMono(ProPayAccount.class);
+        try {
+            Mono<ProPayAccount> account = WebClient.create().post().uri(builder ->
+                    builder
+                            .path("localhost:8888/reservation/punish/" + rentingAccount.getUsername())
+                            .queryParam("reservationId", reservationId)
+                            .build())
+                    .accept(MediaType.APPLICATION_JSON_UTF8)
+                    .retrieve()
+                    .bodyToMono(ProPayAccount.class);
 
-        rentingAccount.setProPay(account.block());
+            rentingAccount.setProPay(account.block());
+        }catch(Exception e) {}
         orderProcessRepo.save(orderProcess);
     }
 
