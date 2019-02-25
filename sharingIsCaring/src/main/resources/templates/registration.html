@@ -1,58 +1,46 @@
 <!doctype html>
-<html lang="en" layout:decorate="~{baseLogin}" xmlns:th="http://www.w3.org/1999/xhtml"
-      xmlns:layout="http://www.w3.org/1999/xhtml">
+<html lang="en" layout:decorate="~{baseLogin}" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <title>Registration</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/css/base.css">
 </head>
 
 <body>
 <div layout:fragment="content">
 
     <section>
-        <form id="intro" method="post">
-            <h2>Registration</h2>
-            <table>
-                <tr>
-                    <td>
-                        Username:
-                    </td>
-                    <td>
-                        <input type="text" name="userName" th:value="${userName}" required minlength="5" maxlength="32">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Email address:
-                    </td>
-                    <td>
-                        <input type="text" name="emailAddress" th:value="${emailAddress}" required minlength="6" maxlength="32">
-                    </td>
+            <form class="form-signin" method="post">
+                <h3 class="h3 mb-3 font-weight-normal">Registration</h3>
+                <p>Please register.</p>
 
-                </tr>
-                <tr>
-                    <td>
-                        Password:
-                    </td>
-                    <td>
-                        <input type="password" name="password" th:value="${password}" required minlength="6" maxlength="32">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Confirm password:
-                    </td>
-                    <td>
-                        <input type="password" name="passwordConfirm" th:value="${passwordConfirm}" required minlength="6" maxlength="32">
-                    </td>
-                </tr>
-            </table>
-            <br/>
-            <button type="submit">Submit</button>
-        </form>
-
+                <div class="form-label-group">
+                    <input type="text" id="inputUsername" name="userName" class="form-control" placeholder="Username" th:value="${userName}"
+                           minlength="5" maxlength="32" required autofocus>
+                    <label for="inputUsername">Username</label>
+                </div>
+                <div class="form-label-group">
+                    <input type="email" name="emailAddress" id="inputEmail" class="form-control" placeholder="Email address" th:value="${emailAddress}"
+                           minlength="6" maxlength="32" required autofocus>
+                    <label for="inputEmail">Email</label>
+                </div>
+                <div class="form-label-group">
+                    <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" th:value="${password}"
+                           minlength="6" maxlength="32" required autofocus>
+                    <label for="inputPassword">Password</label>
+                </div>
+                <div class="form-label-group">
+                    <input type="password" name="passwordConfirm" id="inputPasswordConfirm" class="form-control" placeholder="Confirm password" th:value="${passwordConfirm}"
+                           minlength="6" maxlength="32" required autofocus>
+                    <label for="inputPassword">Confirm password</label>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+            </form>
     </section>
-</div>
 
+</div>
 </body>
 
 <footer class="grid">
