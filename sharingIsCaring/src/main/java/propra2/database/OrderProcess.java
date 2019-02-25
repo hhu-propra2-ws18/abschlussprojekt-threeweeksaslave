@@ -18,7 +18,7 @@ public class OrderProcess {
     @Id
     Long id;
 
-    @OneToOne
+    @ManyToOne
     Product product;
 
     Long ownerId;

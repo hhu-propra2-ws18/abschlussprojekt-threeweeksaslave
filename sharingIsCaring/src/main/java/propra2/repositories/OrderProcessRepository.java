@@ -24,4 +24,6 @@ public interface OrderProcessRepository extends CrudRepository<OrderProcess, Lon
 
     @Transactional
     List<OrderProcess> findByStatus(OrderProcessStatus status);
+
+    void deleteAllByProduct(Product product);
 }

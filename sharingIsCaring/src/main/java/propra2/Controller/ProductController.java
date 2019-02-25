@@ -162,10 +162,12 @@ public class ProductController {
 	}
 
 	@PostMapping("/product/delete")
-    public String deleteProduct(Principal user, Long productId){
-
+    public String deleteProduct(Model model,Principal user, Long productId){
+        Product product = productRepo.findById(productId).get();
+        orderProcessRepository.deleteAllByProduct(product);
         productRepo.deleteById(productId);
-        return "";
+        model.addAttribute("note","Product successfully deleted.");
+        return "redirect:/products";
     }
 
     private Long getUserId(Principal user) {
