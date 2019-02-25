@@ -156,6 +156,7 @@ public class OrderProcessHandler {
     }
 
     public boolean correctDates(Date from, Date to) {
+        if(from.before(new java.sql.Date(System.currentTimeMillis())) || to.before(new java.sql.Date(System.currentTimeMillis()))) return false;
         if (from.equals(to)) return true;
         return from.before(to);
     }
