@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import propra2.database.Customer;
+import propra2.database.Message;
 import propra2.database.OrderProcess;
 import propra2.database.Product;
 import propra2.handler.OrderProcessHandler;
@@ -82,8 +83,9 @@ public class OrderProcessController {
         orderProcess.setRequestId(customer.getCustomerId());
 
         orderProcess.setProduct(product);
-        ArrayList<String> messages = new ArrayList<>();
-        messages.add(message);
+        ArrayList<Message> messages = new ArrayList<>();
+        Message newMessage = orderProcess.createMessage(user, message);
+        messages.add(newMessage);
         orderProcess.setMessages(messages);
 
         orderProcess.setFromDate(Date.valueOf(from));

@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
+import propra2.database.Message;
 import propra2.database.OrderProcess;
 import propra2.database.Product;
 import propra2.model.ProPayAccount;
@@ -30,7 +31,7 @@ public class OrderProcessHandler {
     private UserHandler userHandler;
 
 
-    public void updateOrderProcess(ArrayList<String> oldMessages, OrderProcess orderProcess) {
+    public void updateOrderProcess(ArrayList<Message> oldMessages, OrderProcess orderProcess) {
 
         if (!(oldMessages == null)) {
             orderProcess.addMessages(oldMessages);

@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import propra2.database.Customer;
-import propra2.database.Notification;
-import propra2.database.OrderProcess;
-import propra2.database.Product;
+import propra2.database.*;
 import propra2.handler.OrderProcessHandler;
 import propra2.model.OrderProcessStatus;
 import propra2.repositories.*;
@@ -137,12 +134,13 @@ public class RequestController {
     }
 
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=acceptProcess")
-    public String accept(String message, @PathVariable Long processId) {
+    public String accept(String message, @PathVariable Long processId, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.ACCEPTED);
-        ArrayList<String> oldMessages = orderProcess.getMessages();
-        ArrayList<String> messages = new ArrayList<>();
-        messages.add(message);
+        ArrayList<Message> oldMessages = orderProcess.getMessages();
+        ArrayList<Message> messages = new ArrayList<>();
+        Message newMessage = orderProcess.createMessage(user, message);
+        messages.add(newMessage);
         orderProcess.setMessages(messages);
 
         Product product = productRepo.findById(orderProcess.getProduct().getId()).get();
@@ -168,15 +166,15 @@ public class RequestController {
     }
 
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=appeal")
-    public String appealProcess(@PathVariable Long processId, String message) {
+    public String appealProcess(@PathVariable Long processId, String message, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.CONFLICT);
-        ArrayList<String> oldMessages = orderProcess.getMessages();
-        ArrayList<String> messages = new ArrayList<>();
-        messages.add(message);
+        ArrayList<Message> oldMessages = orderProcess.getMessages();
+        ArrayList<Message> messages = new ArrayList<>();
+        Message newMessage = orderProcess.createMessage(user, message);
+        messages.add(newMessage);
         orderProcess.setMessages(messages);
 
-        System.out.println(message);
         orderProcessHandler.updateOrderProcess(oldMessages, orderProcess);
 
         return "redirect:/requests";
@@ -191,12 +189,13 @@ public class RequestController {
     }
 
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=deny")
-    public String deny(String message, @PathVariable Long processId) {
+    public String deny(String message, @PathVariable Long processId, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.DENIED);
-        ArrayList<String> oldMessages = orderProcess.getMessages();
-        ArrayList<String> messages = new ArrayList<>();
-        messages.add(message);
+        ArrayList<Message> oldMessages = orderProcess.getMessages();
+        ArrayList<Message> messages = new ArrayList<>();
+        Message newMessage = orderProcess.createMessage(user, message);
+        messages.add(newMessage);
         orderProcess.setMessages(messages);
 
         orderProcessHandler.updateOrderProcess(oldMessages, orderProcess);
