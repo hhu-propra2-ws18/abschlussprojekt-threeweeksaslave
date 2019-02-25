@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
 import propra2.database.Product;
+import propra2.model.OrderProcessStatus;
 import propra2.model.ProPayAccount;
 import propra2.model.Reservation;
 import propra2.model.TransactionType;
@@ -145,6 +146,9 @@ public class OrderProcessHandler {
                 if (dateFrom.before(checkFrom) && dateTo.before(checkFrom)) {
                 } else if (dateFrom.after(checkTo) && dateTo.after(checkTo)) {
                 } else {
+                	if(!(process.getStatus() == OrderProcessStatus.DENIED ||
+							process.getStatus() == OrderProcessStatus.PUNISHED ||
+							process.getStatus() == OrderProcessStatus.FINISHED))
                     available = false;
                     break;
                 }
