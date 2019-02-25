@@ -5,6 +5,7 @@ import org.apache.tomcat.util.digester.ArrayStack;
 import propra2.model.OrderProcessStatus;
 
 import javax.persistence.*;
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.sql.Date;
@@ -27,14 +28,14 @@ public class OrderProcess {
     int reservationId;
 
     @Lob
-    ArrayList<String> messages;
+    ArrayList<Message> messages;
 
     OrderProcessStatus status;
 
     private Date fromDate;
     private Date toDate;
 
-    public void addMessages(ArrayList<String> list){
+    public void addMessages(ArrayList<Message> list){
         list.addAll(messages);
         this.messages = list;
     }
@@ -48,5 +49,14 @@ public class OrderProcess {
             return false;
         }
         return true;
+    }
+
+    public Message createMessage(Principal user, String stringMessage){
+        Message message = new Message();
+        message.setMessage(stringMessage);
+        message.setDate(new java.sql.Date(System.currentTimeMillis()));
+        message.setAuthor(user.getName());
+
+        return message;
     }
 }

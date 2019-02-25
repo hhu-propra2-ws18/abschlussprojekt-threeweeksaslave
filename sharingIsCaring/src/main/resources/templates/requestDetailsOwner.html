@@ -75,7 +75,9 @@
                         <td>Messages</td>
                     </tr>
                     <tr th:each="message : ${process.messages}">
-                        <td th:text="${message}"><br></td>
+                        <td th:text="${message?.author}"><br></td>
+                        <td th:text="${message?.date}"><br></td>
+                        <td th:text="${message?.message}"><br></td>
                     </tr>
                 </table>
             </div>
@@ -107,7 +109,9 @@
                         <td>Messages</td>
                     </tr>
                     <tr th:each="message : ${process.messages}">
-                        <td th:text="${message}"></td>
+                        <td th:text="${message?.author}"><br></td>
+                        <td th:text="${message?.date}"><br></td>
+                        <td th:text="${message?.message}"><br></td>
                     </tr>
                 </table>
             </div>
@@ -139,7 +143,9 @@
                         <td>Messages</td>
                     </tr>
                     <tr th:each="message : ${process.messages}">
-                        <td th:text="${message}"></td>
+                        <td th:text="${message?.author}"><br></td>
+                        <td th:text="${message?.date}"><br></td>
+                        <td th:text="${message?.message}"><br></td>
                     </tr>
                 </table>
                 <form method="post">
@@ -155,7 +161,9 @@
                         <td>Messages</td>
                     </tr>
                     <tr th:each="message : ${process.messages}">
-                        <td th:text="${message}"><br></td>
+                        <td th:text="${message?.author}"><br></td>
+                        <td th:text="${message?.date}"><br></td>
+                        <td th:text="${message?.message}"><br></td>
                     </tr>
                 </table>
             </div>
@@ -170,7 +178,9 @@
                         <td>Messages</td>
                     </tr>
                     <tr th:each="message : ${process.messages}">
-                        <td th:text="${message}"></td>
+                        <td th:text="${message?.author}"><br></td>
+                        <td th:text="${message?.date}"><br></td>
+                        <td th:text="${message?.message}"><br></td>
                     </tr>
                 </table>
 
