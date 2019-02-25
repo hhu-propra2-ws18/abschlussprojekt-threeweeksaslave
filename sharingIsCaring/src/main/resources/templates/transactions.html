@@ -20,21 +20,30 @@
 
 <div layout:fragment="content">
 
-    <h2>Transactions:</h2>
-        <table>
-            <tbody>
-                <tr>
-                    <th>Date</th>
-                    <th>Amount</th>
-                    <th>Type</th>
-                </tr>
-                <tr th:each="transaction:${transactions}">
-                    <td th:text="${transaction.date}">date</td>
-                    <td th:text="${transaction.amount} + '€'">Amount</td>
-                    <td th:text="${transaction.transactionType}">Type</td>
-                </tr>
-            </tbody>
-        </table>
+    <div th:switch="${transactionsExist}">
+         <div th:case="true">
+            <h2>Transactions:</h2>
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                    </tr>
+                    <tr th:each="transaction:${transactions}">
+                        <td th:text="${transaction.date}">date</td>
+                        <td th:text="${transaction.amount} + '€'">Amount</td>
+                        <td th:text="${transaction.transactionType}">Type</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:case="false">
+            <h2>Transactions:</h2>
+            <p>no Transactions yet</p>
+        </div>
+    </div>
+
 
 </div>
 

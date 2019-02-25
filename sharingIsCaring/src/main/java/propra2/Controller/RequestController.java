@@ -45,6 +45,18 @@ public class RequestController {
         model.addAttribute("user", customer.get());
         model.addAttribute("ownerOrderProcesses", ownerOrderProcesses);
         model.addAttribute("borrower", borrowerOrderProcesses);
+        if(ownerOrderProcesses.size()==0){
+            model.addAttribute("lendProductsExist", false);
+        }else{
+            model.addAttribute("lendProductsExist", true);
+        }
+
+        if(borrowerOrderProcesses.size()==0){
+            model.addAttribute("borrowerExist", false);
+        }else{
+            model.addAttribute("borrowerExist", true);
+        }
+
         boolean admin = false;
         if(customer.get().getRole().equals("ADMIN")){
             admin = true;

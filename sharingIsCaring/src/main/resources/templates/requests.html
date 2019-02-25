@@ -30,36 +30,54 @@
 
     <section class="spalte">
         <!--Produkte, die wir verleihen-->
-        <h1>Lent products</h1>
-        <table>
-            <tr>
-                <th>Product</th>
-                <th>Status</th>
-                <th>Details</th>
-            </tr>
-            <tr th:each="process : ${ownerOrderProcesses}">
-                <td th:text="${process.product.title}"></td>
-                <td th:text="${process.status}"></td>
-                <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/requests/detailsOwner/' + ${process.id}}">Details</a></td>
-            </tr>
-        </table>
+        <div th:switch="${lendProductsExist}">
+            <div th:case="false">
+                  <h1>Lent products</h1>
+                  <p>No lend products</p>
+            </div>
+            <div th:case="true">
+                <h1>Lent products</h1>
+                <table>
+                    <tr>
+                        <th>Product</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                    </tr>
+                    <tr th:each="process : ${ownerOrderProcesses}">
+                        <td th:text="${process.product.title}"></td>
+                        <td th:text="${process.status}"></td>
+                        <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/requests/detailsOwner/' + ${process.id}}">Details</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
     </section>
 
     <section class="spalte">
         <!--Produkte, die wir selber ausleihen-->
-        <h1>Borrowed products</h1>
-        <table>
-            <tr>
-                <th>Product</th>
-                <th>Status</th>
-                <th>Details</th>
-            </tr>
-            <tr th:each="process : ${borrower}">
-                <td th:text="${process.product.title}"></td>
-                <td th:text="${process.status}"></td>
-                <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/requests/detailsBorrower/' + ${process.id}}">Details</a></td>
-            </tr>
-        </table>
+        <div th:switch="${borrowerExist}">
+            <div th:case="true">
+                <h1>Borrowed products</h1>
+                <table>
+                    <tr>
+                        <th>Product</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                    </tr>
+                    <tr th:each="process : ${borrower}">
+                        <td th:text="${process.product.title}"></td>
+                        <td th:text="${process.status}"></td>
+                        <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/requests/detailsBorrower/' + ${process.id}}">Details</a></td>
+                    </tr>
+                </table>
+            </div>
+            <div th:case="false">
+                <h1>Borrowed products</h1>
+                <p>No borrowed products</p>
+            </div>
+        </div>
+
     </section>
 
     </main>
