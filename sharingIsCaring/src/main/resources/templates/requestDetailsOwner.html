@@ -72,10 +72,30 @@
             <div th:case="'FINISHED'">
                 <table>
                     <tr>
+                        <td>
+                            Checked out from:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.fromDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Checked out until:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.toDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
                         <td>Messages</td>
                     </tr>
                     <tr th:each="message : ${process.messages}">
-                        <td th:text="${message}"><br></td>
+                        <td th:text="${message?.author}"><br></td>
+                        <td th:text="${message?.date}"><br></td>
+                        <td th:text="${message?.message}"><br></td>
                     </tr>
                 </table>
             </div>
@@ -107,7 +127,9 @@
                         <td>Messages</td>
                     </tr>
                     <tr th:each="message : ${process.messages}">
-                        <td th:text="${message}"></td>
+                        <td th:text="${message?.author}"><br></td>
+                        <td th:text="${message?.date}"><br></td>
+                        <td th:text="${message?.message}"><br></td>
                     </tr>
                 </table>
             </div>
@@ -139,7 +161,9 @@
                         <td>Messages</td>
                     </tr>
                     <tr th:each="message : ${process.messages}">
-                        <td th:text="${message}"></td>
+                        <td th:text="${message?.author}"><br></td>
+                        <td th:text="${message?.date}"><br></td>
+                        <td th:text="${message?.message}"><br></td>
                     </tr>
                 </table>
                 <form method="post">
@@ -152,10 +176,30 @@
             <div th:case="'DENIED'">
                 <table>
                     <tr>
+                        <td>
+                            Checked out from:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.fromDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Checked out until:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.toDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
                         <td>Messages</td>
                     </tr>
                     <tr th:each="message : ${process.messages}">
-                        <td th:text="${message}"><br></td>
+                        <td th:text="${message?.author}"><br></td>
+                        <td th:text="${message?.date}"><br></td>
+                        <td th:text="${message?.message}"><br></td>
                     </tr>
                 </table>
             </div>
@@ -167,10 +211,30 @@
             <div th:case="'RETURNED'">
                 <table>
                     <tr>
+                        <td>
+                            Checked out from:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.fromDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Checked out until:
+                        </td>
+                        <td>
+                            <dd th:text="${#dates.format(process?.toDate, 'dd.MM.yyyy')}"></dd>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
                         <td>Messages</td>
                     </tr>
                     <tr th:each="message : ${process.messages}">
-                        <td th:text="${message}"></td>
+                        <td th:text="${message?.author}"><br></td>
+                        <td th:text="${message?.date}"><br></td>
+                        <td th:text="${message?.message}"><br></td>
                     </tr>
                 </table>
 

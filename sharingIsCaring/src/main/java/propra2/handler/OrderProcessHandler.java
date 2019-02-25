@@ -1,10 +1,12 @@
 package propra2.handler;
 
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
+import propra2.database.Message;
 import propra2.database.OrderProcess;
 import propra2.database.Product;
 import propra2.model.OrderProcessStatus;
@@ -31,7 +33,7 @@ public class OrderProcessHandler {
     private UserHandler userHandler;
 
 
-    public void updateOrderProcess(ArrayList<String> oldMessages, OrderProcess orderProcess) {
+    public void updateOrderProcess(ArrayList<Message> oldMessages, OrderProcess orderProcess) {
 
         if (!(oldMessages == null)) {
             orderProcess.addMessages(oldMessages);
@@ -55,6 +57,9 @@ public class OrderProcessHandler {
                 break;
             case PUNISHED:
                 punished(orderProcess, rentingAccount);
+                break;
+            case CANCELED:
+                cancelOrder(orderProcess);
                 break;
             default:
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
@@ -159,6 +164,7 @@ public class OrderProcessHandler {
     }
 
     public boolean correctDates(Date from, Date to) {
+        if(from.before(new java.sql.Date(System.currentTimeMillis())) || to.before(new java.sql.Date(System.currentTimeMillis()))) return false;
         if (from.equals(to)) return true;
         return from.before(to);
     }
@@ -185,5 +191,11 @@ public class OrderProcessHandler {
             userHandler.saveTransaction(dailyFee, TransactionType.DAILYFEEPAYMENT, rentingAccount);
             userHandler.saveTransaction(dailyFee, TransactionType.RECEIVEDDAILYFEE, ownerAccount);
         }
+    }
+
+    public void cancelOrder(OrderProcess orderProcess){
+        Customer rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get();
+        finished(orderProcess, rentingAccount);
+        orderProcessRepo.delete(orderProcess);
     }
 }
