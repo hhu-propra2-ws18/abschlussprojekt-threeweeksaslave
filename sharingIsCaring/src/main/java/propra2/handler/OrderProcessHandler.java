@@ -1,5 +1,6 @@
 package propra2.handler;
 
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,9 @@ public class OrderProcessHandler {
                 break;
             case PUNISHED:
                 punished(orderProcess, rentingAccount);
+                break;
+            case CANCELED:
+                cancelOrder(orderProcess);
                 break;
             default:
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
@@ -183,5 +187,11 @@ public class OrderProcessHandler {
             userHandler.saveTransaction(dailyFee, TransactionType.DAILYFEEPAYMENT, rentingAccount);
             userHandler.saveTransaction(dailyFee, TransactionType.RECEIVEDDAILYFEE, ownerAccount);
         }
+    }
+
+    public void cancelOrder(OrderProcess orderProcess){
+        Customer rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get();
+        finished(orderProcess, rentingAccount);
+        orderProcessRepo.delete(orderProcess);
     }
 }

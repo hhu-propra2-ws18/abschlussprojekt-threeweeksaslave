@@ -211,7 +211,8 @@
                     </tr>
                 </table>
                 <form method="post">
-                    <button class="btn btn-outline-danger btn-sm" name="action" type="submit" value="return">Return Product</button>
+                    <button th:if="${cancelable==false}" class="btn btn-outline-danger btn-sm" name="action" type="submit" value="return">Return Product</button>
+                    <button th:if="${cancelable}" class="btn btn-outline-danger btn-sm" name="action" type="submit" value="cancel">Cancel your order</button>
                 </form>
             </div>
 

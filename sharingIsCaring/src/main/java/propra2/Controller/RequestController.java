@@ -3,10 +3,7 @@ package propra2.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import propra2.database.*;
 import propra2.handler.OrderProcessHandler;
 import propra2.model.OrderProcessStatus;
@@ -56,9 +53,16 @@ public class RequestController {
     private Long getUserId(Principal user) {
         String username = user.getName();
         Long id = customerRepo.findByUsername(username).get().getCustomerId();
-        //Optional<Customer> customer = customerRepo.findByUsername(username);
-        //Long id = customer.get().getCustomerId();
         return id;
+    }
+
+    @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=cancel")
+    public String cancelOrder(@PathVariable Long processId, Principal user){
+        OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
+        orderProcess.setStatus(OrderProcessStatus.CANCELED);
+        orderProcessHandler.updateOrderProcess(new ArrayList<>(), orderProcess);
+
+        return "requests";
     }
 
     @GetMapping("/requests/detailsBorrower/{processId}")
@@ -71,6 +75,8 @@ public class RequestController {
 
         Long ownerId = process.get().getOwnerId();
         Customer owner = customerRepo.findById(ownerId).get();
+
+        model.addAttribute("cancelable", process.get().isCancelable());
 
         model.addAttribute("owner", owner);
         model.addAttribute("product", product);
