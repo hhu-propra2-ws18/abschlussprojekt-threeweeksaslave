@@ -138,13 +138,13 @@ public class ProductController {
 		addUserAndAdmin(user, model);
 		Optional<Product> productOptional = productRepo.findById(id);
 		if(productOptional.isPresent()){
-		    Product product = productRepo.save(productOptional.get());
-			model.addAttribute("product",product);
+		    Product product = productOptional.get();
+		    if(product.getOwner().getCustomerId().equals(getUserId(user)) && product.isEditingAllowed(orderProcessRepository)){
+				model.addAttribute("product",product);
+				return "editProduct";
+			}
 		}
-		else{
-			return"redirect:/home";
-		}
-		return "editProduct";
+		return"redirect:/home";
 	}
 
 	@PostMapping("/product/edit/{productId}")
@@ -208,6 +208,7 @@ public class ProductController {
             admin = true;
         }
         model.addAttribute("admin", admin);
+        model.addAttribute("editable", product.isEditingAllowed(orderProcessRepository));
         return "productDetails";
     }
 
