@@ -69,6 +69,7 @@ public class UserHandler {
         transaction.setAmount(amount);
         transaction.setTransactionType(transactionType);
         transaction.setUserName(userName);
+        transaction.setDate(new java.sql.Date(System.currentTimeMillis()));
 
         transactionRepository.save(transaction);
     }
