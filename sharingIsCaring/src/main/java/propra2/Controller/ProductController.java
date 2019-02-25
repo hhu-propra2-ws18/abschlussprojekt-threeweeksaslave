@@ -12,6 +12,9 @@ import propra2.model.Address;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
+import propra2.storage.FileSystemStorageService;
+import propra2.storage.StorageProperties;
+import propra2.storage.StorageService;
 
 import java.security.Principal;
 import java.util.List;
@@ -125,9 +128,12 @@ public class ProductController {
         //TODO set borrowed until
 
         if (product.allValuesSet()) {
-            productRepo.save(product);
+            Long productId = productRepo.save(product).getId();
+			StorageService storageService = new FileSystemStorageService(new StorageProperties());
+			storageService.deleteFile(productId);
+			return "addImageToProduct";
         }
-        return "addImageToProduct";
+		return "redirect:/home";
     }
 
 	@GetMapping("/product/edit/{id}")
@@ -164,10 +170,12 @@ public class ProductController {
 	@PostMapping("/product/delete")
     public String deleteProduct(Model model,Principal user, Long productId){
         Product product = productRepo.findById(productId).get();
+		StorageService storageService = new FileSystemStorageService(new StorageProperties());
+		storageService.deleteFile(productId);
         orderProcessRepository.deleteAllByProduct(product);
         productRepo.deleteById(productId);
         model.addAttribute("note","Product successfully deleted.");
-        return "redirect:/products";
+        return showProducts(model, user);
     }
 
     private Long getUserId(Principal user) {
