@@ -108,7 +108,8 @@ public class OrderProcessHandler {
 
     private void punished(OrderProcess orderProcess, Customer rentingAccount) {
         int reservationId = orderProcess.getReservationId();
-        double amount = customerRepo.findById(orderProcess.getRequestId()).get().getProPay().findReservationById(reservationId).getAmount();
+        Customer requester = customerRepo.findById(orderProcess.getRequestId()).get();
+        double amount = requester.getProPay().findReservationById(reservationId).getAmount();
         try {
             Mono<ProPayAccount> account = WebClient.create().post().uri(builder ->
                     builder
@@ -123,8 +124,10 @@ public class OrderProcessHandler {
         }catch(Exception e) {}
         orderProcessRepo.save(orderProcess);
         Customer ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get();
-        userHandler.saveTransaction(amount, TransactionType.PREPAYMENTOUTPUT, rentingAccount.getUsername());
-        userHandler.saveTransaction(amount, TransactionType.PREPAYMENTINPUT, ownerAccount.getUsername());
+        if(amount>0){
+            userHandler.saveTransaction(amount, TransactionType.DEPOSITCHARGE, rentingAccount.getUsername());
+            userHandler.saveTransaction(amount, TransactionType.RECEIVEDDEPOSIT, ownerAccount.getUsername());
+        }
     }
 
     public boolean checkAvailability(OrderProcessRepository orderProcessRepository, Product product, String from, String to) {
@@ -176,7 +179,9 @@ public class OrderProcessHandler {
                 .retrieve()
                 .bodyToMono(String.class);
         response.block();
-        userHandler.saveTransaction(dailyFee, TransactionType.PREPAYMENTOUTPUT, rentingAccount);
-        userHandler.saveTransaction(dailyFee, TransactionType.PREPAYMENTOUTPUT, ownerAccount);
+        if(dailyFee>0){
+            userHandler.saveTransaction(dailyFee, TransactionType.DAILYFEEPAYMENT, rentingAccount);
+            userHandler.saveTransaction(dailyFee, TransactionType.RECEIVEDDAILYFEE, ownerAccount);
+        }
     }
 }

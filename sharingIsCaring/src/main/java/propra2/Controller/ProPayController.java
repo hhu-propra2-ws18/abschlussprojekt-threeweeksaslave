@@ -63,7 +63,7 @@ public class ProPayController {
         }
         Customer customer = customerRepo.findByUsername(user.getName()).get();
         Customer customer1 = userHandler.rechargeCredit(customer, amount);
-        userHandler.saveTransaction(amount, TransactionType.PREPAYMENTINPUT, customer.getUsername());
+        userHandler.saveTransaction(amount, TransactionType.RECHARGE, customer.getUsername());
         customerRepo.save(customer1);
         model.addAttribute("user", customer);
         return "redirect:/profile";
