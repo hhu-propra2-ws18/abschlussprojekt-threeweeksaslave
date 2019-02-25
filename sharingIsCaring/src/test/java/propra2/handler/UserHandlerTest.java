@@ -31,13 +31,13 @@ public class UserHandlerTest {
     @Test
     public void testSaveTransaction(){
         int amount = 100;
-        TransactionType transactionType = TransactionType.PREPAYMENTINPUT;
+        TransactionType transactionType = TransactionType.RECHARGE;
         String userName = "userName";
         userHandler.saveTransaction(amount, transactionType, userName, transactionRepository);
 
         List<Transaction> transactions = transactionRepository.findAllByUserName("userName");
 
         Assert.assertEquals(1, transactions.size());
-        Assert.assertEquals(TransactionType.PREPAYMENTINPUT, transactions.get(0).getTransactionType());
+        Assert.assertEquals(TransactionType.RECHARGE, transactions.get(0).getTransactionType());
     }
 }

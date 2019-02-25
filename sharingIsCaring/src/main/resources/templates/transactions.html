@@ -24,12 +24,12 @@
         <table>
             <tbody>
                 <tr>
-                    <th>Nr</th>
+                    <th>Date</th>
                     <th>Amount</th>
                     <th>Type</th>
                 </tr>
                 <tr th:each="transaction:${transactions}">
-                    <td th:text="${transaction.id}">Id</td>
+                    <td th:text="${transaction.date}">date</td>
                     <td th:text="${transaction.amount} + '€'">Amount</td>
                     <td th:text="${transaction.transactionType}">Type</td>
                 </tr>

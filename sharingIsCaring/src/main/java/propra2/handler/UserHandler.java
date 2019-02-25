@@ -21,6 +21,9 @@ public class UserHandler {
     @Autowired
     private CustomerRepository customerRepo;
 
+    @Autowired
+    private TransactionRepository transactionRepository;
+
     public Customer rechargeCredit(Customer customer, int amount){
 
        Mono<ProPayAccount> account =  WebClient.create().post().uri(builder ->
@@ -61,11 +64,12 @@ public class UserHandler {
         }
     }
 
-    public void saveTransaction(int amount, TransactionType transactionType, String userName, TransactionRepository transactionRepository){
+    public void saveTransaction(double amount, TransactionType transactionType, String userName){
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         transaction.setTransactionType(transactionType);
         transaction.setUserName(userName);
+        transaction.setDate(new java.sql.Date(System.currentTimeMillis()));
 
         transactionRepository.save(transaction);
     }
