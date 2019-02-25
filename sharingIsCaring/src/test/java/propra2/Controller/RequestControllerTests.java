@@ -24,6 +24,7 @@ import propra2.handler.SearchProductHandler;
 import propra2.model.Address;
 import propra2.model.ProPayAccount;
 import propra2.repositories.CustomerRepository;
+import propra2.repositories.NotificationRepository;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
 
@@ -53,6 +54,8 @@ public class RequestControllerTests {
     @MockBean
     CustomerService customerService;
 
+    @MockBean
+    NotificationRepository notificationRepository;
     @MockBean
     OrderProcessRepository orderProcessRepository;
     @MockBean
@@ -105,7 +108,6 @@ public class RequestControllerTests {
     }
 
     @Test
-    @Ignore
     @WithMockUser(username = "Zoidberg", password = "propra2")
     public void testShowRequests() throws Exception {
 
@@ -135,9 +137,6 @@ public class RequestControllerTests {
         mvc.perform(get("/requests/detailsOwner/{processId}", 13L))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("requestDetailsOwner"))
-                .andExpect(MockMvcResultMatchers.model().attribute("owner", allOf(
-                        hasProperty("username", is("Luke")),
-                        hasProperty("mail", is("luke@web.de")))))
                 .andExpect(MockMvcResultMatchers.model().attribute("product", allOf(
                         hasProperty("available", is(false)),
                         hasProperty("title", is("Baumstamm")),
@@ -147,9 +146,9 @@ public class RequestControllerTests {
                         hasProperty("requestId", is(111L)),
                         hasProperty("product", hasProperty("title", is("Baumstamm"))),
                         hasProperty("status", is(PENDING)))))
-                .andExpect(MockMvcResultMatchers.model().attribute("owner", allOf(
-                        hasProperty("username", is("Luke")),
-                        hasProperty("mail", is("luke@web.de")))));
+                .andExpect(MockMvcResultMatchers.model().attribute("borrower", allOf(
+                        hasProperty("username", is("Kevin")),
+                        hasProperty("mail", is("kevin@istdumm.de")))));
     }
 
     @Test
