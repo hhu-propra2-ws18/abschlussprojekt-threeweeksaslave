@@ -9,6 +9,7 @@ import propra2.database.OrderProcess;
 import propra2.database.Product;
 import propra2.model.ProPayAccount;
 import propra2.model.Reservation;
+import propra2.model.TransactionType;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import reactor.core.publisher.Mono;
@@ -107,6 +108,7 @@ public class OrderProcessHandler {
 
     private void punished(OrderProcess orderProcess, Customer rentingAccount) {
         int reservationId = orderProcess.getReservationId();
+        double amount = customerRepo.findById(orderProcess.getRequestId()).get().getProPay().findReservationById(reservationId).getAmount();
         try {
             Mono<ProPayAccount> account = WebClient.create().post().uri(builder ->
                     builder
@@ -120,6 +122,9 @@ public class OrderProcessHandler {
             rentingAccount.setProPay(account.block());
         }catch(Exception e) {}
         orderProcessRepo.save(orderProcess);
+        Customer ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get();
+        userHandler.saveTransaction(amount, TransactionType.PREPAYMENTOUTPUT, rentingAccount.getUsername());
+        userHandler.saveTransaction(amount, TransactionType.PREPAYMENTINPUT, ownerAccount.getUsername());
     }
 
     public boolean checkAvailability(OrderProcessRepository orderProcessRepository, Product product, String from, String to) {
@@ -171,5 +176,7 @@ public class OrderProcessHandler {
                 .retrieve()
                 .bodyToMono(String.class);
         response.block();
+        userHandler.saveTransaction(dailyFee, TransactionType.PREPAYMENTOUTPUT, rentingAccount);
+        userHandler.saveTransaction(dailyFee, TransactionType.PREPAYMENTOUTPUT, ownerAccount);
     }
 }

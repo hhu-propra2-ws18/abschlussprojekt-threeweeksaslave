@@ -1,5 +1,6 @@
 package propra2.model;
 
+import antlr.debug.ParserTokenEvent;
 import lombok.Data;
 import propra2.database.OrderProcess;
 
@@ -41,5 +42,13 @@ public class ProPayAccount {
 
     public void setReservations(ArrayList<Reservation> reservations) {
         this.reservations = reservations;
+    }
+
+    public Reservation findReservationById(int reservationId) {
+        for(Reservation reservation : reservations){
+            if(reservation.getId() == reservationId) return reservation;
+        }
+
+        return null;
     }
 }

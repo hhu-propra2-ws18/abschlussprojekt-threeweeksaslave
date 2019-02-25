@@ -16,7 +16,7 @@ public class Transaction {
     Long id;
 
     String userName;
-    int amount;
+    double amount;
 
     TransactionType transactionType;
 }
