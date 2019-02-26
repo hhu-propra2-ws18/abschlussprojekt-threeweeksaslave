@@ -23,9 +23,11 @@ public class Product {
 	String title;
 	String description;
 
+	boolean forSale;
 	boolean available;
 	Date borrowedUntil;
 
+	Integer sellingPrice;
 	Integer deposit;
 	Integer dailyFee;
 
@@ -37,13 +39,21 @@ public class Product {
 	Address address;
 
 
-	public boolean allValuesSet() {
+	public boolean allValuesSetRent() {
 		return this.getTitle() != null &&
 				this.getDeposit() != null &&
 				this.getDescription() != null &&
 				this.getOwner() != null ||
 				this.getDailyFee() != null;
 	}
+
+	public boolean allValuesSetSale() {
+		return this.getTitle() != null &&
+				this.getSellingPrice() != null &&
+				this.getDescription() != null &&
+				this.getOwner() != null;
+	}
+
 	public Product() {
 		this.address = new Address();
 	}

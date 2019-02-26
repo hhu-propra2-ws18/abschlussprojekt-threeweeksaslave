@@ -91,8 +91,8 @@ public class ProductController {
      * @param model
      * @return
      */
-    @GetMapping("/product")
-    public String getProduct(Principal user, Model model) {
+    @GetMapping("/lend")
+    public String getLendProduct(Principal user, Model model) {
         addUserAndAdmin(user, model);
 
         Product product = new Product();
@@ -112,8 +112,28 @@ public class ProductController {
         return "addProduct";
     }
 
-    @PostMapping("/product")
-    public String createProduct(Principal user, final Product product, final Address address, final Model model) {
+    @GetMapping("/sale")
+    public String getSaleProduct(Principal user, Model model) {
+        addUserAndAdmin(user, model);
+
+        Product product = new Product();
+
+        product.setTitle("TestTitle");
+//        product.setDescription("TestDescription");
+        product.setSellingPrice(0);
+        Address address = new Address();
+        address.setCity("TestCity");
+        address.setHouseNumber(1);
+        address.setPostcode(1);
+        address.setStreet("TestStreet");
+        product.setAddress(address);
+
+        model.addAttribute("product",product);
+        return "addProduct";
+    }
+
+    @PostMapping("/sale")
+    public String createSaleProduct(Principal user, final Product product, final Address address, final Model model, final String forSale) {
         Long loggedInId = getUserId(user);
         Optional<Customer> customer = customerRepo.findById(loggedInId);
         model.addAttribute("user", user);
@@ -121,13 +141,32 @@ public class ProductController {
         if (customer.isPresent()) {
             product.setOwner(customer.get());
         }
-
         //product.setOwnerId(loggedInId);
         product.setAvailable(true);
         product.setAddress(address);
         //TODO set borrowed until
+        product.setForSale(true);
+        if (product.allValuesSetSale()) {
+            productRepo.save(product);
+        }
+        return "addImageToProduct";
+    }
 
-        if (product.allValuesSet()) {
+    @PostMapping("/lend")
+    public String createLendProduct(Principal user, final Product product, final Address address, final Model model, final String forSale) {
+        Long loggedInId = getUserId(user);
+        Optional<Customer> customer = customerRepo.findById(loggedInId);
+        model.addAttribute("user", user);
+
+        if (customer.isPresent()) {
+            product.setOwner(customer.get());
+        }
+        //product.setOwnerId(loggedInId);
+        product.setAvailable(true);
+        product.setAddress(address);
+        //TODO set borrowed until
+        product.setForSale(false);
+        if (product.allValuesSetRent()) {
             productRepo.save(product);
         }
         return "addImageToProduct";
