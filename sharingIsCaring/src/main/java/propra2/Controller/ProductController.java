@@ -99,8 +99,6 @@ public class ProductController {
 
         product.setTitle("TestTitle");
 //        product.setDescription("TestDescription");
-        product.setDeposit(0);
-        product.setDailyFee(0);
         Address address = new Address();
         address.setCity("TestCity");
         address.setHouseNumber(1);
@@ -109,7 +107,7 @@ public class ProductController {
         product.setAddress(address);
 
         model.addAttribute("product",product);
-        return "addProduct";
+        return "lend";
     }
 
     @GetMapping("/sale")
@@ -120,7 +118,8 @@ public class ProductController {
 
         product.setTitle("TestTitle");
 //        product.setDescription("TestDescription");
-        product.setSellingPrice(0);
+        product.setDeposit(0);
+        product.setDailyFee(0);
         Address address = new Address();
         address.setCity("TestCity");
         address.setHouseNumber(1);
@@ -129,7 +128,7 @@ public class ProductController {
         product.setAddress(address);
 
         model.addAttribute("product",product);
-        return "addProduct";
+        return "sale";
     }
 
     @PostMapping("/sale")
@@ -142,10 +141,12 @@ public class ProductController {
             product.setOwner(customer.get());
         }
         //product.setOwnerId(loggedInId);
+        product.setDeposit(0);
+        product.setDailyFee(0);
+        product.setForSale(true);
         product.setAvailable(true);
         product.setAddress(address);
         //TODO set borrowed until
-        product.setForSale(true);
         if (product.allValuesSetSale()) {
             productRepo.save(product);
         }
