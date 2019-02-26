@@ -10,6 +10,8 @@ import propra2.model.OrderProcessStatus;
 import propra2.repositories.NotificationRepository;
 import propra2.repositories.OrderProcessRepository;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
@@ -31,11 +33,11 @@ public class NotificationHandler {
             java.sql.Date today = new java.sql.Date(date.getTime());
             for (OrderProcess orderProcess : processes) {
                 String product = orderProcess.getProduct().getTitle();
-                if(orderProcess.getToDate().compareTo(today) == 1 && orderProcess.getStatus().equals(ACCEPTED)){
+                if(ChronoUnit.DAYS.between(LocalDate.parse(orderProcess.getToDate().toString()),LocalDate.parse(today.toString())) == -1 && orderProcess.getStatus().equals(ACCEPTED)){
                     String message = "You have to return your product: '" + product + "' tomorrow!";
                     createNotification(message, orderProcess);
                 }
-                else if (orderProcess.getToDate().compareTo(today) == 0 && orderProcess.getStatus().equals(ACCEPTED)){
+                else if (orderProcess.getToDate().toString().equals(today.toString()) && orderProcess.getStatus().equals(ACCEPTED)){
                     String message = "You have to return your product: '" + product + "' today!";
                     createNotification(message, orderProcess);
                 }
