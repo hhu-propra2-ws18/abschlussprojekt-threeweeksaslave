@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 import propra2.database.Customer;
 import propra2.handler.UserHandler;
 import propra2.model.Address;
+import propra2.model.ProPayAccount;
 import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
+
+import java.util.ArrayList;
 
 @Service
 public class RegistrationService {
@@ -28,7 +31,16 @@ public class RegistrationService {
         customer.setUsername(user.getUserName());
         customer.setMail(user.getEmailAddress());
         customer.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        customer.setProPay(userHandler.getProPayAccount(user.getUserName()));
+        if(userHandler.getProPayAccount(user.getUserName())!=null) {
+            customer.setProPay(userHandler.getProPayAccount(user.getUserName()));
+        }
+        else{
+            ProPayAccount proPayAccount = new ProPayAccount();
+            proPayAccount.setReservations(new ArrayList<>());
+            proPayAccount.setAccount(user.getUserName());
+            proPayAccount.setAmount(0);
+            customer.setProPay(proPayAccount);
+        }
         Address address = new Address();
         address.setStreet("-");
         address.setHouseNumber(0);
