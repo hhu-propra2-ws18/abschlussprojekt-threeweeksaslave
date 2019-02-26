@@ -58,7 +58,7 @@ public class ProPayController {
      */
     @PostMapping("/rechargeCredit")
     public String rechargeCredit(Principal user, int amount, String iban, Model model) {
-        if (amount == 0 || iban == null) {
+        if (amount == 0 || iban == "") {
             return "redirect:/rechargeCredit";
         }
         Customer customer = customerRepo.findByUsername(user.getName()).get();
