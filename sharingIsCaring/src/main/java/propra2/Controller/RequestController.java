@@ -144,7 +144,7 @@ public class RequestController {
             }
             return "redirect:/requests";
         }else{
-            model.addAttribute("note", "Sorry, your request failed please try it again later!");
+            model.addAttribute("note", "Sorry, connection to your ProPayAccount failed please try it again later!");
             return showRequests(user, model);
         }
     }
@@ -189,7 +189,7 @@ public class RequestController {
             orderProcess.setStatus(OrderProcessStatus.PENDING);
             orderProcess.setMessages(oldMessages);
             orderProcessRepo.save(orderProcess);
-            model.addAttribute("note", "Sorry, your request failed. Please try it again later.");
+            model.addAttribute("note", "Sorry, connection to your ProPayAccount failed. Please try it again later.");
             return showRequests(user, model);
         }
     }
@@ -210,7 +210,7 @@ public class RequestController {
             rentingAccount.setProPay(proPayAccount);
             customerRepo.save(rentingAccount);
             orderProcessRepo.save(orderProcess);
-            model.addAttribute("note", "Sorry, your request failed. Please try it again later.");
+            model.addAttribute("note", "Sorry, connection to your ProPayAccount failed. Please try it again later.");
             return showRequests(user, model);
         }
     }

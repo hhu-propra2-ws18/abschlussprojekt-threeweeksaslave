@@ -69,7 +69,7 @@ public class ProPayController {
             model.addAttribute("user", customer);
             return "redirect:/profile";
         }else{
-            model.addAttribute("note", "Sorry, your request failed please try it again later!");
+            model.addAttribute("note", "Sorry, connection to your ProPayAccount failed please try it again later!");
             return getRechargeCredit(user, model);
         }
     }

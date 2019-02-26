@@ -109,7 +109,7 @@ public class ConflictController {
             orderProcessRepo.save(orderProcess);
 
 
-            model.addAttribute("note", "Sorry, your request failed. Please try it again later.");
+            model.addAttribute("note", "Sorry, connection to your ProPayAccount failed. Please try it again later.");
             return getConflicts(user, model);
         }
 
