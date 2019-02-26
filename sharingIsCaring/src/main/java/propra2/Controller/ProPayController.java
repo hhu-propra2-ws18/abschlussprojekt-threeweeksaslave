@@ -62,11 +62,16 @@ public class ProPayController {
             return "redirect:/rechargeCredit";
         }
         Customer customer = customerRepo.findByUsername(user.getName()).get();
-        Customer customer1 = userHandler.rechargeCredit(customer, amount);
-        userHandler.saveTransaction(amount, TransactionType.RECHARGE, customer.getUsername());
-        customerRepo.save(customer1);
-        model.addAttribute("user", customer);
-        return "redirect:/profile";
+        boolean successful = userHandler.rechargeCredit(customer, amount);
+        if(successful){
+            userHandler.saveTransaction(amount, TransactionType.RECHARGE, customer.getUsername());
+            customerRepo.save(customer);
+            model.addAttribute("user", customer);
+            return "redirect:/profile";
+        }else{
+            model.addAttribute("note", "Sorry, your request failed please try it again later!");
+            return getRechargeCredit(user, model);
+        }
     }
 
     /**
