@@ -88,13 +88,12 @@ public class ConflictController {
         Customer rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get();
         ProPayAccount proPayAccount = rentingAccount.getProPay();
 
+        int reservationId = orderProcess.getReservationId();
+        double amount = proPayAccount.findReservationById(reservationId).getAmount();
+
         boolean successful = orderProcessHandler.updateOrderProcess(new ArrayList<>(), orderProcess);
         if(successful){
-            Customer requester = customerRepo.findById(orderProcess.getRequestId()).get();
             Customer ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get();
-            int reservationId = orderProcess.getReservationId();
-
-            double amount = requester.getProPay().findReservationById(reservationId).getAmount();
 
             if(amount>0){
                 userHandler.saveTransaction(amount, TransactionType.DEPOSITCHARGE, rentingAccount.getUsername());
