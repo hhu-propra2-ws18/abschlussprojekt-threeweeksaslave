@@ -63,7 +63,10 @@
             </tr>
         </table>
         <br>
-        <a th:if="${!user.equals(owner)}" th:href="@{'/product/' + ${product.id} + '/orderProcess'}">Borrow it!</a>
+        <div th:if="${!user.equals(owner)}">
+            <a th:if="${!product.forSale}" th:href="@{'/product/' + ${product.id} + '/orderProcess'}">Borrow it!</a>
+            <div th:if="${product.forSale}"><form method="post"> <button type="submit">Buy it!</button></form></div>
+        </div>
         <a th:if="${user.equals(owner) && editable}" th:href="@{'/product/edit/' + ${product.id}}">Edit it!</a>
         <p style="color:red" th:if="${user.equals(owner) && !editable}" >You cannot edit due to unfinished orderprocesses for this product</p>
         <hr>

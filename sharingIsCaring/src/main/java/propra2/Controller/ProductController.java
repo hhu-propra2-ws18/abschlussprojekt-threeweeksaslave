@@ -232,7 +232,7 @@ public class ProductController {
         return resultList;
     }
 
-    @GetMapping("/product/{id}")
+    @GetMapping("/productDetails/{id}")
     public String getProductDetails(@PathVariable Long id, final Principal user, final Model model) {
         Long loggedInId = getUserId(user);
         Customer customer = customerRepo.findById(loggedInId).get();

@@ -54,6 +54,34 @@ public class OrderProcessController {
         return "orderProcess";
     }
 
+    @PostMapping("/productDetails/{id}")
+    public String buyProduct(@PathVariable Long id, Principal user, Model model) {
+        Customer customer = customerRepo.findByUsername(user.getName()).get();
+        Product product = productRepo.findById(id).get();
+        List<OrderProcess> orderProcessesOfRequester = orderProcessRepo.findAllByRequestId(customer.getCustomerId());
+
+        if (!customer.hasEnoughMoney(product.getSellingPrice(), orderProcessesOfRequester)) {
+            return startOrderProcess(id, user, model, true, false, false, false);
+        }
+
+        if (product.getOwner().getCustomerId().equals(customer.getCustomerId())) {
+            return startOrderProcess(id, user, model, false, false, true, false);
+        }
+        OrderProcess orderProcess = new OrderProcess();
+        orderProcess.setOwnerId(product.getOwner().getCustomerId());
+
+        orderProcess.setRequestId(customer.getCustomerId());
+
+        orderProcess.setProduct(product);
+
+        orderProcess.setStatus(OrderProcessStatus.SOLD);
+        // productRepo.delete(product);
+
+        orderProcessRepo.save(orderProcess);
+
+        return "redirect:/home";
+    }
+
     @PostMapping("/product/{id}/orderProcess")
     public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user, Model model) {
         Customer customer = customerRepo.findByUsername(user.getName()).get();
@@ -65,16 +93,17 @@ public class OrderProcessController {
             return startOrderProcess(id, user, model, true, false, false, false);
         }
 
-        if (!orderProcessHandler.correctDates(Date.valueOf(from), Date.valueOf(to))) {
-            return startOrderProcess(id, user, model, false, true, false, false);
-        }
-
-        if(!orderProcessHandler.checkAvailability(orderProcessRepo, product, from, to)){
-            return startOrderProcess(id, user, model, false, false, false, true);
-        }
-
-        if(product.getOwner().getCustomerId().equals(customer.getCustomerId())){
+        if (product.getOwner().getCustomerId().equals(customer.getCustomerId())) {
             return startOrderProcess(id, user, model, false, false, true, false);
+        }
+        if(!product.isForSale()) {
+            if (!orderProcessHandler.correctDates(Date.valueOf(from), Date.valueOf(to))) {
+                return startOrderProcess(id, user, model, false, true, false, false);
+            }
+
+            if (!orderProcessHandler.checkAvailability(orderProcessRepo, product, from, to)) {
+                return startOrderProcess(id, user, model, false, false, false, true);
+            }
         }
 
         OrderProcess orderProcess = new OrderProcess();
