@@ -8,6 +8,7 @@ import propra2.database.*;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.UserHandler;
 import propra2.model.OrderProcessStatus;
+import propra2.model.ProPayAccount;
 import propra2.model.TransactionType;
 import propra2.repositories.*;
 
@@ -64,6 +65,7 @@ public class RequestController {
             admin = true;
         }
         model.addAttribute("admin", admin);
+
         return "requests";
     }
 
@@ -140,12 +142,11 @@ public class RequestController {
             if (notification.isPresent()) {
                 notificationRepository.delete(notification.get());
             }
+            return "redirect:/requests";
         }else{
             model.addAttribute("note", "Sorry, your request failed please try it again later!");
-            showRequests(user, model);
+            return showRequests(user, model);
         }
-
-        return "redirect:/requests";
     }
 
     @GetMapping("/requests/detailsOwner/{processId}")
@@ -183,25 +184,35 @@ public class RequestController {
         boolean finishedSuccessful = orderProcessHandler.updateOrderProcess(oldMessages, orderProcess);
         if(finishedSuccessful){
             productRepo.save(product);
+            return "redirect:/requests";
         }else{
             orderProcess.setStatus(OrderProcessStatus.PENDING);
             orderProcess.setMessages(oldMessages);
             orderProcessRepo.save(orderProcess);
             model.addAttribute("note", "Sorry, your request failed. Please try it again later.");
-            showRequests(user, model);
+            return showRequests(user, model);
         }
-
-        return "redirect:/requests";
     }
 
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=acceptReturn")
-    public String finishProcess(@PathVariable Long processId) {
+    public String finishProcess(@PathVariable Long processId, Model model, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.FINISHED);
 
-        orderProcessHandler.updateOrderProcess(orderProcess.getMessages(), orderProcess);
+        Customer rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get();
+        ProPayAccount proPayAccount = rentingAccount.getProPay();
 
-        return "redirect:/requests";
+        boolean successful = orderProcessHandler.updateOrderProcess(orderProcess.getMessages(), orderProcess);
+        if(successful){
+            return "redirect:/requests";
+        }else{
+            orderProcess.setStatus(OrderProcessStatus.RETURNED);
+            rentingAccount.setProPay(proPayAccount);
+            customerRepo.save(rentingAccount);
+            orderProcessRepo.save(orderProcess);
+            model.addAttribute("note", "Sorry, your request failed. Please try it again later.");
+            return showRequests(user, model);
+        }
     }
 
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=appeal")

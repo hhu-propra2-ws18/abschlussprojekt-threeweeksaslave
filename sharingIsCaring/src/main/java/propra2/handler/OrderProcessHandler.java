@@ -131,8 +131,6 @@ public class OrderProcessHandler {
 
     private boolean punished(OrderProcess orderProcess, Customer rentingAccount) {
         int reservationId = orderProcess.getReservationId();
-        Customer requester = customerRepo.findById(orderProcess.getRequestId()).get();
-        double amount = requester.getProPay().findReservationById(reservationId).getAmount();
         try {
             Mono<ProPayAccount> account = WebClient.create().post().uri(builder ->
                     builder
@@ -145,11 +143,6 @@ public class OrderProcessHandler {
 
             rentingAccount.setProPay(account.block());
             orderProcessRepo.save(orderProcess);
-            Customer ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get();
-            if(amount>0){
-                userHandler.saveTransaction(amount, TransactionType.DEPOSITCHARGE, rentingAccount.getUsername());
-                userHandler.saveTransaction(amount, TransactionType.RECEIVEDDEPOSIT, ownerAccount.getUsername());
-            }
             return true;
         }catch(Exception e) {return false;}
 
