@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import propra2.Controller.RequestController;
 import propra2.database.Customer;
 import propra2.database.Message;
 import propra2.database.OrderProcess;
@@ -20,6 +21,7 @@ import reactor.core.publisher.Mono;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 @Service
 public class OrderProcessHandler {
@@ -31,6 +33,9 @@ public class OrderProcessHandler {
 
     @Autowired
     private UserHandler userHandler;
+
+    @Autowired
+    private RequestController requestController;
 
 
     public void updateOrderProcess(ArrayList<Message> oldMessages, OrderProcess orderProcess) {
@@ -69,44 +74,52 @@ public class OrderProcessHandler {
     private void acceptProcess(OrderProcess orderProcess, Customer rentingAccount, Customer ownerAccount) {
         Integer deposit = orderProcess.getProduct().getDeposit();
         //Propay Kautionsbetrag blocken
-        Mono<Reservation> reservation = WebClient
-                .create()
-                .post()
-                .uri(builder ->
-                        builder.scheme("http")
-                                .host("localhost")
-                                .port(8888)
-                                .path("/reservation/reserve/")
-                                .pathSegment(rentingAccount.getUsername())
-                                .pathSegment(ownerAccount.getUsername())
-                                .queryParam("amount", deposit)
-                                .build())
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .retrieve()
-                .bodyToMono(Reservation.class);
+        try {
+            Mono<Reservation> reservation = WebClient
+                    .create()
+                    .post()
+                    .uri(builder ->
+                            builder.scheme("http")
+                                    .host("localhost")
+                                    .port(8888)
+                                    .path("/reservation/reserve/")
+                                    .pathSegment(rentingAccount.getUsername())
+                                    .pathSegment(ownerAccount.getUsername())
+                                    .queryParam("amount", deposit)
+                                    .build())
+                    .accept(MediaType.APPLICATION_JSON_UTF8)
+                    .retrieve()
+                    .bodyToMono(Reservation.class);
 
-        rentingAccount.setProPay(userHandler.getProPayAccount(rentingAccount.getUsername()));
-        orderProcess.setReservationId(reservation.block().getId());
+            rentingAccount.setProPay(userHandler.getProPayAccount(rentingAccount.getUsername()));
+            orderProcess.setReservationId(reservation.block().getId());
+        } catch (TimeoutException e) {
+            
+        }
         orderProcessRepo.save(orderProcess);
     }
 
     private void finished(OrderProcess orderProcess, Customer rentingAccount) {
         //Kaution wird wieder freigegeben
-        Mono<ProPayAccount> account = WebClient
-                .create()
-                .post()
-                .uri(builder ->
-                        builder.scheme("http")
-                                .host("localhost")
-                                .port(8888)
-                                .path("/reservation/release/" + rentingAccount.getUsername())
-                                .queryParam("reservationId", orderProcess.getReservationId())
-                                .build())
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .retrieve()
-                .bodyToMono(ProPayAccount.class);
+        try {
+            Mono<ProPayAccount> account = WebClient
+                    .create()
+                    .post()
+                    .uri(builder ->
+                            builder.scheme("http")
+                                    .host("localhost")
+                                    .port(8888)
+                                    .path("/reservation/release/" + rentingAccount.getUsername())
+                                    .queryParam("reservationId", orderProcess.getReservationId())
+                                    .build())
+                    .accept(MediaType.APPLICATION_JSON_UTF8)
+                    .retrieve()
+                    .bodyToMono(ProPayAccount.class);
 
-        rentingAccount.setProPay(account.block());
+            rentingAccount.setProPay(account.block());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         orderProcessRepo.save(orderProcess);
     }
 
@@ -173,20 +186,24 @@ public class OrderProcessHandler {
         double dailyFee = orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate());
         String rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get().getUsername();
         String ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get().getUsername();
-        Mono<String> response = WebClient
-                .create()
-                .post()
-                .uri(builder ->
-                        builder.scheme("http")
-                                .host("localhost")
-                                .port(8888)
-                                .path("/account/" + rentingAccount + "/transfer/" + ownerAccount)
-                                .queryParam("amount", dailyFee)
-                                .build())
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .retrieve()
-                .bodyToMono(String.class);
-        response.block();
+        try {
+            Mono<String> response = WebClient
+                    .create()
+                    .post()
+                    .uri(builder ->
+                            builder.scheme("http")
+                                    .host("localhost")
+                                    .port(8888)
+                                    .path("/account/" + rentingAccount + "/transfer/" + ownerAccount)
+                                    .queryParam("amount", dailyFee)
+                                    .build())
+                    .accept(MediaType.APPLICATION_JSON_UTF8)
+                    .retrieve()
+                    .bodyToMono(String.class);
+            response.block();
+        } catch (Exception e) {
+                e.printStackTrace();
+        }
         if(dailyFee>0){
             userHandler.saveTransaction(dailyFee, TransactionType.DAILYFEEPAYMENT, rentingAccount);
             userHandler.saveTransaction(dailyFee, TransactionType.RECEIVEDDAILYFEE, ownerAccount);
