@@ -54,6 +54,39 @@ public class OrderProcessController {
         return "orderProcess";
     }
 
+    @PostMapping("/product/{id}")
+    public String buyProduct(@PathVariable Long id, final Principal user, final Model model) {
+        System.out.println("METHOD CALL");
+        Customer customer = customerRepo.findByUsername(user.getName()).get();
+        Product product = productRepo.findById(id).get();
+        List<OrderProcess> orderProcessesOfRequester = orderProcessRepo.findAllByRequestId(customer.getCustomerId());
+
+        if (!customer.hasEnoughMoney(product.getSellingPrice(), orderProcessesOfRequester)) {
+            return startOrderProcess(id, user, model, true, false, false, false);
+        }
+
+        if(product.getOwner().getCustomerId().equals(customer.getCustomerId())){
+            return startOrderProcess(id, user, model, false, false, true, false);
+        }
+
+        OrderProcess orderProcess = new OrderProcess();
+        orderProcess.setOwnerId(product.getOwner().getCustomerId());
+
+        orderProcess.setRequestId(customer.getCustomerId());
+
+        orderProcess.setProduct(product);
+//        ArrayList<Message> messages = new ArrayList<>();
+//        Message newMessage = orderProcess.createMessage(user, message);
+//        messages.add(newMessage);
+//        orderProcess.setMessages(messages);
+
+        orderProcess.setStatus(OrderProcessStatus.SOLD);
+
+        orderProcessRepo.save(orderProcess);
+
+        return "redirect:/requests";
+    }
+
     @PostMapping("/product/{id}/orderProcess")
     public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user, Model model) {
         Customer customer = customerRepo.findByUsername(user.getName()).get();
