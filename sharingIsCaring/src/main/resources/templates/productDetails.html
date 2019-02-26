@@ -49,23 +49,29 @@
                 <td><b>Address:</b></td>
                 <td th:text="${product?.address.street} + ' ' + ${product?.address.houseNumber} + ', ' + ${product?.address.postcode} + ' ' + ${product?.address.city}"></td>
             </tr>
-            <tr bgcolor="#f5f5f5">
+            <tr th:if="${!product?.forSale}" bgcolor="#f5f5f5">
                 <th>Deposit: </th>
                 <td th:text="${#numbers.formatInteger(product.deposit, 1, 'POINT')} + ' €'">Amount</td>
             </tr>
-            <tr bgcolor="#f5f5f5">
+            <tr th:if="${!product?.forSale}" bgcolor="#f5f5f5">
                 <th>Daily Fee: </th>
                 <td th:text="${#numbers.formatInteger(product.dailyFee, 1, 'POINT')} + ' €'">Amount</td>
             </tr>
+            <tr th:if="${product?.forSale}" bgcolor="#f5f5f5">
+                <th>Price: </th>
+                <td th:text="${#numbers.formatInteger(product?.sellingPrice, 1, 'POINT')} + ' €'">Amount</td>
+            </tr>
             <tr bgcolor="#f5f5f5">
-                <th>For sale: </th>
+                <th>Status: </th>
                 <td th:text="${product?.forSale}? 'For sale' : 'For rent'">For Sale</td>
             </tr>
         </table>
         <br>
         <div th:if="${!user.equals(owner)}">
-            <a th:if="${!product.forSale}" th:href="@{'/product/' + ${product.id} + '/orderProcess'}">Borrow it!</a>
-            <div th:if="${product.forSale}"><form method="post"> <button type="submit">Buy it!</button></form></div>
+            <a th:if="${!product?.forSale}" th:href="@{'/product/' + ${product.id} + '/orderProcess'}">Borrow it!</a>
+            <form th:if="${product?.forSale}" method="post">
+                <button type="submit">Buy it!</button>
+            </form>
         </div>
         <a th:if="${user.equals(owner) && editable}" th:href="@{'/product/edit/' + ${product.id}}">Edit it!</a>
         <p style="color:red" th:if="${user.equals(owner) && !editable}" >You cannot edit due to unfinished orderprocesses for this product</p>
