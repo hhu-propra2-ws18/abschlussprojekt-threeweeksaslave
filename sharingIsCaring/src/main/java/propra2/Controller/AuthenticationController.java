@@ -88,7 +88,7 @@ public class AuthenticationController {
      * @return registration template
      */
     @GetMapping("/registration")
-    public String registration() {
+    public String registration(Model model) {
         return "registration";
     }
 
@@ -105,7 +105,8 @@ public class AuthenticationController {
         customerValidator.validate(user, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return "registration";
+            model.addAttribute("isAlreadyExisting", true);
+            return registration(model);
         }
 
         user.setRole("ROLE_USER");
