@@ -57,6 +57,10 @@
                 <th>Daily Fee: </th>
                 <td th:text="${#numbers.formatInteger(product.dailyFee, 1, 'POINT')} + ' €'">Amount</td>
             </tr>
+            <tr bgcolor="#f5f5f5">
+                <th>For sale: </th>
+                <td th:text="${product?.forSale}? 'For sale' : 'For rent'">For Sale</td>
+            </tr>
         </table>
         <br>
         <a th:if="${!user.equals(owner)}" th:href="@{'/product/' + ${product.id} + '/orderProcess'}">Borrow it!</a>

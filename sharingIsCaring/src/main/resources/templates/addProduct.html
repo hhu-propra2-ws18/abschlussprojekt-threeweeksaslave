@@ -2,7 +2,11 @@
 <html lang="en" layout:decorate="~{base}" xmlns:layout="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <title>New Product</title>
+    <title>Sell</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/css/base.css">
 </head>
 <body>
 
@@ -19,52 +23,70 @@
 </nav>
 
 <div layout:fragment="content">
+    <section>
 
-    <form method="post">
-        <h2>Please <span>enter your product information</span></h2>
-        <table>
-            <tr>
-                <td> Title:</td>
-                <td><input name="title" th:value="${product?.title}" type="text" required maxlength="255"></td>
-            </tr>
-            <tr>
-                <td valign="top"> Description:</td>
-                <td valign="top"><textarea name="description" th:value="${product?.description}"
-                                           required maxlength="255" rows="6" cols="40">TestDescription</textarea></td>
-            </tr>
-            <tr>
-                <td> Deposit:</td>
-                <td><input name="deposit" th:value="${product?.deposit}" type="number" required min="0"></td>
-            </tr>
-            <tr>
-                <td> Daily Fee:</td>
-                <td><input name="dailyFee" th:value="${product?.dailyFee}" type="number" required min="0"></td>
-            </tr>
-            <tr>
-                <td> Address:</td>
-            </tr>
-            <tr>
-                <td> Street:</td>
-                <td><input name="street" th:value="${product?.address?.street}" type="text" required maxlength="255">
-                </td>
-            </tr>
-            <tr>
-                <td> House No.:</td>
-                <td><input name="houseNumber" th:value="${product?.address?.houseNumber}" type="number" required
-                           min="1"></td>
-            </tr>
-            <tr>
-                <td> Postcode:</td>
-                <td><input name="postcode" th:value="${product?.address?.postcode}" type="number" required min="1"></td>
-            </tr>
-            <tr>
-                <td> City:</td>
-                <td><input name="city" th:value="${product?.address?.city}" type="text" required maxlength="255"></td>
-            </tr>
-        </table>
-        <br>
-        <button type="submit" class="btn btn-default btn-sm">New Product!</button>
-    </form>
+    <h2>Please <span>enter your product information</span></h2>
+
+    <div class="card text-center">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/product">Sell</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/lend">Rent</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body p-2">
+            <h5 class="card-title">So you want to sell something?</h5>
+            <p class="card-text">Please enter your product information.</p>
+        </div>
+        <form class="form-signin" method="post">
+            <div class="text-center mb-4">
+                <h3 class="h3 mb-3 font-weight-normal"></h3>
+            </div>
+            <div class="form-label-group">
+                <input type="title" name="title" id="inputTitle" class="form-control" placeholder="Title"
+                       th:value="${product?.title}" required maxlength="255" autofocus>
+                <label for="inputTitle">Title</label>
+            </div>
+            <div class="form-label-group">
+                <textarea name="description" id="inputDescription" class="form-control" placeholder="Description"
+                          th:value="${product?.description}" required maxlength="255" rows="6" cols="40" autofocus>
+                </textarea>
+                <label for="inputDescription">Description</label>
+            </div>
+            <div class="form-label-group">
+                <input type="number" name="price" id="inputPrice" class="form-control"
+                       th:value="${product?.sellingPrice}" placeholder="Price" required autofocus>
+                <label for="inputPrice">Price</label>
+            </div>
+            <div class="form-label-group">
+                <input type="text" name="street" id="inputStreet" class="form-control" placeholder="Street"
+                       pattern="[^0-9]+"
+                       th:value="${product?.address.street}" required maxlength="255" autofocus>
+                <label for="inputStreet">Street</label>
+            </div>
+            <div class="form-label-group">
+                <input type="number" name="houseNumber" id="inputHouseNo" class="form-control"
+                       th:value="${product?.address.houseNumber}" placeholder="House No." required autofocus>
+                <label for="inputHouseNo">House No.</label>
+            </div>
+            <div class="form-label-group">
+                <input type="number" name="postcode" id="inputPostcode" class="form-control"
+                       th:value="${product?.address.postcode}" placeholder="Postcode" required autofocus>
+                <label for="inputPostcode">Postcode</label>
+            </div>
+            <div class="form-label-group">
+                <input type="text" name="city" id="inputCity" class="form-control" pattern="[^0-9]+"
+                       th:value="${product?.address.city}" placeholder="City" required maxlength="255" autofocus>
+                <label for="inputCity">City</label>
+            </div>
+            <button type="submit" class="btn btn-lg btn-secondary btn-block pinkbtn">Submit</button>
+        </form>
+    </div>
+    </section>
 </div>
 
 </body>
