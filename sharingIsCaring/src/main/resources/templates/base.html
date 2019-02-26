@@ -18,6 +18,10 @@
 
 <main>
 
+    <b th:if="${note != null}" th:text="${note}">hat geklappt</b>
+
+    <div th:if="${note != null}"></div>
+
     <nav id="navigation" layout:fragment="nav"></nav>
 
     <div layout:fragment="content"></div>

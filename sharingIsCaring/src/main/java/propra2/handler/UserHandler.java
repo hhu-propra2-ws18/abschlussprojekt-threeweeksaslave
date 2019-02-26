@@ -79,7 +79,9 @@ public class UserHandler {
         List<Customer> customers = customerRepo.findAll();
 
         for (Customer customer : customers) {
-            customer.setProPay(getProPayAccount(customer.getUsername()));
+            if(getProPayAccount(customer.getUsername())!=null) {
+                customer.setProPay(getProPayAccount(customer.getUsername()));
+            }
             customerRepo.save(customer);
         }
     }

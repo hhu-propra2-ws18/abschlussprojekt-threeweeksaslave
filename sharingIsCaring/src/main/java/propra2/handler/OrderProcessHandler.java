@@ -52,17 +52,14 @@ public class OrderProcessHandler {
                 orderProcessRepo.save(orderProcess);
                 break;
             case ACCEPTED:
-                acceptProcess(orderProcess, rentingAccount, ownerAccount);
-                break;
+                return acceptProcess(orderProcess, rentingAccount, ownerAccount);
             case FINISHED:
-                finished(orderProcess, rentingAccount);
-                break;
+                return finished(orderProcess, rentingAccount);
             case CONFLICT:
                 orderProcessRepo.save(orderProcess);
                 break;
             case PUNISHED:
-                punished(orderProcess, rentingAccount);
-                break;
+                return punished(orderProcess, rentingAccount);
             case CANCELED:
                 cancelOrder(orderProcess);
                 break;
@@ -92,7 +89,9 @@ public class OrderProcessHandler {
                     .retrieve()
                     .bodyToMono(Reservation.class);
 
-            rentingAccount.setProPay(userHandler.getProPayAccount(rentingAccount.getUsername()));
+            if(userHandler.getProPayAccount(rentingAccount.getUsername())!=null) {
+                rentingAccount.setProPay(userHandler.getProPayAccount(rentingAccount.getUsername()));
+            }
             orderProcess.setReservationId(reservation.block().getId());
             orderProcessRepo.save(orderProcess);
             return true;
@@ -123,6 +122,7 @@ public class OrderProcessHandler {
             orderProcessRepo.save(orderProcess);
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
 
@@ -194,7 +194,7 @@ public class OrderProcessHandler {
         return from.before(to);
     }
 
-    public void payDailyFee(OrderProcess orderProcess) {
+    public boolean payDailyFee(OrderProcess orderProcess) {
         double dailyFee = orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate());
         String rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get().getUsername();
         String ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get().getUsername();
@@ -213,12 +213,10 @@ public class OrderProcessHandler {
                     .retrieve()
                     .bodyToMono(String.class);
             response.block();
+
+            return true;
         } catch (Exception e) {
-                e.printStackTrace();
-        }
-        if(dailyFee>0){
-            userHandler.saveTransaction(dailyFee, TransactionType.DAILYFEEPAYMENT, rentingAccount);
-            userHandler.saveTransaction(dailyFee, TransactionType.RECEIVEDDAILYFEE, ownerAccount);
+            return false;
         }
     }
 

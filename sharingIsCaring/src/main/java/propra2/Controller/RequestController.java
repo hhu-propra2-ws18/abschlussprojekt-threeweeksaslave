@@ -6,7 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import propra2.database.*;
 import propra2.handler.OrderProcessHandler;
+import propra2.handler.UserHandler;
 import propra2.model.OrderProcessStatus;
+import propra2.model.TransactionType;
 import propra2.repositories.*;
 
 import java.security.Principal;
@@ -31,6 +33,9 @@ public class RequestController {
 
     @Autowired
     private OrderProcessHandler orderProcessHandler;
+
+    @Autowired
+    private UserHandler userHandler;
 
     @GetMapping("/requests")
     public String showRequests(Principal user, final Model model) {
@@ -111,23 +116,34 @@ public class RequestController {
     }
 
     @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=return")
-    public String returnProduct(@PathVariable Long processId, Principal user) {
+    public String returnProduct(@PathVariable Long processId, Principal user, Model model) {
         Customer customer = customerRepo.findByUsername(user.getName()).get();
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
-        orderProcess.setStatus(OrderProcessStatus.RETURNED);
-        orderProcess.setToDate(new java.sql.Date(System.currentTimeMillis()));
-        orderProcessRepo.save(orderProcess);
 
-        Optional<Notification> notification = notificationRepository.findByProcessId(processId);
-        if(notification.isPresent()) {
-            notificationRepository.delete(notification.get());
+        boolean successful = orderProcessHandler.payDailyFee(orderProcess);
+
+        if(successful) {
+            double dailyFee = orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate());
+            String rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get().getUsername();
+            String ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get().getUsername();
+
+            if(dailyFee>0){
+                userHandler.saveTransaction(dailyFee, TransactionType.DAILYFEEPAYMENT, rentingAccount);
+                userHandler.saveTransaction(dailyFee, TransactionType.RECEIVEDDAILYFEE, ownerAccount);
+            }
+
+            orderProcess.setStatus(OrderProcessStatus.RETURNED);
+            orderProcess.setToDate(new java.sql.Date(System.currentTimeMillis()));
+            orderProcessRepo.save(orderProcess);
+
+            Optional<Notification> notification = notificationRepository.findByProcessId(processId);
+            if (notification.isPresent()) {
+                notificationRepository.delete(notification.get());
+            }
+        }else{
+            model.addAttribute("note", "Sorry, your request failed please try it again later!");
+            showRequests(user, model);
         }
-
-        Product product = productRepo.findById(orderProcess.getProduct().getId()).get();
-        product.setAvailable(true);
-        productRepo.save(product);
-
-        orderProcessHandler.payDailyFee(orderProcess);
 
         return "redirect:/requests";
     }
@@ -168,7 +184,11 @@ public class RequestController {
         if(finishedSuccessful){
             productRepo.save(product);
         }else{
-            model.addAttribute("Sorry, your request failed. Please try it again later.");
+            orderProcess.setStatus(OrderProcessStatus.PENDING);
+            orderProcess.setMessages(oldMessages);
+            orderProcessRepo.save(orderProcess);
+            model.addAttribute("note", "Sorry, your request failed. Please try it again later.");
+            showRequests(user, model);
         }
 
         return "redirect:/requests";
