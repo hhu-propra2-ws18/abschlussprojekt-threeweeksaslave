@@ -31,7 +31,7 @@
             <br>
             <table>
                 <td valign="top">
-                    <img th:src="@{'../upload/files/'+${product.id}+'/'+${product.id} + '.jpg'}" alt="Product Cover" style="width:100px; max-height:170px; height:auto">
+                    <img th:src="@{'../upload/files/'+${product.id}+'/'+${product.id} + ''}" alt="Product Cover" style="width:100px; max-height:170px; height:auto">
                 </td>
                 <td valign="top">
                     <div th:text="${#strings.abbreviate(product.description,100)}" style="word-break:break-all"></div>

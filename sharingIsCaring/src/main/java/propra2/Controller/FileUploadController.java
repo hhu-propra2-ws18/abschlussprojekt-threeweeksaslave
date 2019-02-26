@@ -47,7 +47,6 @@ public class FileUploadController {
     @GetMapping("/files/{productId}/{filename}")
     @ResponseBody
     public Resource serveFile(@PathVariable String filename, @PathVariable Long productId) {
-		System.out.println(filename + " " + productId + "serveFile");
         Resource file = storageService.loadAsResource(filename, productId);
         /*return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);*/
@@ -59,12 +58,15 @@ public class FileUploadController {
 								   @RequestParam("productId") String productId, RedirectAttributes redirectAttributes) {
 
         String originalFilename = file.getOriginalFilename();
-        if(originalFilename.length() >= 4) {
-			storageService.store(file, fileName + originalFilename.substring(originalFilename.length() - 4), productId);
-			redirectAttributes.addFlashAttribute("message",
-					"You successfully uploaded " + file.getOriginalFilename() + "!");
+        if(originalFilename != null) {
+			String[] originalFilenameArray = originalFilename.split("\\.");
+			if (originalFilenameArray.length == 2) {
+				deleteCurrentImage(Long.parseLong(productId), model);
+				storageService.store(file, fileName + "." + originalFilenameArray[1], productId);
+				redirectAttributes.addFlashAttribute("message",
+						"You successfully uploaded " + file.getOriginalFilename() + "!");
+			}
 		}
-
         Product product = productRepository.findById(Long.parseLong(productId)).get();
         model.addAttribute(product);
         return "editProductImage";
