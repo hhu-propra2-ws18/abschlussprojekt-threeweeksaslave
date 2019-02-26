@@ -3,6 +3,9 @@
       xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>Your Requests</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/css/base.css">
 </head>
 <body>
 
@@ -24,7 +27,7 @@
         <div class="card-body">
             <p class="card-text">
 
-            <h1>Your Requests</h1>
+            <h2>Your Requests</h2>
         </div>
     </section>
 
@@ -32,22 +35,26 @@
         <!--Produkte, die wir verleihen-->
         <div th:switch="${lendProductsExist}">
             <div th:case="false">
-                  <h1>Lent products</h1>
+                  <h2>Lent products</h2>
                   <p>No lend products</p>
             </div>
             <div th:case="true">
                 <h1>Lent products</h1>
-                <table>
-                    <tr>
-                        <th>Product</th>
-                        <th>Status</th>
-                        <th>Details</th>
-                    </tr>
-                    <tr th:each="process : ${ownerOrderProcesses}">
-                        <td th:text="${process.product.title}"></td>
-                        <td th:text="${process.status}"></td>
-                        <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/requests/detailsOwner/' + ${process.id}}">Details</a></td>
-                    </tr>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Status</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="process : ${ownerOrderProcesses}">
+                            <td th:text="${process.product.title}"></td>
+                            <td th:text="${process.status}"></td>
+                            <td><a class="btn btn-primary btn-sm pinkbtn" role="button" th:href="@{'/requests/detailsOwner/' + ${process.id}}">Details</a></td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -58,22 +65,26 @@
         <!--Produkte, die wir selber ausleihen-->
         <div th:switch="${borrowerExist}">
             <div th:case="true">
-                <h1>Borrowed products</h1>
-                <table>
-                    <tr>
-                        <th>Product</th>
-                        <th>Status</th>
-                        <th>Details</th>
-                    </tr>
-                    <tr th:each="process : ${borrower}">
-                        <td th:text="${process.product.title}"></td>
-                        <td th:text="${process.status}"></td>
-                        <td><a class="btn btn-primary btn-sm" role="button" th:href="@{'/requests/detailsBorrower/' + ${process.id}}">Details</a></td>
-                    </tr>
+                <h2>Borrowed products</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Status</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="process : ${borrower}">
+                            <td th:text="${process.product.title}"></td>
+                            <td th:text="${process.status}"></td>
+                            <td><a class="btn btn-primary btn-sm pinkbtn" role="button" th:href="@{'/requests/detailsBorrower/' + ${process.id}}">Details</a></td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
             <div th:case="false">
-                <h1>Borrowed products</h1>
+                <h2>Borrowed products</h2>
                 <p>No borrowed products</p>
             </div>
         </div>
