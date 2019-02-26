@@ -6,7 +6,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import propra2.database.*;
 import propra2.handler.OrderProcessHandler;
+import propra2.handler.UserHandler;
 import propra2.model.OrderProcessStatus;
+import propra2.model.ProPayAccount;
+import propra2.model.TransactionType;
 import propra2.repositories.*;
 
 import java.security.Principal;
@@ -31,6 +34,9 @@ public class RequestController {
 
     @Autowired
     private OrderProcessHandler orderProcessHandler;
+
+    @Autowired
+    private UserHandler userHandler;
 
     @GetMapping("/requests")
     public String showRequests(Principal user, final Model model) {
@@ -59,6 +65,7 @@ public class RequestController {
             admin = true;
         }
         model.addAttribute("admin", admin);
+
         return "requests";
     }
 
@@ -111,25 +118,35 @@ public class RequestController {
     }
 
     @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=return")
-    public String returnProduct(@PathVariable Long processId, Principal user) {
+    public String returnProduct(@PathVariable Long processId, Principal user, Model model) {
         Customer customer = customerRepo.findByUsername(user.getName()).get();
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
-        orderProcess.setStatus(OrderProcessStatus.RETURNED);
-        orderProcess.setToDate(new java.sql.Date(System.currentTimeMillis()));
-        orderProcessRepo.save(orderProcess);
 
-        Optional<Notification> notification = notificationRepository.findByProcessId(processId);
-        if(notification.isPresent()) {
-            notificationRepository.delete(notification.get());
+        boolean successful = orderProcessHandler.payDailyFee(orderProcess);
+
+        if(successful) {
+            double dailyFee = orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate());
+            String rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get().getUsername();
+            String ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get().getUsername();
+
+            if(dailyFee>0){
+                userHandler.saveTransaction(dailyFee, TransactionType.DAILYFEEPAYMENT, rentingAccount);
+                userHandler.saveTransaction(dailyFee, TransactionType.RECEIVEDDAILYFEE, ownerAccount);
+            }
+
+            orderProcess.setStatus(OrderProcessStatus.RETURNED);
+            orderProcess.setToDate(new java.sql.Date(System.currentTimeMillis()));
+            orderProcessRepo.save(orderProcess);
+
+            Optional<Notification> notification = notificationRepository.findByProcessId(processId);
+            if (notification.isPresent()) {
+                notificationRepository.delete(notification.get());
+            }
+            return "redirect:/requests";
+        }else{
+            model.addAttribute("note", "Sorry, connection to your ProPayAccount failed please try it again later!");
+            return showRequests(user, model);
         }
-
-        Product product = productRepo.findById(orderProcess.getProduct().getId()).get();
-        product.setAvailable(true);
-        productRepo.save(product);
-
-        orderProcessHandler.payDailyFee(orderProcess);
-
-        return "redirect:/requests";
     }
 
     @GetMapping("/requests/detailsOwner/{processId}")
@@ -152,7 +169,7 @@ public class RequestController {
     }
 
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=acceptProcess")
-    public String accept(String message, @PathVariable Long processId, Principal user) {
+    public String accept(String message, @PathVariable Long processId, Principal user, Model model) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.ACCEPTED);
         ArrayList<Message> oldMessages = orderProcess.getMessages();
@@ -162,25 +179,40 @@ public class RequestController {
         orderProcess.setMessages(messages);
 
         Product product = productRepo.findById(orderProcess.getProduct().getId()).get();
-        product.setAvailable(false);
         product.setBorrowedUntil(orderProcess.getToDate());
 
-        productRepo.save(product);
-
-
-        orderProcessHandler.updateOrderProcess(oldMessages, orderProcess);
-
-        return "redirect:/requests";
+        boolean finishedSuccessful = orderProcessHandler.updateOrderProcess(oldMessages, orderProcess);
+        if(finishedSuccessful){
+            productRepo.save(product);
+            return "redirect:/requests";
+        }else{
+            orderProcess.setStatus(OrderProcessStatus.PENDING);
+            orderProcess.setMessages(oldMessages);
+            orderProcessRepo.save(orderProcess);
+            model.addAttribute("note", "Sorry, connection to your ProPayAccount failed. Please try it again later.");
+            return showRequests(user, model);
+        }
     }
 
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=acceptReturn")
-    public String finishProcess(@PathVariable Long processId) {
+    public String finishProcess(@PathVariable Long processId, Model model, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.FINISHED);
 
-        orderProcessHandler.updateOrderProcess(orderProcess.getMessages(), orderProcess);
+        Customer rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get();
+        ProPayAccount proPayAccount = rentingAccount.getProPay();
 
-        return "redirect:/requests";
+        boolean successful = orderProcessHandler.updateOrderProcess(orderProcess.getMessages(), orderProcess);
+        if(successful){
+            return "redirect:/requests";
+        }else{
+            orderProcess.setStatus(OrderProcessStatus.RETURNED);
+            rentingAccount.setProPay(proPayAccount);
+            customerRepo.save(rentingAccount);
+            orderProcessRepo.save(orderProcess);
+            model.addAttribute("note", "Sorry, connection to your ProPayAccount failed. Please try it again later.");
+            return showRequests(user, model);
+        }
     }
 
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=appeal")

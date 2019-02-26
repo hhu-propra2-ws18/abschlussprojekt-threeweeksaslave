@@ -34,8 +34,10 @@ public class ProfileController {
 
         Customer customer = customerRepo.findById(loggedInId).get();
         ProPayAccount newProPayAcc = userHandler.getProPayAccount(customer.getUsername());
-        customer.setProPay(newProPayAcc);
-        customerRepo.save(customer);
+        if(newProPayAcc!=null){
+            customer.setProPay(newProPayAcc);
+            customerRepo.save(customer);
+        }
         model.addAttribute("user", customer);
 
          boolean admin = false;

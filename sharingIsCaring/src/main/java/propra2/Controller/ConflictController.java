@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
 import propra2.handler.OrderProcessHandler;
+import propra2.handler.UserHandler;
 import propra2.model.OrderProcessStatus;
+import propra2.model.ProPayAccount;
+import propra2.model.TransactionType;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
@@ -32,6 +35,9 @@ public class ConflictController {
 
     @Autowired
     private OrderProcessHandler orderProcessHandler;
+
+    @Autowired
+    private UserHandler userHandler;
 
 
     @GetMapping("/conflicts")
@@ -75,12 +81,38 @@ public class ConflictController {
     }
 
     @RequestMapping(value="/conflicts/details/{processId}", method= RequestMethod.POST, params="action=confirm")
-    public String confirmConflict(@PathVariable Long processId) {
+    public String confirmConflict(@PathVariable Long processId, Model model, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.PUNISHED);
-        orderProcessHandler.updateOrderProcess(new ArrayList<>(), orderProcess);
 
-        return "redirect:/conflicts";
+        Customer rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get();
+        ProPayAccount proPayAccount = rentingAccount.getProPay();
+
+        boolean successful = orderProcessHandler.updateOrderProcess(new ArrayList<>(), orderProcess);
+        if(successful){
+            Customer requester = customerRepo.findById(orderProcess.getRequestId()).get();
+            Customer ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get();
+            int reservationId = orderProcess.getReservationId();
+
+            double amount = requester.getProPay().findReservationById(reservationId).getAmount();
+
+            if(amount>0){
+                userHandler.saveTransaction(amount, TransactionType.DEPOSITCHARGE, rentingAccount.getUsername());
+                userHandler.saveTransaction(amount, TransactionType.RECEIVEDDEPOSIT, ownerAccount.getUsername());
+            }
+            return "redirect:/conflicts";
+        }else{
+
+            orderProcess.setStatus(OrderProcessStatus.CONFLICT);
+            rentingAccount.setProPay(proPayAccount);
+            customerRepo.save(rentingAccount);
+            orderProcessRepo.save(orderProcess);
+
+
+            model.addAttribute("note", "Sorry, connection to your ProPayAccount failed. Please try it again later.");
+            return getConflicts(user, model);
+        }
+
     }
 
     @RequestMapping(value="/conflicts/details/{processId}", method=RequestMethod.POST, params="action=reject")

@@ -24,18 +24,24 @@ public class UserHandler {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public Customer rechargeCredit(Customer customer, int amount){
+    public boolean rechargeCredit(Customer customer, int amount){
+        ProPayAccount proPayAccount = customer.getProPay();
 
-       Mono<ProPayAccount> account =  WebClient.create().post().uri(builder ->
-                builder
-                        .path("localhost:8888/account/" + customer.getUsername())
-                        .query("amount=" + amount)
-                        .build())
-               .retrieve()
-               .bodyToMono(ProPayAccount.class);
+        try {
+            Mono<ProPayAccount> account =  WebClient.create().post().uri(builder ->
+                     builder
+                             .path("localhost:8888/account/" + customer.getUsername())
+                             .query("amount=" + amount)
+                             .build())
+                    .retrieve()
+                    .bodyToMono(ProPayAccount.class);
 
-        customer.setProPay(account.block());
-        return customer;
+            customer.setProPay(account.block());
+            return true;
+        } catch (Exception e) {
+            customer.setProPay(proPayAccount);
+            return false;
+        }
     }
 
     @Transactional
@@ -79,8 +85,12 @@ public class UserHandler {
         List<Customer> customers = customerRepo.findAll();
 
         for (Customer customer : customers) {
-            customer.setProPay(getProPayAccount(customer.getUsername()));
-            customerRepo.save(customer);
+            try {
+                if(getProPayAccount(customer.getUsername())!=null) {
+                    customer.setProPay(getProPayAccount(customer.getUsername()));
+                }
+                customerRepo.save(customer);
+            } catch (Exception e) { }
         }
     }
 }

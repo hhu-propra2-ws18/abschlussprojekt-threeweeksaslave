@@ -37,6 +37,7 @@
                     <label for="inputPassword">Confirm password</label>
                 </div>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+                <p style="color:red" th:if="${isAlreadyExisting}">Username or Email is already existing!</p>
             </form>
     </section>
 

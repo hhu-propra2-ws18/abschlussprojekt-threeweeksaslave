@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import propra2.Controller.RequestController;
 import propra2.database.Customer;
 import propra2.database.Message;
 import propra2.database.OrderProcess;
@@ -18,8 +19,10 @@ import propra2.repositories.OrderProcessRepository;
 import reactor.core.publisher.Mono;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 @Service
 public class OrderProcessHandler {
@@ -32,8 +35,11 @@ public class OrderProcessHandler {
     @Autowired
     private UserHandler userHandler;
 
+    @Autowired
+    private RequestController requestController;
 
-    public void updateOrderProcess(ArrayList<Message> oldMessages, OrderProcess orderProcess) {
+
+    public boolean updateOrderProcess(ArrayList<Message> oldMessages, OrderProcess orderProcess) {
 
         if (!(oldMessages == null)) {
             orderProcess.addMessages(oldMessages);
@@ -47,73 +53,84 @@ public class OrderProcessHandler {
                 orderProcessRepo.save(orderProcess);
                 break;
             case ACCEPTED:
-                acceptProcess(orderProcess, rentingAccount, ownerAccount);
-                break;
+                return acceptProcess(orderProcess, rentingAccount, ownerAccount);
             case FINISHED:
-                finished(orderProcess, rentingAccount);
-                break;
+                return finished(orderProcess, rentingAccount);
             case CONFLICT:
                 orderProcessRepo.save(orderProcess);
                 break;
             case PUNISHED:
-                punished(orderProcess, rentingAccount);
-                break;
+                return punished(orderProcess, rentingAccount);
             case CANCELED:
                 cancelOrder(orderProcess);
                 break;
             default:
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
         }
+        return false;
     }
 
-    private void acceptProcess(OrderProcess orderProcess, Customer rentingAccount, Customer ownerAccount) {
+    private boolean acceptProcess(OrderProcess orderProcess, Customer rentingAccount, Customer ownerAccount) {
         Integer deposit = orderProcess.getProduct().getDeposit();
         //Propay Kautionsbetrag blocken
-        Mono<Reservation> reservation = WebClient
-                .create()
-                .post()
-                .uri(builder ->
-                        builder.scheme("http")
-                                .host("localhost")
-                                .port(8888)
-                                .path("/reservation/reserve/")
-                                .pathSegment(rentingAccount.getUsername())
-                                .pathSegment(ownerAccount.getUsername())
-                                .queryParam("amount", deposit)
-                                .build())
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .retrieve()
-                .bodyToMono(Reservation.class);
+        try {
+            Mono<Reservation> reservation = WebClient
+                    .create()
+                    .post()
+                    .uri(builder ->
+                            builder.scheme("http")
+                                    .host("localhost")
+                                    .port(8888)
+                                    .path("/reservation/reserve/")
+                                    .pathSegment(rentingAccount.getUsername())
+                                    .pathSegment(ownerAccount.getUsername())
+                                    .queryParam("amount", deposit)
+                                    .build())
+                    .accept(MediaType.APPLICATION_JSON_UTF8)
+                    .retrieve()
+                    .bodyToMono(Reservation.class);
 
-        rentingAccount.setProPay(userHandler.getProPayAccount(rentingAccount.getUsername()));
-        orderProcess.setReservationId(reservation.block().getId());
-        orderProcessRepo.save(orderProcess);
+            if(userHandler.getProPayAccount(rentingAccount.getUsername())!=null) {
+                rentingAccount.setProPay(userHandler.getProPayAccount(rentingAccount.getUsername()));
+            }
+            orderProcess.setReservationId(reservation.block().getId());
+            orderProcessRepo.save(orderProcess);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
-    private void finished(OrderProcess orderProcess, Customer rentingAccount) {
+    private boolean finished(OrderProcess orderProcess, Customer rentingAccount) {
         //Kaution wird wieder freigegeben
-        Mono<ProPayAccount> account = WebClient
-                .create()
-                .post()
-                .uri(builder ->
-                        builder.scheme("http")
-                                .host("localhost")
-                                .port(8888)
-                                .path("/reservation/release/" + rentingAccount.getUsername())
-                                .queryParam("reservationId", orderProcess.getReservationId())
-                                .build())
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .retrieve()
-                .bodyToMono(ProPayAccount.class);
+        try {
+            Mono<ProPayAccount> account = WebClient
+                    .create()
+                    .post()
+                    .uri(builder ->
+                            builder.scheme("http")
+                                    .host("localhost")
+                                    .port(8888)
+                                    .path("/reservation/release/" + rentingAccount.getUsername())
+                                    .queryParam("reservationId", orderProcess.getReservationId())
+                                    .build())
+                    .accept(MediaType.APPLICATION_JSON_UTF8)
+                    .retrieve()
+                    .bodyToMono(ProPayAccount.class);
 
-        rentingAccount.setProPay(account.block());
-        orderProcessRepo.save(orderProcess);
+            rentingAccount.setProPay(account.block());
+            orderProcessRepo.save(orderProcess);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
-    private void punished(OrderProcess orderProcess, Customer rentingAccount) {
+    private boolean punished(OrderProcess orderProcess, Customer rentingAccount) {
         int reservationId = orderProcess.getReservationId();
-        Customer requester = customerRepo.findById(orderProcess.getRequestId()).get();
-        double amount = requester.getProPay().findReservationById(reservationId).getAmount();
         try {
             Mono<ProPayAccount> account = WebClient.create().post().uri(builder ->
                     builder
@@ -125,13 +142,10 @@ public class OrderProcessHandler {
                     .bodyToMono(ProPayAccount.class);
 
             rentingAccount.setProPay(account.block());
-        }catch(Exception e) {}
-        orderProcessRepo.save(orderProcess);
-        Customer ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get();
-        if(amount>0){
-            userHandler.saveTransaction(amount, TransactionType.DEPOSITCHARGE, rentingAccount.getUsername());
-            userHandler.saveTransaction(amount, TransactionType.RECEIVEDDEPOSIT, ownerAccount.getUsername());
-        }
+            orderProcessRepo.save(orderProcess);
+            return true;
+        }catch(Exception e) {return false;}
+
     }
 
     public boolean checkAvailability(OrderProcessRepository orderProcessRepository, Product product, String from, String to) {
@@ -164,32 +178,48 @@ public class OrderProcessHandler {
     }
 
     public boolean correctDates(Date from, Date to) {
-        if(from.before(new java.sql.Date(System.currentTimeMillis())) || to.before(new java.sql.Date(System.currentTimeMillis()))) return false;
-        if (from.equals(to)) return true;
+        Date today = new Date(1);
+        today.setDate(LocalDate.now().getDayOfMonth());
+        today.setMonth(LocalDate.now().getMonthValue()-1);
+        today.setYear(LocalDate.now().getYear()-1900);
+        //case today until today
+        if(from.toString().equals(to.toString()) && from.toString().equals(today.toString())){
+            return true;
+        }
+        //case to is before today
+        if(to.before(today)){
+            return false;
+        }
+        //case future rent for single day
+        if(from.toString().equals(to.toString()) && today.before(from)){
+            return true;
+        }
         return from.before(to);
     }
 
-    public void payDailyFee(OrderProcess orderProcess) {
+    public boolean payDailyFee(OrderProcess orderProcess) {
         double dailyFee = orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate());
         String rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get().getUsername();
         String ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get().getUsername();
-        Mono<String> response = WebClient
-                .create()
-                .post()
-                .uri(builder ->
-                        builder.scheme("http")
-                                .host("localhost")
-                                .port(8888)
-                                .path("/account/" + rentingAccount + "/transfer/" + ownerAccount)
-                                .queryParam("amount", dailyFee)
-                                .build())
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .retrieve()
-                .bodyToMono(String.class);
-        response.block();
-        if(dailyFee>0){
-            userHandler.saveTransaction(dailyFee, TransactionType.DAILYFEEPAYMENT, rentingAccount);
-            userHandler.saveTransaction(dailyFee, TransactionType.RECEIVEDDAILYFEE, ownerAccount);
+        try {
+            Mono<String> response = WebClient
+                    .create()
+                    .post()
+                    .uri(builder ->
+                            builder.scheme("http")
+                                    .host("localhost")
+                                    .port(8888)
+                                    .path("/account/" + rentingAccount + "/transfer/" + ownerAccount)
+                                    .queryParam("amount", dailyFee)
+                                    .build())
+                    .accept(MediaType.APPLICATION_JSON_UTF8)
+                    .retrieve()
+                    .bodyToMono(String.class);
+            response.block();
+
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
