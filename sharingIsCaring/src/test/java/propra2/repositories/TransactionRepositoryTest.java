@@ -52,7 +52,7 @@ public class TransactionRepositoryTest {
         List<Transaction> transactionList = transactionRepository.findAllByUserName("uN");
 
         Assert.assertEquals(2, transactionList.size());
-        Assert.assertEquals(40, transactionList.get(0).getAmount());
-        Assert.assertEquals(10, transactionList.get(1).getAmount());
+        Assert.assertEquals(40, transactionList.get(0).getAmount(), 0.1);
+        Assert.assertEquals(10, transactionList.get(1).getAmount(), 0.1);
     }
 }

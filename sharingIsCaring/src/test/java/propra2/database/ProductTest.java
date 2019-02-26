@@ -30,7 +30,7 @@ public class ProductTest {
     public void testGetTotalAmount(){
         java.sql.Date from = new java.sql.Date(System.currentTimeMillis());
         double response = product.getTotalDailyFee(from);
-        Assertions.assertThat(15.0).isEqualTo(response);
+        Assertions.assertThat(5.0).isEqualTo(response);
     }
 
     @Test
