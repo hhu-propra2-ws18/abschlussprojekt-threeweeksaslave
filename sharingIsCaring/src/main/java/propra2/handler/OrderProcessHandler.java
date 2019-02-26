@@ -19,6 +19,7 @@ import propra2.repositories.OrderProcessRepository;
 import reactor.core.publisher.Mono;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -184,13 +185,22 @@ public class OrderProcessHandler {
     }
 
     public boolean correctDates(Date from, Date to) {
-        if(from.before(new java.sql.Date(System.currentTimeMillis())) || to.before(new java.sql.Date(System.currentTimeMillis()))) {
-            if(from.equals(to) && from.equals(new java.sql.Date(System.currentTimeMillis()))){
-                return true;
-            }
+        Date today = new Date(1);
+        today.setDate(LocalDate.now().getDayOfMonth());
+        today.setMonth(LocalDate.now().getMonthValue()-1);
+        today.setYear(LocalDate.now().getYear()-1900);
+        //case today until today
+        if(from.toString().equals(to.toString()) && from.toString().equals(today.toString())){
+            return true;
+        }
+        //case to is before today
+        if(to.before(today)){
             return false;
         }
-        if (from.equals(to)) return true;
+        //case future rent for single day
+        if(from.toString().equals(to.toString()) && today.before(from)){
+            return true;
+        }
         return from.before(to);
     }
 
