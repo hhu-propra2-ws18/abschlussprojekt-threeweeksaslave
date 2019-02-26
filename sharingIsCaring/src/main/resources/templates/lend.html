@@ -34,7 +34,7 @@
                         <a class="nav-link" href="/sale">Sell</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/lend">Rent</a>
+                        <a class="nav-link active" href="/lend">Lend</a>
                     </li>
                 </ul>
             </div>
@@ -52,9 +52,9 @@
                     <label for="inputTitle">Title</label>
                 </div>
                 <div class="form-label-group">
-                <textarea name="description" id="inputDescription" class="form-control" placeholder="Description"
-                          th:value="${product?.description}" required maxlength="255" rows="6" cols="40" autofocus>
-                </textarea>
+                    <textarea name="description" id="inputDescription" class="form-control" placeholder="Description"
+                              th:value="${product?.description}" required maxlength="255" rows="6" cols="40" autofocus>
+                    </textarea>
                     <label for="inputDescription">Description</label>
                 </div>
                 <div class="form-label-group">

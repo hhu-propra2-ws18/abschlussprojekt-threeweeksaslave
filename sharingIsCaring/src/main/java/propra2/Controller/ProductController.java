@@ -117,7 +117,6 @@ public class ProductController {
         Product product = new Product();
 
         product.setTitle("TestTitle");
-//        product.setDescription("TestDescription");
         product.setDeposit(0);
         product.setDailyFee(0);
         Address address = new Address();
@@ -132,7 +131,7 @@ public class ProductController {
     }
 
     @PostMapping("/sale")
-    public String createSaleProduct(Principal user, final Product product, final Address address, final Model model, final String forSale) {
+    public String createSaleProduct(Principal user, final Product product, final Address address, final Model model) {
         Long loggedInId = getUserId(user);
         Optional<Customer> customer = customerRepo.findById(loggedInId);
         model.addAttribute("user", user);
@@ -140,13 +139,13 @@ public class ProductController {
         if (customer.isPresent()) {
             product.setOwner(customer.get());
         }
-        //product.setOwnerId(loggedInId);
+
         product.setDeposit(0);
         product.setDailyFee(0);
         product.setForSale(true);
         product.setAvailable(true);
         product.setAddress(address);
-        //TODO set borrowed until
+
         if (product.allValuesSetSale()) {
             productRepo.save(product);
         }
@@ -154,7 +153,7 @@ public class ProductController {
     }
 
     @PostMapping("/lend")
-    public String createLendProduct(Principal user, final Product product, final Address address, final Model model, final String forSale) {
+    public String createLendProduct(Principal user, final Product product, final Address address, final Model model) {
         Long loggedInId = getUserId(user);
         Optional<Customer> customer = customerRepo.findById(loggedInId);
         model.addAttribute("user", user);
@@ -162,11 +161,11 @@ public class ProductController {
         if (customer.isPresent()) {
             product.setOwner(customer.get());
         }
-        //product.setOwnerId(loggedInId);
+
         product.setAvailable(true);
-        product.setAddress(address);
-        //TODO set borrowed until
         product.setForSale(false);
+        product.setAddress(address);
+
         if (product.allValuesSetRent()) {
             productRepo.save(product);
         }

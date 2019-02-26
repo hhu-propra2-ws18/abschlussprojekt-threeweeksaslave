@@ -34,7 +34,7 @@
                     <a class="nav-link active" href="/sale">Sell</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/lend">Rent</a>
+                    <a class="nav-link" href="/lend">Lend</a>
                 </li>
             </ul>
         </div>
@@ -58,9 +58,9 @@
                 <label for="inputDescription">Description</label>
             </div>
             <div class="form-label-group">
-                <input type="number" name="price" id="inputPrice" class="form-control"
+                <input type="number" name="sellingPrice" id="inputSellingPrice" class="form-control"
                        th:value="${product?.sellingPrice}" placeholder="Price" required autofocus>
-                <label for="inputPrice">Price</label>
+                <label for="inputSellingPrice">Price</label>
             </div>
             <div class="form-label-group">
                 <input type="text" name="street" id="inputStreet" class="form-control" placeholder="Street"
