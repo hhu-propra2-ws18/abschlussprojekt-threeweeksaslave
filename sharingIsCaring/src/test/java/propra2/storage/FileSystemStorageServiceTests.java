@@ -15,6 +15,7 @@
  */
 package propra2.storage;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.MediaType;
@@ -39,6 +40,11 @@ public class FileSystemStorageServiceTests {
         service = new FileSystemStorageService(properties);
         service.init();
     }
+
+    @After
+	public  void deleteAll(){
+    	service.deleteAll();
+	}
 
     @Test
     public void loadNonExistent() {
