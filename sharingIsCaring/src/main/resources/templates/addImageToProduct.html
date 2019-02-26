@@ -23,16 +23,26 @@
         <table>
             <tr valign="top">
                 <b>Your current image</b>
-                <img th:src="@{'/upload/files/'+${product.id}+'/'+${product.id} + '.jpg'}" alt="Product Cover" style="width:auto; max-width:500px; max-height:600px; height:auto">
+                <img th:src="@{'/upload/files/'+${product.id}+'/'+${product.id} + ''}" alt="Product Cover" style="width:auto; max-width:500px; max-height:600px; height:auto">
             </tr>
             <tr>
                 <td>Upload image:</td>
-                <td><input type="file" name="file" accept="image/x-png,image/gif,image/jpeg"/></td>
+                <td><input type="file" id="file" name="file" accept="image/x-png,image/gif,image/jpeg"/></td>
                 <input type="hidden" name="fileName" th:value="${product.id}">
                 <input type="hidden" name="productId" th:value="${product.id}">
             </tr>
         </table>
         <button type="submit" class="btn btn-default btn-sm">Upload Image</button>
+        <script>
+            var uploadField = document.getElementById("file");
+
+            uploadField.onchange = function() {
+                if(this.files[0].size > 3145728){
+                    alert("File is too big! Maximum size: 3MB");
+                    this.value = "";
+                };
+            };
+        </script>
     </form>
     <hr>
     <a th:href="@{'/product/'+${product.id}}">Back to product details</a>
@@ -40,4 +50,5 @@
 </div>
 
 </body>
+
 </html>

@@ -14,6 +14,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
+import org.springframework.util.SocketUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -75,8 +76,12 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public Path load(String filename, Long productId, boolean searchDummyProductPicture) {
 		Path currentRootLocation = Paths.get(properties.getLocation() + "/" + productId);
-		if(!searchDummyProductPicture) {
-			return currentRootLocation.resolve(filename);
+		for(String fileEnding : properties.fileEndings) {
+			Path runningCurrentRootLocation = Paths.get(currentRootLocation.toString() + "/" + filename + fileEnding);
+			System.out.println(runningCurrentRootLocation.toString());
+			if (Files.exists(runningCurrentRootLocation) || Files.isReadable(runningCurrentRootLocation)) {
+				return runningCurrentRootLocation;
+			}
 		}
 		currentRootLocation = Paths.get("src/main/resources/static/img");
 		return currentRootLocation.resolve("dummyProductPicture.JPG");
@@ -87,21 +92,7 @@ public class FileSystemStorageService implements StorageService {
     public Resource loadAsResource(String filename, Long productId) {
         try {
             Path file = load(filename, productId,false);
-            Resource resource = new UrlResource(file.toUri());
-            if (resource.exists() || resource.isReadable()) {
-                return resource;
-            }
-            else {
-                file = load(filename, productId, true);
-				resource = new UrlResource(file.toUri());
-				if (resource.exists() || resource.isReadable()) {
-					return resource;
-				}
-				else {
-					throw new StorageFileNotFoundException(
-                        "Could not read file: dummyProductPicture");
-				}
-            }
+            return new UrlResource(file.toUri());
         }
         catch (MalformedURLException e) {
             throw new StorageFileNotFoundException("Could not read file: " + filename, e);
