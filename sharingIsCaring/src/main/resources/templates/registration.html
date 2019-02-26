@@ -17,27 +17,27 @@
                 <p>Please register.</p>
 
                 <div class="form-label-group">
-                    <label for="inputUsername">Username</label>
                     <input type="text" id="inputUsername" name="userName" class="form-control" placeholder="Username" th:value="${userName}"
                            minlength="5" maxlength="32" required autofocus>
+                    <label for="inputUsername">Username</label>
                     <small id="usernameHelp" class="form-text text-muted">Your username may contain up to 32 characters.</small>
                 </div>
                 <div class="form-label-group">
-                    <label for="inputEmail">Email</label>
                     <input type="email" name="emailAddress" id="inputEmail" class="form-control" placeholder="Email address" th:value="${emailAddress}"
                            minlength="6" maxlength="32" required autofocus>
+                    <label for="inputEmail">Email</label>
                     <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
                 <div class="form-label-group">
-                    <label for="inputPassword">Password</label>
                     <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" th:value="${password}"
                            minlength="6" maxlength="32" required autofocus>
+                    <label for="inputPassword">Password</label>
                     <small id="passwordHelp" class="form-text text-muted">Your password may contain up to 32 characters.</small>
                 </div>
                 <div class="form-label-group">
-                    <label for="inputPassword">Confirm password</label>
                     <input type="password" name="passwordConfirm" id="inputPasswordConfirm" class="form-control" placeholder="Confirm password" th:value="${passwordConfirm}"
                            minlength="6" maxlength="32" required autofocus>
+                    <label for="inputPassword">Confirm password</label>
                     <small id="passwordConfirmHelp" class="form-text text-muted">Please confirm your password.</small>
                 </div>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
