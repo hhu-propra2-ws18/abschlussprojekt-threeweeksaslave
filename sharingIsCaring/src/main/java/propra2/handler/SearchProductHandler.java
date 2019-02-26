@@ -11,11 +11,11 @@ import java.util.List;
 @Service
 public class SearchProductHandler {
 
-	public List<Product> getSearchedProducts(final String query, String filter,  Customer customer, ProductRepository productRepository){
+	public List<Product> getSearchedProducts(final String query, String filter,  Customer customer, ProductRepository productRepository) {
 		List<Product> products = productRepository.findAllByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(query, query);
 
 		switch(filter) {
-			case "borrowes":
+			case "borrowed":
 				List<Product> userBorrowedProducts = new ArrayList<>();
 				List<Product> borrowedProducts = customer.getBorrowedProducts();
 				for(Product product : products){
@@ -54,12 +54,7 @@ public class SearchProductHandler {
 				}
 				products = allProductsToLend;
 				break;
-            case "all":
-                return products;
-			default:
-				return products;
 		}
-
 		return products;
 	}
 }
