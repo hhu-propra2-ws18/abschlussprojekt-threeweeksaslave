@@ -38,7 +38,7 @@ public class OrderProcessHandler {
     private RequestController requestController;
 
 
-    public void updateOrderProcess(ArrayList<Message> oldMessages, OrderProcess orderProcess) {
+    public boolean updateOrderProcess(ArrayList<Message> oldMessages, OrderProcess orderProcess) {
 
         if (!(oldMessages == null)) {
             orderProcess.addMessages(oldMessages);
@@ -69,9 +69,10 @@ public class OrderProcessHandler {
             default:
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
         }
+        return false;
     }
 
-    private void acceptProcess(OrderProcess orderProcess, Customer rentingAccount, Customer ownerAccount) {
+    private boolean acceptProcess(OrderProcess orderProcess, Customer rentingAccount, Customer ownerAccount) {
         Integer deposit = orderProcess.getProduct().getDeposit();
         //Propay Kautionsbetrag blocken
         try {
@@ -93,13 +94,15 @@ public class OrderProcessHandler {
 
             rentingAccount.setProPay(userHandler.getProPayAccount(rentingAccount.getUsername()));
             orderProcess.setReservationId(reservation.block().getId());
-        } catch (TimeoutException e) {
-            
+            orderProcessRepo.save(orderProcess);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
-        orderProcessRepo.save(orderProcess);
+
     }
 
-    private void finished(OrderProcess orderProcess, Customer rentingAccount) {
+    private boolean finished(OrderProcess orderProcess, Customer rentingAccount) {
         //Kaution wird wieder freigegeben
         try {
             Mono<ProPayAccount> account = WebClient
@@ -117,13 +120,15 @@ public class OrderProcessHandler {
                     .bodyToMono(ProPayAccount.class);
 
             rentingAccount.setProPay(account.block());
+            orderProcessRepo.save(orderProcess);
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         }
-        orderProcessRepo.save(orderProcess);
+
     }
 
-    private void punished(OrderProcess orderProcess, Customer rentingAccount) {
+    private boolean punished(OrderProcess orderProcess, Customer rentingAccount) {
         int reservationId = orderProcess.getReservationId();
         Customer requester = customerRepo.findById(orderProcess.getRequestId()).get();
         double amount = requester.getProPay().findReservationById(reservationId).getAmount();
@@ -138,13 +143,15 @@ public class OrderProcessHandler {
                     .bodyToMono(ProPayAccount.class);
 
             rentingAccount.setProPay(account.block());
-        }catch(Exception e) {}
-        orderProcessRepo.save(orderProcess);
-        Customer ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get();
-        if(amount>0){
-            userHandler.saveTransaction(amount, TransactionType.DEPOSITCHARGE, rentingAccount.getUsername());
-            userHandler.saveTransaction(amount, TransactionType.RECEIVEDDEPOSIT, ownerAccount.getUsername());
-        }
+            orderProcessRepo.save(orderProcess);
+            Customer ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get();
+            if(amount>0){
+                userHandler.saveTransaction(amount, TransactionType.DEPOSITCHARGE, rentingAccount.getUsername());
+                userHandler.saveTransaction(amount, TransactionType.RECEIVEDDEPOSIT, ownerAccount.getUsername());
+            }
+            return true;
+        }catch(Exception e) {return false;}
+
     }
 
     public boolean checkAvailability(OrderProcessRepository orderProcessRepository, Product product, String from, String to) {
@@ -177,7 +184,12 @@ public class OrderProcessHandler {
     }
 
     public boolean correctDates(Date from, Date to) {
-        if(from.before(new java.sql.Date(System.currentTimeMillis())) || to.before(new java.sql.Date(System.currentTimeMillis()))) return false;
+        if(from.before(new java.sql.Date(System.currentTimeMillis())) || to.before(new java.sql.Date(System.currentTimeMillis()))) {
+            if(from.equals(to) && from.equals(new java.sql.Date(System.currentTimeMillis()))){
+                return true;
+            }
+            return false;
+        }
         if (from.equals(to)) return true;
         return from.before(to);
     }

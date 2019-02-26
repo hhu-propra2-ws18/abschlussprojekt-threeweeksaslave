@@ -152,7 +152,7 @@ public class RequestController {
     }
 
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=acceptProcess")
-    public String accept(String message, @PathVariable Long processId, Principal user) {
+    public String accept(String message, @PathVariable Long processId, Principal user, Model model) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.ACCEPTED);
         ArrayList<Message> oldMessages = orderProcess.getMessages();
@@ -162,13 +162,14 @@ public class RequestController {
         orderProcess.setMessages(messages);
 
         Product product = productRepo.findById(orderProcess.getProduct().getId()).get();
-        product.setAvailable(false);
         product.setBorrowedUntil(orderProcess.getToDate());
 
-        productRepo.save(product);
-
-
-        orderProcessHandler.updateOrderProcess(oldMessages, orderProcess);
+        boolean finishedSuccessful = orderProcessHandler.updateOrderProcess(oldMessages, orderProcess);
+        if(finishedSuccessful){
+            productRepo.save(product);
+        }else{
+            model.addAttribute("Sorry, your request failed. Please try it again later.");
+        }
 
         return "redirect:/requests";
     }
