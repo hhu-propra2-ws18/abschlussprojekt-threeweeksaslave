@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import propra2.database.Customer;
+import propra2.database.Message;
 import propra2.database.OrderProcess;
 import propra2.model.OrderProcessStatus;
 import propra2.repositories.CustomerRepository;
@@ -51,9 +52,11 @@ public class OrderProcessHandlerTest {
         orderProcess = orderProcessRepository.save(orderProcess);
 
         orderProcess.setStatus(OrderProcessStatus.DENIED);
+        Message message = new Message();
+        message.setMessage("hallo");
 
-        ArrayList<String> messages = new ArrayList<>();
-        messages.add("hallo");
+        ArrayList<Message> messages = new ArrayList<>();
+        messages.add(message);
 
         orderProcess.setMessages(messages);
 
