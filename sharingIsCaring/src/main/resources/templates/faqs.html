@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/base.css">
+
+    <title>Home</title>
+</head>
+<body>
+
+<header>
+    <a class="ribbon" tabindex="-1" title="zurück zur Startseite!" href="/home">
+        <h1 id="logo">Sharing is Caring</h1>
+        <p>Ing. Three Weeks a Slave GmbH</p>
+    </a>
+</header>
+
+<main>
+    <nav  id="navigation">
+        <ul>
+            <li><a aria-current="page">Home</a></li>
+            <li><a th:href="@{'/profile'}">Profile</a></li>
+            <li><a href="/products">View Products</a></li>
+            <li><a href="/product">Add Product</a>
+            <li><a th:href="@{'/requests'}">Requests</a></li>
+            <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
+            <li><a href="/logout" role="button">Log Out</a></li>
+        </ul>
+    </nav>
+
+        <h2>FAQs</h2>
+        <section class="spalte">
+            <h3>Profile</h3>
+            <h4>Change your profile details</h4>
+            Go to your profile. There your can go through "change profile" to a page where you can update your profile.
+            <br/>
+            <h4>Recharge credit</h4>
+            On your profile you can recharge credit bei adding an amount and your iban
+            <br/>
+            <h4>Transactions</h4>
+            On your profile you can go to an overview of all transactions. You also see on your profile you actual amount and blocked cautions.
+            <br/>
+            <br/>
+            <h3>Products</h3>
+            <h4>add new Product</h4>
+            On the sidenav you can chose add Product to create a new Product. After that you can upload an image or use the default image.
+            <br/>
+            <h4>Search Products</h4>
+            At the page search Products you can search specific products, have an overview of your lend products and about borrowed products.
+            <br/>
+            <h4>Edit Product</h4>
+            Chose your product at the products search. After that you have the option to edit your Product. There you can also delete this product, if its actual not borrowed
+        </section>
+        <section class="spalte">
+            <h3>Borrow a product</h3>
+            1. Search a product, go to details and chose borrow it<br/>
+            2. Now you can add a comment to the owner and chose the period you want to borrow it<br/>
+            3. In the requests section you have an overview over all orderProcesses<br/>
+            4. The owner of the product can now accept or deny your request.<br/>
+            5. After you return the product, the owner can accept or deny your return and the dailyFee will be paid from your account.<br/>
+            <br/>
+            <br/>
+            <h3>Deny a return</h3>
+            You are not confirm with the return of a product? If you chose deny return, an admin will get a notification about it and will check
+            this orderProcess. If he confirms the conflict, the caution will be paid automatically.
+            <br/>
+            <br/>
+            <h3>Requests</h3>
+            Have a look at your requests! You can not only see your borrowed products there, you have also to check requests that are send to yourself. Accept or deny
+            orderProcesses and have an overview of returned products.
+        </section>
+</main>
+
+<footer class="grid">
+    <ul id="footer-nav">
+    		<li><a href="/faqs" title="FAQs">FAQs</a></li>
+    </ul>
+    <p>
+        Design: ThreeWeeksASlave<br>
+        technical implementation: ThreeWeeksASlave
+    </p>
+</footer>
+
+
+</body>
+</html>

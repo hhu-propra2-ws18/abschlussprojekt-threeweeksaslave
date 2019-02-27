@@ -91,4 +91,12 @@ public class ProfileController {
         model.addAttribute("user", customer.get());
         return "redirect:/profile";
     }
+
+    @GetMapping("/faqs")
+    public String getFAQs(Principal user, Model model){
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepo.findById(userId);
+        model.addAttribute("user", customer.get());
+        return "faqs";
+    }
 }

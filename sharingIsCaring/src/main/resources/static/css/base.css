@@ -104,7 +104,7 @@ a 	{
 }
 a:hover, 		
 a:focus {
-    color: white;
+    color: purple;
     text-decoration: none;
     background-color: plum;
 }
