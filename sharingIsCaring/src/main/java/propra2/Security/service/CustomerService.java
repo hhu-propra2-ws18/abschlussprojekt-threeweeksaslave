@@ -15,7 +15,7 @@ import java.util.Optional;
 public class CustomerService implements UserDetailsService {
 
     @Autowired
-    private CustomerRepository users;
+    CustomerRepository users;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
