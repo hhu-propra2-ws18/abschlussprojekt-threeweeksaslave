@@ -144,27 +144,25 @@ public class ProductController {
 
     @PostMapping("/lend")
     public String createLendProduct(Principal user, final Product product, final Address address, final Model model) {
-      Long loggedInId = getUserId(user);
-      Optional<Customer> customer = customerRepo.findById(loggedInId);
-      model.addAttribute("user", customer.get());
+        Long loggedInId = getUserId(user);
+        Optional<Customer> customer = customerRepo.findById(loggedInId);
+        model.addAttribute("user", customer.get());
 
-      if (customer.isPresent()) {
-          product.setOwner(customer.get());
-      }
-
-      product.setAvailable(true);
-      product.setForSale(false);
-      product.setAddress(address);
-
-
-
-      if (product.allValuesSetRent()) {
-          Long productId = productRepo.save(product).getId();
-          StorageService storageService = new FileSystemStorageService(new StorageProperties());
-          storageService.deleteFile(productId);
-          return "addImageToProduct";
+        if (customer.isPresent()) {
+            product.setOwner(customer.get());
         }
-    return "redirect:/home";
+
+        product.setAvailable(true);
+        product.setForSale(false);
+        product.setAddress(address);
+
+        if (product.allValuesSetRent()) {
+            Long productId = productRepo.save(product).getId();
+            StorageService storageService = new FileSystemStorageService(new StorageProperties());
+            storageService.deleteFile(productId);
+            return "addImageToProduct";
+        }
+        return "redirect:/home";
     }
 
     /**
@@ -206,7 +204,7 @@ public class ProductController {
 			product.setForSale(oldProduct.isForSale());
 			product.setAddress(address);
 			product.setId(productId);
-      productRepo.save(product);
+            productRepo.save(product);
 			return "editProductImage";
 		}
 		return "redirect:/home";
