@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,6 +17,7 @@ import propra2.Security.service.CustomerService;
 import propra2.Security.service.RegistrationService;
 import propra2.Security.validator.CustomerValidator;
 import propra2.database.Customer;
+import propra2.database.OrderProcess;
 import propra2.database.Product;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.SearchProductHandler;
@@ -24,6 +26,7 @@ import propra2.model.Address;
 import propra2.model.ProPayAccount;
 import propra2.repositories.*;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,6 +127,15 @@ public class ProductControllerTest {
         product1.setId(34L);
         product1.setAvailable(false);
         product1.setOwner(owner);
+        product1.setDailyFee(10);
+        product1.setDeposit(100);
+
+        product2.setTitle("Baumstamm");
+        product2.setId(35L);
+        product2.setAvailable(false);
+        product2.setOwner(customer);
+        product2.setDailyFee(10);
+        product2.setDeposit(100);
 
         /*
         product2.setTitle("Baumlaube");
@@ -194,18 +206,94 @@ public class ProductControllerTest {
 
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
-    public void getProductTest() throws Exception{
+    public void getLendProductTest() throws Exception{
 
         Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
 
-        mvc.perform(get("/product"))
+        mvc.perform(get("/lend"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
                 .andExpect(MockMvcResultMatchers.model().attribute("admin", false))
-                .andExpect(MockMvcResultMatchers.view().name("addProduct"));
+                .andExpect(MockMvcResultMatchers.view().name("lend"));
 
     }
 
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void getSaleProductTest() throws Exception{
+
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+
+        mvc.perform(get("/sale"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
+                .andExpect(MockMvcResultMatchers.model().attribute("admin", false))
+                .andExpect(MockMvcResultMatchers.view().name("sale"));
+
+    }
+
+    @Ignore
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void postCreateLendProduct() throws Exception{
+
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
+
+        mvc.perform(post("/lend")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .requestAttr("product", product2)
+                .requestAttr("address", new Address()))
+                .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.view().name("redirect:/home"));
+    }
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void postCreateSaleProduct() throws Exception{
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
+
+        mvc.perform(post("/sale")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .requestAttr("product", product1)
+                .requestAttr("address", new Address()))
+                .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("addImageToProduct"));
+    }
+
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void getEditProduct() throws Exception{
+
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(productRepository.findById(35L)).thenReturn(java.util.Optional.of(product2));
+        Mockito.when(orderProcessRepository.findByProduct(product2)).thenReturn(new ArrayList<OrderProcess>());
+
+        mvc.perform(get("/product/edit/35"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.model().attribute("product", product2))
+                .andExpect(MockMvcResultMatchers.view().name("editProduct"));
+    }
+
+    @Test
+    @WithMockUser(username="Kevin", password = "Baumhaus")
+    public void postSaveProduct() throws Exception{
+
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(productRepository.findById(35L)).thenReturn(java.util.Optional.of(product2));
+
+        mvc.perform(post("/product/edit/35")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .requestAttr("product", product2)
+                .requestAttr("address", new Address()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("editProductImage"));
+    }
 
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
@@ -214,7 +302,7 @@ public class ProductControllerTest {
         Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
         Mockito.when(productRepository.findById(34L)).thenReturn(java.util.Optional.of(product1));
 
-        mvc.perform(get("/product/{id}", 34L))
+        mvc.perform(get("/productDetails/{id}", 34L))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("productDetails"))
                 .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
@@ -223,48 +311,48 @@ public class ProductControllerTest {
                 .andExpect(MockMvcResultMatchers.model().attribute("admin", false));
     }
 
-
-    //TODO passende Methode dazu noch nicht fertig
-    @Ignore
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
-    public void createProductTest() throws Exception{
-        Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
+    public void postBuyProduct(){
+
     }
 
-    
+
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
-    public void editProductTest() throws Exception{
+    public void getAvailabilityTest() throws Exception{
 
-        Mockito.when(productRepository.findById(34L)).thenReturn(java.util.Optional.of(product1));
         Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(productRepository.findById(34L)).thenReturn(java.util.Optional.of(product1));
 
-        mvc.perform(get("/product/edit/34"))
+        mvc.perform(get("/product/availability/{id}", 34L))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
                 .andExpect(MockMvcResultMatchers.model().attribute("product", product1))
-                .andExpect(MockMvcResultMatchers.view().name("editProduct"));
-
-
-    }
-
-
-    @Test
-    @WithMockUser(username="Kevin", password = "Baumhaus")
-    public void searchForProductsTest(){
+                .andExpect(MockMvcResultMatchers.model().attribute("available", true))
+                .andExpect(MockMvcResultMatchers.model().attribute("admin", false))
+                .andExpect(MockMvcResultMatchers.view().name("productAvailability"));
 
     }
 
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
-    public void getAvailabilityTest(){
+    public void checkAvailabilityTest() throws Exception{
+        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(productRepository.findById(34L)).thenReturn(java.util.Optional.of(product1));
+        Mockito.when(orderProcessHandler.checkAvailability(orderProcessRepository, product1, "2017-03-03", "2017-03-01")).thenReturn(true);
 
-    }
-
-    @Test
-    @WithMockUser(username="Kevin", password = "Baumhaus")
-    public void checkAvailabilityTest(){
-
+        mvc.perform(post("/product/availability/{id}", 34L)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .requestAttr("from", "2017-03-03")
+                .requestAttr("to", "2017-03-01"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
+                .andExpect(MockMvcResultMatchers.model().attribute("product", product1))
+                .andExpect(MockMvcResultMatchers.model().attribute("available", false))
+                .andExpect(MockMvcResultMatchers.view().name("productAvailability"));
     }
 
 

@@ -126,7 +126,7 @@ public class ProductController {
     public String createSaleProduct(Principal user, final Product product, final Address address, final Model model) {
         Long loggedInId = getUserId(user);
         Optional<Customer> customer = customerRepo.findById(loggedInId);
-        model.addAttribute("user", user);
+        model.addAttribute("user", customer.get());
 
         if (customer.isPresent()) {
             product.setOwner(customer.get());
@@ -148,7 +148,7 @@ public class ProductController {
     public String createLendProduct(Principal user, final Product product, final Address address, final Model model) {
       Long loggedInId = getUserId(user);
       Optional<Customer> customer = customerRepo.findById(loggedInId);
-      model.addAttribute("user", user);
+      model.addAttribute("user", customer.get());
 
       if (customer.isPresent()) {
           product.setOwner(customer.get());
