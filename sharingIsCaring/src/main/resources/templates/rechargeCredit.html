@@ -3,6 +3,9 @@
       xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>Refund</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/css/base.css">
 </head>
 <body>
 
@@ -25,13 +28,18 @@
         <form method="POST">
         <h2>Recharge Credit</h2>
         <p> please insert your IBAN and the amount you want to send to your ProPayAccount!</p>
-        <p>Amount: </p>
-        <input type="number" name="amount" th:value="${amount}" min="1">
-        <br/>
-        <p>IBAN:</p>
-        <input type="text" name="iban">
-        <br/>
-        <button type="submit">Save</button>
+        <div class="form-label-group">
+            <input type="number" name="amount" id="inputAmount" class="form-control" placeholder="Amount" th:value="${amount}"
+               required min="1" autofocus>
+        <label for="inputAmount">Amount</label>
+        </div>
+        <div class="form-label-group">
+            <input type="text" name="iban" id="inputIban" class="form-control" placeholder="IBAN" th:value="${iban}"
+               required min="1" autofocus>
+        <label for="inputIban">IBAN</label>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-lg btn-primary btn-block pinkbtn">Save</button>
         </form>
     </section>
 </div>

@@ -3,6 +3,9 @@
       xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>Your Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/css/base.css">
 </head>
 <body>
 
@@ -20,70 +23,40 @@
 <div layout:fragment="content">
 
     <section class="spalte">
-        <h2>Profile</h2>
-        <table>
-            <tr>
-                <td>
-                    Username:
-                </td>
-                <td>
-                    <dd th:text="${user?.username}">user name</dd>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Email address:
-                </td>
-                <td>
-                    <dd th:text="${user?.mail}">mail</dd>
-                </td>
-            </tr>
-        </table>
-        <br/>
-        <table>
-            <tr>
-                <td>
-                    Address:
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Street:
-                </td>
-                <td>
-                    <dd th:text="${user?.address.street}">street</dd>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    House No.:
-                </td>
-                <td>
-                    <dd th:text="${user?.address.houseNumber}">houseNumber</dd>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Postal code:
-                </td>
-                <td>
-                    <dd th:text="${user?.address.postcode}">postCode</dd>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    City:
-                </td>
-                <td>
-                    <dd th:text="${user?.address.city}">city</dd>
-                </td>
-            </tr>
-        </table>
+        <div class="text-center mb-4">
+            <h2>Profile</h2>
+        </div>
+         <div class="form-label-group">
+            <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" th:value="${user?.username}"
+                   disabled minlength="6" maxlength="32" autofocus>
+            <label for="inputUsername">Username</label>
+        </div>
+        <div class="form-label-group">
+            <input type="email" name="mail" id="inputEmail" class="form-control" placeholder="Email address" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" th:value="${user?.mail}"
+                   disabled minlength="6" maxlength="32" autofocus>
+            <label for="inputEmail">Email</label>
+        </div>
+        <div class="form-label-group">
+            <input type="text" name="street" id="inputStreet" class="form-control" placeholder="Street" pattern="[^0-9]+" th:value="${user?.address.street}" disabled autofocus>
+            <label for="inputStreet">Street</label>
+        </div>
+        <div class="form-label-group">
+            <input type="number" name="houseNumber" id="inputHouseNo" class="form-control" th:value="${user?.address.houseNumber}" placeholder="House No." disabled autofocus>
+            <label for="inputEmail">House No.</label>
+        </div>
+        <div class="form-label-group">
+            <input type="number" name="postcode" id="inputPostcode" class="form-control" th:value="${user?.address.postcode}" placeholder="Postcode" disabled autofocus>
+            <label for="inputPostcode">Postcode</label>
+        </div>
+        <div class="form-label-group">
+            <input type="text" name="city" id="inputCity" class="form-control" pattern="[^0-9]+" th:value="${user?.address.city}" placeholder="City" disabled autofocus>
+            <label for="inputCity">City</label>
+        </div>
 
         <br/>
         <a th:href="@{'/profile/update'}" role="button">Change profile</a>
-
     </section>
+    <br/>
     <section class="spalte">
         <h2>ProPayAccount</h2>
         <table>
