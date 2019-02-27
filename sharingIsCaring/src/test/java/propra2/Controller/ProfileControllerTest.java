@@ -118,7 +118,6 @@ public class ProfileControllerTest {
     }
 
     @Test
-    @WithMockUser(username="Zoidberg", password = "propra2")
     public void testUpdateProfile() throws Exception {
 
         Mockito.when(customerRepository.findById(2L)).thenReturn(java.util.Optional.of(bendisposto));

@@ -3,10 +3,6 @@
       xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>Lend</title>
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/form.css">
-    <link rel="stylesheet" href="/css/base.css">
 </head>
 <body>
 
@@ -25,7 +21,7 @@
 <div layout:fragment="content">
     <section>
 
-        <h2>Please <span>enter your product information</span></h2>
+        <h2><span>Please enter your product information</span></h2>
 
         <div class="card text-center">
             <div class="card-header">
@@ -39,7 +35,7 @@
                 </ul>
             </div>
             <div class="card-body p-2">
-                <h5 class="card-title">So you want to lend something?</h5>
+                <h5 class="card-title">You want to lend something?</h5>
                 <p class="card-text">Please enter your product information.</p>
             </div>
             <form class="form-signin" method="post">
@@ -58,12 +54,12 @@
                 </div>
                 <div class="form-label-group">
                     <input type="number" name="deposit" id="inputDeposit" class="form-control"
-                           th:value="${product?.deposit}" placeholder="Deposit" required autofocus>
+                           th:value="${product?.deposit}" placeholder="Deposit" required autofocus min="0">
                     <label for="inputDeposit">Deposit</label>
                 </div>
                 <div class="form-label-group">
                     <input type="number" name="dailyFee" id="inputDailyFee" class="form-control"
-                           th:value="${product?.dailyFee}" placeholder="Daily fee" required autofocus>
+                           th:value="${product?.dailyFee}" placeholder="Daily fee" required autofocus min="0">
                     <label for="inputDailyFee">Daily fee</label>
                 </div>
                 <div class="form-label-group">
@@ -74,12 +70,12 @@
                 </div>
                 <div class="form-label-group">
                     <input type="number" name="houseNumber" id="inputHouseNo" class="form-control"
-                           th:value="${product?.address?.houseNumber}" placeholder="House No." required autofocus>
+                           th:value="${product?.address?.houseNumber}" placeholder="House No." required autofocus min="1">
                     <label for="inputHouseNo">House No.</label>
                 </div>
                 <div class="form-label-group">
                     <input type="number" name="postcode" id="inputPostcode" class="form-control"
-                           th:value="${product?.address?.postcode}" placeholder="Postcode" required autofocus>
+                           th:value="${product?.address?.postcode}" placeholder="Postcode" required autofocus min="1">
                     <label for="inputPostcode">Postcode</label>
                 </div>
                 <div class="form-label-group">

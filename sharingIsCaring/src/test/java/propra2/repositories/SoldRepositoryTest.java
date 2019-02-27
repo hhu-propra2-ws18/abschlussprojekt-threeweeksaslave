@@ -21,12 +21,11 @@ public class SoldRepositoryTest {
     @Test
     public void testFindById(){
         Product product = new Product();
-        product.setId(1L);
         product.setDailyFee(10);
 
-        soldProductRepository.save(product);
-        Optional<Product> product1 = soldProductRepository.findById(product.getId());
+        product.setId(soldProductRepository.save(product).getId());
+        Product product1 = soldProductRepository.findById(product.getId()).get();
 
-        Assertions.assertThat(product1.get().getDailyFee()).isEqualTo(10);
+        Assertions.assertThat(product1.getDailyFee()).isEqualTo(10);
     }
 }
