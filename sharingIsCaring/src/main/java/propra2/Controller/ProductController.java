@@ -12,8 +12,10 @@ import propra2.database.OrderProcess;
 import propra2.database.Product;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.SearchProductHandler;
+import propra2.handler.UserHandler;
 import propra2.model.Address;
 import propra2.model.OrderProcessStatus;
+import propra2.model.TransactionType;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
@@ -44,6 +46,9 @@ public class ProductController {
 
     @Autowired
     private SoldProductRepository soldProductRepo;
+
+    @Autowired
+    UserHandler userHandler;
 
     /**
      * return base template of product poverview
@@ -272,6 +277,13 @@ public class ProductController {
 
         boolean finishedSuccessful = orderProcessHandler.updateOrderProcess(null ,orderProcess);
         if(finishedSuccessful){
+            int sellingPrice = orderProcess.getProduct().getSellingPrice();
+            if(sellingPrice>0){
+                String rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get().getUsername();
+                String ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get().getUsername();
+                userHandler.saveTransaction(sellingPrice, TransactionType.BUYPAYMENT, rentingAccount);
+                userHandler.saveTransaction(sellingPrice, TransactionType.RECEIVEDBUYPAYMENT, ownerAccount);
+            }
             soldProductRepo.save(soldProduct);
             productRepo.delete(product);
             return "redirect:/home";

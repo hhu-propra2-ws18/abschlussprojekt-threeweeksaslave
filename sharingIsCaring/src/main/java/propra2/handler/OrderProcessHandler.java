@@ -86,10 +86,6 @@ public class OrderProcessHandler {
                     .bodyToMono(String.class);
             response.block();
             orderProcessRepo.save(orderProcess);
-            if(price>0){
-                userHandler.saveTransaction(price, TransactionType.BUYPAYMENT, buyingAccount);
-                userHandler.saveTransaction(price, TransactionType.RECEIVEDBUYPAYMENT, ownerAccount);
-            }
             return true;
         } catch (Exception e) {
             return false;
