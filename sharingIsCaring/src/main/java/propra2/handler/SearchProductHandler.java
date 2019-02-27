@@ -39,7 +39,7 @@ public class SearchProductHandler {
 			case "allToBuy":
 				List<Product> allProductsToBuy = new ArrayList<>();
 				for(Product product: products){
-					if(product.isForSale()){
+					if(product.isForSale() && product.isAvailable()){
 						allProductsToBuy.add(product);
 					}
 				}
@@ -53,6 +53,15 @@ public class SearchProductHandler {
 					}
 				}
 				products = allProductsToLend;
+				break;
+			case "all":
+				List<Product> allProducts = new ArrayList<>();
+				for(Product product: products){
+					if(product.isAvailable()){
+						allProducts.add(product);
+					}
+				}
+				products = allProducts;
 				break;
 		}
 		return products;
