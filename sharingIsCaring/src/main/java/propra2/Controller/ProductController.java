@@ -3,7 +3,10 @@ package propra2.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
 import propra2.database.Product;
@@ -19,10 +22,8 @@ import propra2.repositories.ProductRepository;
 import propra2.storage.FileSystemStorageService;
 import propra2.storage.StorageProperties;
 import propra2.storage.StorageService;
-import propra2.repositories.SoldProductRepository;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,9 +44,6 @@ public class ProductController {
 
     @Autowired
     private SearchProductHandler searchProductHandler;
-
-    @Autowired
-    private SoldProductRepository soldProductRepo;
 
     @Autowired
     UserHandler userHandler;
@@ -193,7 +191,6 @@ public class ProductController {
     /**
      * save the new product, get base template to add a product image
      * @param user
-     * @param model
      * @param product
      * @param address
      * @param productId
@@ -308,21 +305,12 @@ public class ProductController {
 
         orderProcess.setRequestId(customer.getCustomerId());
 
-        Product soldProduct = new Product();
-        soldProduct.setTitle(product.getTitle());
-        soldProduct.setOwner(product.getOwner());
-        soldProduct.setAddress(product.getAddress());
-        soldProduct.setForSale(product.isForSale());
-        soldProduct.setAvailable(product.isAvailable());
-        soldProduct.setDescription(product.getDescription());
-        soldProduct.setSellingPrice(product.getSellingPrice());
-
-        orderProcess.setProduct(soldProduct);
+        orderProcess.setProduct(product);
 
         orderProcess.setStatus(OrderProcessStatus.SOLD);
 
         boolean finishedSuccessful = orderProcessHandler.updateOrderProcess(null ,orderProcess);
-        if(finishedSuccessful){
+        if (finishedSuccessful) {
             int sellingPrice = orderProcess.getProduct().getSellingPrice();
             if(sellingPrice>0){
                 String rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get().getUsername();
@@ -330,11 +318,13 @@ public class ProductController {
                 userHandler.saveTransaction(sellingPrice, TransactionType.BUYPAYMENT, rentingAccount);
                 userHandler.saveTransaction(sellingPrice, TransactionType.RECEIVEDBUYPAYMENT, ownerAccount);
             }
-            soldProductRepo.save(soldProduct);
-            productRepo.delete(product);
+
+            product.setAvailable(false);
+            productRepo.save(product);
+            orderProcessRepository.save(orderProcess);
             return "redirect:/home";
         }
-        else{
+        else {
             model.addAttribute("note", "Sorry, connection to your ProPayAccount failed. Please try it again later.");
             return getProductDetails(id, user, model);
         }
