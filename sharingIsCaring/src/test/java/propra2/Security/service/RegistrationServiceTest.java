@@ -27,6 +27,8 @@ public class RegistrationServiceTest {
 
     PasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
+    UserHandler userHandler = new UserHandler();
+
     @Test
     public void testSaveCredentials(){
         UserRegistration testUserReg = new UserRegistration();
@@ -39,6 +41,7 @@ public class RegistrationServiceTest {
         RegistrationService regService = new RegistrationService();
         regService.bCryptPasswordEncoder = this.bCryptPasswordEncoder;
         regService.customerRepo = this.customerRepo;
+        regService.userHandler = this.userHandler;
 
         Mockito.when(userHandler.getProPayAccount("peter")).thenReturn(null);
 
