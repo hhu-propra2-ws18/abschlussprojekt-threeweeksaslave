@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import propra2.Security.service.CustomerService;
 import propra2.Security.service.RegistrationService;
@@ -227,4 +228,87 @@ public class RequestControllerTests {
 
 
     }
+
+    @Test
+    @WithMockUser(username = "Zoidberg", password = "propra2")
+    public void testShowRequestDetailsBuyer() throws Exception {
+
+        OrderProcess process = new OrderProcess();
+        process.setId(13L);
+        process.setOwnerId(111L);
+        process.setProduct(product1);
+        process.setRequestId(2L);
+        process.setStatus(PENDING);
+        process.setFromDate(new java.sql.Date(System.currentTimeMillis()));
+
+        Customer owner2 = new Customer();
+        owner2.setCustomerId(111L);
+        owner2.setUsername("Luke");
+        owner2.setMail("luke@web.de");
+
+        Mockito.when(orderProcessRepository.findById(13L)).thenReturn(java.util.Optional.of(process));
+        Mockito.when(customerRepository.findById(2L)).thenReturn(java.util.Optional.of(bendisposto));
+        Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(owner2));
+        Mockito.when(customerRepository.findByUsername("Zoidberg")).thenReturn(java.util.Optional.of(bendisposto));
+
+        mvc.perform(get("/requests/detailsBuyer/{processId}", 13L))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("requestDetailsBuyer"))
+                .andExpect(MockMvcResultMatchers.model().attribute("seller", allOf(
+                        hasProperty("username", is("Luke")),
+                        hasProperty("mail", is("luke@web.de")))))
+                .andExpect(MockMvcResultMatchers.model().attribute("process", allOf(
+                        hasProperty("ownerId", is(111L)),
+                        hasProperty("requestId", is(2L)),
+                        hasProperty("product", hasProperty("title", is("Baumstamm"))),
+                        hasProperty("status", is(PENDING)))))
+                .andExpect(MockMvcResultMatchers.model().attribute("product", allOf(
+                        hasProperty("available", is(false)),
+                        hasProperty("title", is("Baumstamm")),
+                        hasProperty("id", is(34L)))));
+
+
+    }
+
+    @Test
+    @WithMockUser(username = "Zoidberg", password = "propra2")
+    public void testShowRequestDetailsSeller() throws Exception {
+
+        OrderProcess process = new OrderProcess();
+        process.setId(13L);
+        process.setOwnerId(111L);
+        process.setProduct(product1);
+        process.setRequestId(2L);
+        process.setStatus(PENDING);
+        process.setFromDate(new java.sql.Date(System.currentTimeMillis()));
+
+        Customer owner2 = new Customer();
+        owner2.setCustomerId(111L);
+        owner2.setUsername("Luke");
+        owner2.setMail("luke@web.de");
+
+        Mockito.when(orderProcessRepository.findById(13L)).thenReturn(java.util.Optional.of(process));
+        Mockito.when(customerRepository.findById(2L)).thenReturn(java.util.Optional.of(bendisposto));
+        Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(owner2));
+        Mockito.when(customerRepository.findByUsername("Zoidberg")).thenReturn(java.util.Optional.of(bendisposto));
+
+        mvc.perform(get("/requests/detailsSeller/{processId}", 13L))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("requestDetailsSeller"))
+                .andExpect(MockMvcResultMatchers.model().attribute("buyer", allOf(
+                        hasProperty("username", is("Zoidberg")))))
+                .andExpect(MockMvcResultMatchers.model().attribute("process", allOf(
+                        hasProperty("ownerId", is(111L)),
+                        hasProperty("requestId", is(2L)),
+                        hasProperty("product", hasProperty("title", is("Baumstamm"))),
+                        hasProperty("status", is(PENDING)))))
+                .andExpect(MockMvcResultMatchers.model().attribute("product", allOf(
+                        hasProperty("available", is(false)),
+                        hasProperty("title", is("Baumstamm")),
+                        hasProperty("id", is(34L)))));
+
+
+    }
+
+
 }
