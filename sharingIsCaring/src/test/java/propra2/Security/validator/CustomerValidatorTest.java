@@ -72,7 +72,6 @@ public class CustomerValidatorTest {
         Assertions.assertThat(bindingErrors.hasErrors()).isTrue();
     }
 
-    @Ignore
     @Test
     public void duplicateCustomer() {
         UserRegistration user = new UserRegistration();
@@ -80,6 +79,10 @@ public class CustomerValidatorTest {
         user.setUserName("exampleuser123");
         user.setPassword("password");
         user.setPasswordConfirm("password");
+
+        Customer existingCustomer = new Customer();
+        existingCustomer.setUsername("exampleuser123");
+        customerRepo.save(existingCustomer);
 
         CustomerValidator customerValidator = new CustomerValidator();
         customerValidator.customerRepo = this.customerRepo;
