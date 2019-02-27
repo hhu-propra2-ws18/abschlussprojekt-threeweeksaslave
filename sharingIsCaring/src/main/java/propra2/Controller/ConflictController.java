@@ -16,8 +16,6 @@ import propra2.model.ProPayAccount;
 import propra2.model.TransactionType;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
-import propra2.repositories.ProductRepository;
-import propra2.repositories.TransactionRepository;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -51,7 +49,7 @@ public class ConflictController {
             admin = true;
         }
         model.addAttribute("admin", admin);
-        return "conflict";
+        return "conflicts";
     }
 
     private Long getUserId(Principal user) {
@@ -62,7 +60,7 @@ public class ConflictController {
     }
 
     @GetMapping("/conflicts/details/{processId}")
-    public String showConflictDetails(@PathVariable Long processId, Principal user, final Model model) {
+    public String showConflictDetails(Principal user, Model model, @PathVariable Long processId) {
         Long userId = getUserId(user);
         Optional<Customer> customer = customerRepo.findById(userId);
         Optional<OrderProcess> process = orderProcessRepo.findById(processId);

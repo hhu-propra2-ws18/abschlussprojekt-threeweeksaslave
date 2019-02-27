@@ -182,7 +182,6 @@ public class ProductControllerTest {
                 .andExpect(MockMvcResultMatchers.model().attribute("owner", owner))
                 .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
                 .andExpect(MockMvcResultMatchers.model().attribute("admin", false));
-
     }
 
     @Test

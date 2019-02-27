@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import propra2.Security.service.CustomerService;
 import propra2.Security.service.RegistrationService;
@@ -41,7 +42,8 @@ public class ConflictControllerTest {
     @Autowired
     MockMvc mvc;
 
-
+    @MockBean
+    ConflictController conflictController;
     @MockBean
     NotificationRepository notificationRepository;
 
@@ -99,12 +101,9 @@ public class ConflictControllerTest {
         bendisposto.setPassword("propra2");
         bendisposto.setProPay(account);
 
-
-
         admin.setUsername("admin");
         admin.setMail("admin@admin.de");
         admin.setPassword("adminPass");
-
 
         customer.setCustomerId(111L);
         customer.setUsername("Kevin");
@@ -112,11 +111,9 @@ public class ConflictControllerTest {
         customer.setPassword("Baumhaus");
         customer.setRole("USER");
 
-
         owner.setCustomerId(113L);
         owner.setUsername("Lukas");
         owner.setMail("lukas@web.de");
-
 
         product1.setTitle("Baumstamm");
         product1.setId(34L);
@@ -129,8 +126,10 @@ public class ConflictControllerTest {
     }
 
     @Test
-    @WithMockUser(username="Kevin", password = "Baumhaus")
+    @WithMockUser(username="Kevin", roles = {"ADMIN"}, password = "Baumhaus")
     public void getConflictTest() throws Exception{
+        customer.setRole("admin");
+
         OrderProcess orderProcess = new OrderProcess();
         orderProcess.setId(5L);
         orderProcess.setStatus(CONFLICT);
@@ -150,14 +149,14 @@ public class ConflictControllerTest {
         processList.add(orderProcess2);
 
         Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
-        Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+       // Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
         Mockito.when(orderProcessRepository.findByStatus(CONFLICT)).thenReturn(processList);
 
         mvc.perform(get("/conflicts"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("conflicts"))
                 .andExpect(MockMvcResultMatchers.model().attribute("processes", processList))
-                .andExpect(MockMvcResultMatchers.model().attribute("admin", false))
-                .andExpect(MockMvcResultMatchers.view().name("conflict"));
+                .andExpect(MockMvcResultMatchers.model().attribute("admin", true));
     }
 
     @Test
@@ -167,14 +166,15 @@ public class ConflictControllerTest {
         orderProcess.setId(5L);
         orderProcess.setStatus(CONFLICT);
         orderProcess.setProduct(product2);
-        orderProcess.setOwnerId(111L);
+        orderProcess.setOwnerId(2L);
         orderProcess.setRequestId(111L);
 
+        Mockito.when(customerRepository.findById(2L)).thenReturn(java.util.Optional.of(bendisposto));
         Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(customer));
         Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
         Mockito.when(orderProcessRepository.findById(5L)).thenReturn(java.util.Optional.of(orderProcess));
 
-        mvc.perform(get("/conflicts/details/5"))
+        mvc.perform(get("/conflicts/details/{processId}", 5L))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
                 .andExpect(MockMvcResultMatchers.model().attribute("product", orderProcess.getProduct()))
@@ -182,5 +182,4 @@ public class ConflictControllerTest {
                 .andExpect(MockMvcResultMatchers.model().attribute("admin", false))
                 .andExpect(MockMvcResultMatchers.view().name("conflictDetails"));
     }
-
 }

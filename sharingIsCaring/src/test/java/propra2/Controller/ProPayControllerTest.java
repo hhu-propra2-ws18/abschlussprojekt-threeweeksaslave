@@ -104,8 +104,8 @@ public class ProPayControllerTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("amount", "10")
                 .param("iban", "iban"))
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.view().name("redirect:/profile"));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("rechargeCredit"));
 
     }
 
