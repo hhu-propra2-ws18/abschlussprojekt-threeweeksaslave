@@ -1,6 +1,7 @@
 package propra2.Controller;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,16 +68,22 @@ public class FileUploadController {
 						"You successfully uploaded " + file.getOriginalFilename() + "!");
 			}
 		}
-        Product product = productRepository.findById(productId).get();
-        model.addAttribute(product);
+        Optional<Product> productopt = productRepository.findById(productId);
+        if(productopt.isPresent()){
+        	Product product = productopt.get();
+			model.addAttribute(product);
+		}
         return "editProductImage";
     }
 
     @PostMapping("/{productId}/deleteCurrentImage")
     public String deleteCurrentImage(@PathVariable Long productId, Model model){
         storageService.deleteFile(productId);
-        Product product = productRepository.findById(productId).get();
-        model.addAttribute(product);
+		Optional<Product> productopt = productRepository.findById(productId);
+        if(productopt.isPresent()) {
+			Product product = productopt.get();
+			model.addAttribute(product);
+		}
         return "editProductImage";
     }
 
