@@ -12,7 +12,7 @@ import propra2.model.OrderProcessStatus;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
-import sun.security.krb5.internal.ccache.CredentialsCache;
+import propra2.repositories.SoldProductRepository;
 
 import java.security.Principal;
 import java.sql.Date;
