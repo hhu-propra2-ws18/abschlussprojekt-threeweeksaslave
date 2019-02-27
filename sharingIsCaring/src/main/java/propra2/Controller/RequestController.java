@@ -15,6 +15,7 @@ import propra2.repositories.ProductRepository;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -282,6 +283,20 @@ public class RequestController {
         }
         model.addAttribute("admin", admin);
         return "requestDetailsBuyer";
+    }
+
+    /**
+     * delete an orderProcess
+     * @param processId
+     * @return
+     */
+    @PostMapping("/requests/detailsBuyer/{processId}")
+    public String deleteByBuyer(@PathVariable Long processId) {
+        OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
+        orderProcessRepo.delete(orderProcess);
+        System.out.println(Arrays.asList(orderProcessRepo.findAll()));
+
+        return "redirect:/requests";
     }
 
     /**
