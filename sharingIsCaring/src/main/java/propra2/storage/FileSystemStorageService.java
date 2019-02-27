@@ -78,7 +78,6 @@ public class FileSystemStorageService implements StorageService {
 		Path currentRootLocation = Paths.get(properties.getLocation() + "/" + productId);
 		for(String fileEnding : properties.fileEndings) {
 			Path runningCurrentRootLocation = Paths.get(currentRootLocation.toString() + "/" + filename + fileEnding);
-			System.out.println(runningCurrentRootLocation.toString());
 			if (Files.exists(runningCurrentRootLocation) || Files.isReadable(runningCurrentRootLocation)) {
 				return runningCurrentRootLocation;
 			}
