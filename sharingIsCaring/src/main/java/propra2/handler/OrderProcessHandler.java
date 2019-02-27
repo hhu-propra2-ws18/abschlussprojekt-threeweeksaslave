@@ -32,7 +32,7 @@ public class OrderProcessHandler {
     private UserHandler userHandler;
 
 
-    public void updateOrderProcess(ArrayList<Message> oldMessages, OrderProcess orderProcess) {
+    public boolean updateOrderProcess(ArrayList<Message> oldMessages, OrderProcess orderProcess) {
 
         if (!(oldMessages == null)) {
             orderProcess.addMessages(oldMessages);
@@ -60,8 +60,39 @@ public class OrderProcessHandler {
             case CANCELED:
                 cancelOrder(orderProcess);
                 break;
+            case SOLD:
+                return buyProduct(orderProcess, rentingAccount.getUsername(), ownerAccount.getUsername());
             default:
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
+        }
+        return true;
+    }
+
+    private boolean buyProduct(OrderProcess orderProcess, String buyingAccount, String ownerAccount) {
+        try {
+            int price = orderProcess.getProduct().getSellingPrice();
+            Mono<String> response = WebClient
+                    .create()
+                    .post()
+                    .uri(builder ->
+                            builder.scheme("http")
+                                    .host("localhost")
+                                    .port(8888)
+                                    .path("/account/" + buyingAccount + "/transfer/" + ownerAccount)
+                                    .queryParam("amount", price)
+                                    .build())
+                    .accept(MediaType.APPLICATION_JSON_UTF8)
+                    .retrieve()
+                    .bodyToMono(String.class);
+            response.block();
+            orderProcessRepo.save(orderProcess);
+            if(price>0){
+                userHandler.saveTransaction(price, TransactionType.BUYPAYMENT, buyingAccount);
+                userHandler.saveTransaction(price, TransactionType.RECEIVEDBUYPAYMENT, ownerAccount);
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
