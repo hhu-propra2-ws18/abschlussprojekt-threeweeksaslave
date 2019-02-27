@@ -27,16 +27,13 @@ import java.util.concurrent.TimeoutException;
 @Service
 public class OrderProcessHandler {
     @Autowired
-    private CustomerRepository customerRepo;
+    CustomerRepository customerRepo;
 
     @Autowired
-    private OrderProcessRepository orderProcessRepo;
+    OrderProcessRepository orderProcessRepo;
 
     @Autowired
-    private UserHandler userHandler;
-
-    @Autowired
-    private RequestController requestController;
+    UserHandler userHandler;
 
 
     public boolean updateOrderProcess(ArrayList<Message> oldMessages, OrderProcess orderProcess) {
