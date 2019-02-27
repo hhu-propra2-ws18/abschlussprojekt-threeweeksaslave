@@ -70,6 +70,9 @@ public class ConflictControllerTest {
     CustomerService customerService;
 
     @MockBean
+    SoldProductRepository soldProductRepository;
+
+    @MockBean
     OrderProcessHandler orderProcessHandler;
 
 

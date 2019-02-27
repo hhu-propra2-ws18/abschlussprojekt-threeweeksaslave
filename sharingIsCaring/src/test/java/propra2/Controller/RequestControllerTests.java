@@ -21,12 +21,10 @@ import propra2.database.OrderProcess;
 import propra2.database.Product;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.SearchProductHandler;
+import propra2.handler.UserHandler;
 import propra2.model.Address;
 import propra2.model.ProPayAccount;
-import propra2.repositories.CustomerRepository;
-import propra2.repositories.NotificationRepository;
-import propra2.repositories.OrderProcessRepository;
-import propra2.repositories.ProductRepository;
+import propra2.repositories.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +61,11 @@ public class RequestControllerTests {
     @MockBean
     ProductRepository productRepository;
     @MockBean
+    SoldProductRepository soldProductRepository;
+    @MockBean
     OrderProcessHandler orderProcessHandler;
+    @MockBean
+    UserHandler userHandler;
 
     Customer bendisposto = new Customer();
     Customer kevin = new Customer();
@@ -134,9 +136,9 @@ public class RequestControllerTests {
         Mockito.when(orderProcessRepository.findById(13L)).thenReturn(java.util.Optional.of(process1));
         Mockito.when(customerRepository.findByUsername("Zoidberg")).thenReturn(java.util.Optional.of(bendisposto));
 
-        mvc.perform(get("/requests/detailsOwner/{processId}", 13L))
+        mvc.perform(get("/requests/detailsLender/{processId}", 13L))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("requestDetailsOwner"))
+                .andExpect(MockMvcResultMatchers.view().name("requestDetailsLender"))
                 .andExpect(MockMvcResultMatchers.model().attribute("product", allOf(
                         hasProperty("available", is(false)),
                         hasProperty("title", is("Baumstamm")),
@@ -167,9 +169,9 @@ public class RequestControllerTests {
         Mockito.when(customerRepository.findById(111L)).thenReturn(java.util.Optional.of(kevin));
         Mockito.when(customerRepository.findById(2L)).thenReturn(java.util.Optional.of(bendisposto));
 
-        mvc.perform(get("/requests/detailsOwner/{processId}", 13L))
+        mvc.perform(get("/requests/detailsLender/{processId}", 13L))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("requestDetailsOwner"))
+                .andExpect(MockMvcResultMatchers.view().name("requestDetailsLender"))
                 .andExpect(MockMvcResultMatchers.model().attribute("borrower", allOf(
                         hasProperty("username", is("Kevin")),
                         hasProperty("mail", is("kevin@istdumm.de")))))
@@ -195,6 +197,7 @@ public class RequestControllerTests {
         process.setProduct(product1);
         process.setRequestId(2L);
         process.setStatus(PENDING);
+        process.setFromDate(new java.sql.Date(System.currentTimeMillis()));
 
         Customer owner2 = new Customer();
         owner2.setCustomerId(111L);

@@ -3,6 +3,7 @@ package propra2.Controller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -58,6 +59,9 @@ public class AuthenticationControllerTest {
 
     @MockBean
     RegistrationService registrationService;
+
+    @MockBean
+    SoldProductRepository soldProductRepository;
 
     @MockBean
     CustomerService customerService;
