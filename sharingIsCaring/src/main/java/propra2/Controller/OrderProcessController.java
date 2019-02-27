@@ -12,13 +12,11 @@ import propra2.model.OrderProcessStatus;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
-import propra2.repositories.SoldProductRepository;
 
 import java.security.Principal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class OrderProcessController {
@@ -30,9 +28,6 @@ public class OrderProcessController {
 
     @Autowired
     private OrderProcessRepository orderProcessRepo;
-
-    @Autowired
-    private SoldProductRepository soldProductRepo;
 
     @Autowired
     private OrderProcessHandler orderProcessHandler;

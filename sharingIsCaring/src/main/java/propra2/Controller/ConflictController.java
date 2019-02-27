@@ -16,8 +16,6 @@ import propra2.model.ProPayAccount;
 import propra2.model.TransactionType;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
-import propra2.repositories.ProductRepository;
-import propra2.repositories.TransactionRepository;
 
 import java.security.Principal;
 import java.util.ArrayList;
