@@ -22,7 +22,7 @@ public class UserHandler {
     private CustomerRepository customerRepo;
 
     @Autowired
-    private TransactionRepository transactionRepository;
+    TransactionRepository transactionRepository;
 
     public boolean rechargeCredit(Customer customer, int amount){
         ProPayAccount proPayAccount = customer.getProPay();

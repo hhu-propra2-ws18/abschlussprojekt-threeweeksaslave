@@ -33,6 +33,7 @@ public class UserHandlerTest {
         int amount = 100;
         TransactionType transactionType = TransactionType.RECHARGE;
         String userName = "userName";
+        userHandler.transactionRepository = this.transactionRepository;
         userHandler.saveTransaction(amount, transactionType, userName);
 
         List<Transaction> transactions = transactionRepository.findAllByUserName("userName");
