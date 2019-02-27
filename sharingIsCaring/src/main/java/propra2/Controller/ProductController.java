@@ -8,15 +8,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import propra2.database.Customer;
+import propra2.database.OrderProcess;
 import propra2.database.Product;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.SearchProductHandler;
 import propra2.model.Address;
+import propra2.model.OrderProcessStatus;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -228,6 +231,38 @@ public class ProductController {
         model.addAttribute("admin", admin);
         model.addAttribute("editable", product.isEditingAllowed(orderProcessRepository));
         return "productDetails";
+    }
+
+    @PostMapping("/productDetails/{id}")
+    public String buyProduct(@PathVariable Long id, Principal user, Model model) {
+        Customer customer = customerRepo.findByUsername(user.getName()).get();
+        Product product = productRepo.findById(id).get();
+        List<OrderProcess> orderProcessesOfRequester = orderProcessRepository.findAllByRequestId(customer.getCustomerId());
+
+        if (!customer.hasEnoughMoney(product.getSellingPrice(), orderProcessesOfRequester)) {
+            model.addAttribute("note", "Please recharge your ProPayAccount to buy this Product!");
+            return getProductDetails(id, user, model);
+        }
+
+        if (product.getOwner().getCustomerId().equals(customer.getCustomerId())) {
+            model.addAttribute("note", "You already own this Product!");
+            return getProductDetails(id, user, model);
+        }
+        OrderProcess orderProcess = new OrderProcess();
+        orderProcess.setOwnerId(product.getOwner().getCustomerId());
+
+        orderProcess.setRequestId(customer.getCustomerId());
+
+        orderProcess.setProduct(product);
+
+        orderProcess.setStatus(OrderProcessStatus.SOLD);
+        boolean finishedSuccessful = orderProcessHandler.updateOrderProcess(null ,orderProcess);
+        if(finishedSuccessful) return "redirect:/home";
+        else{
+            model.addAttribute("note", "Sorry, connection to your ProPayAccount failed. Please try it again later.");
+            return getProductDetails(id, user, model);
+        }
+        // productRepo.delete(product);
     }
 
     @GetMapping("/product/availability/{id}")
