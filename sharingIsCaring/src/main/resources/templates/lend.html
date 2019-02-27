@@ -50,37 +50,37 @@
                 <div class="form-group">
                     <label for="inputDescription"></label>
                     <textarea name="description" id="inputDescription" class="form-control" placeholder="Description"
-                              th:value="${product?.description}" required maxlength="255" rows="6" cols="40" autofocus></textarea>
+                              th:value="${product?.description}" required maxlength="255" rows="6" cols="40"></textarea>
                 </div>
                 <div class="form-label-group">
                     <input type="number" name="deposit" id="inputDeposit" class="form-control"
-                           th:value="${product?.deposit}" placeholder="Deposit" required autofocus min="0">
+                           th:value="${product?.deposit}" placeholder="Deposit" required min="0">
                     <label for="inputDeposit">Deposit</label>
                 </div>
                 <div class="form-label-group">
                     <input type="number" name="dailyFee" id="inputDailyFee" class="form-control"
-                           th:value="${product?.dailyFee}" placeholder="Daily fee" required autofocus min="0">
+                           th:value="${product?.dailyFee}" placeholder="Daily fee" required min="0">
                     <label for="inputDailyFee">Daily fee</label>
                 </div>
                 <div class="form-label-group">
                     <input type="text" name="street" id="inputStreet" class="form-control" placeholder="Street"
                            pattern="[^0-9]+"
-                           th:value="${product?.address?.street}" required maxlength="255" autofocus>
+                           th:value="${product?.address?.street}" required maxlength="255">
                     <label for="inputStreet">Street</label>
                 </div>
                 <div class="form-label-group">
                     <input type="number" name="houseNumber" id="inputHouseNo" class="form-control"
-                           th:value="${product?.address?.houseNumber}" placeholder="House No." required autofocus min="1">
+                           th:value="${product?.address?.houseNumber}" placeholder="House No." required min="1">
                     <label for="inputHouseNo">House No.</label>
                 </div>
                 <div class="form-label-group">
                     <input type="number" name="postcode" id="inputPostcode" class="form-control"
-                           th:value="${product?.address?.postcode}" placeholder="Postcode" required autofocus min="1">
+                           th:value="${product?.address?.postcode}" placeholder="Postcode" required min="1">
                     <label for="inputPostcode">Postcode</label>
                 </div>
                 <div class="form-label-group">
                     <input type="text" name="city" id="inputCity" class="form-control" pattern="[^0-9]+"
-                           th:value="${product?.address?.city}" placeholder="City" required maxlength="255" autofocus>
+                           th:value="${product?.address?.city}" placeholder="City" required maxlength="255">
                     <label for="inputCity">City</label>
                 </div>
                 <button type="submit" class="btn btn-lg btn-secondary btn-block pinkbtn">Submit</button>
