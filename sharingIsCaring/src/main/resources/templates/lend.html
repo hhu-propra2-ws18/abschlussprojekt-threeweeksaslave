@@ -51,11 +51,10 @@
                            th:value="${product?.title}" required maxlength="255" autofocus>
                     <label for="inputTitle">Title</label>
                 </div>
-                <div class="form-label-group">
+                <div class="form-group">
+                    <label for="inputDescription"></label>
                     <textarea name="description" id="inputDescription" class="form-control" placeholder="Description"
-                              th:value="${product?.description}" required maxlength="255" rows="6" cols="40" autofocus>
-                    </textarea>
-                    <label for="inputDescription">Description</label>
+                              th:value="${product?.description}" required maxlength="255" rows="6" cols="40" autofocus></textarea>
                 </div>
                 <div class="form-label-group">
                     <input type="number" name="deposit" id="inputDeposit" class="form-control"

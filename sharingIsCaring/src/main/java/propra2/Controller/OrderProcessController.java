@@ -6,15 +6,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import propra2.database.Customer;
-import propra2.database.Message;
-import propra2.database.OrderProcess;
-import propra2.database.Product;
+import propra2.database.*;
 import propra2.handler.OrderProcessHandler;
 import propra2.model.OrderProcessStatus;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
+import sun.security.krb5.internal.ccache.CredentialsCache;
 
 import java.security.Principal;
 import java.sql.Date;
@@ -34,7 +32,11 @@ public class OrderProcessController {
     private OrderProcessRepository orderProcessRepo;
 
     @Autowired
+    private SoldProductRepository soldProductRepo;
+
+    @Autowired
     private OrderProcessHandler orderProcessHandler;
+
 
     @GetMapping("/product/{id}/orderProcess")
     public String startOrderProcess(@PathVariable Long id, final Principal user, Model model, boolean notEnoughMoney, boolean incorrectDates, boolean ownProduct, boolean availability){
@@ -72,10 +74,22 @@ public class OrderProcessController {
 
         orderProcess.setRequestId(customer.getCustomerId());
 
-        orderProcess.setProduct(product);
+        Product soldProduct = new Product();
+        soldProduct.setTitle(product.getTitle());
+        soldProduct.setOwner(product.getOwner());
+        soldProduct.setAddress(product.getAddress());
+        soldProduct.setForSale(product.isForSale());
+        soldProduct.setAvailable(product.isAvailable());
+        soldProduct.setDescription(product.getDescription());
+        soldProduct.setSellingPrice(product.getSellingPrice());
+
+        soldProductRepo.save(soldProduct);
+
+        orderProcess.setProduct(soldProduct);
 
         orderProcess.setStatus(OrderProcessStatus.SOLD);
-        // productRepo.delete(product);
+
+        productRepo.delete(product);
 
         orderProcessRepo.save(orderProcess);
 
