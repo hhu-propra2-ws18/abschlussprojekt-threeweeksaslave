@@ -113,18 +113,12 @@ public class ProductController {
     @GetMapping("/lend")
     public String getLendProduct(Principal user, final Model model) {
         addUserAndAdmin(user, model);
-        Product product = new Product();
-        model.addAttribute("product", product);
         return "lend";
     }
 
     @GetMapping("/sale")
     public String getSaleProduct(Principal user, final Model model) {
         addUserAndAdmin(user, model);
-
-        Product product = new Product();
-        model.addAttribute("product",product);
-
         return "sale";
     }
 
