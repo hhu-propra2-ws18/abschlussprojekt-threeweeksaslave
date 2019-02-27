@@ -251,7 +251,6 @@ public class ProductController {
         }
         model.addAttribute("admin", admin);
         model.addAttribute("editable", product.isEditingAllowed(orderProcessRepository));
-        System.out.println(model);
         return "productDetails";
     }
 
