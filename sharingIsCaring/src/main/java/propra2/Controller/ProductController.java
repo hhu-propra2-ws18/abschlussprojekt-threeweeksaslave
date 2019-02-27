@@ -5,18 +5,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import propra2.database.Customer;
+import propra2.database.OrderProcess;
 import propra2.database.Product;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.SearchProductHandler;
+import propra2.handler.UserHandler;
 import propra2.model.Address;
+import propra2.model.OrderProcessStatus;
+import propra2.model.TransactionType;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
 import propra2.storage.FileSystemStorageService;
 import propra2.storage.StorageProperties;
 import propra2.storage.StorageService;
+import propra2.repositories.SoldProductRepository;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +43,12 @@ public class ProductController {
 
     @Autowired
     private SearchProductHandler searchProductHandler;
+
+    @Autowired
+    private SoldProductRepository soldProductRepo;
+
+    @Autowired
+    UserHandler userHandler;
 
     /**
      * return base template of product poverview
@@ -98,23 +110,26 @@ public class ProductController {
      * @param model
      * @return
      */
-    @GetMapping("/product")
-    public String getProduct(Principal user, Model model) {
+    @GetMapping("/lend")
+    public String getLendProduct(Principal user, final Model model) {
         addUserAndAdmin(user, model);
-
-        return "addProduct";
+        Product product = new Product();
+        model.addAttribute("product", product);
+        return "lend";
     }
 
-    /**
-     * create a new Product, check if all values are set
-     * @param user
-     * @param product
-     * @param address
-     * @param model
-     * @return
-     */
-    @PostMapping("/product")
-    public String createProduct(Principal user, final Product product, final Address address, final Model model) {
+    @GetMapping("/sale")
+    public String getSaleProduct(Principal user, final Model model) {
+        addUserAndAdmin(user, model);
+
+        Product product = new Product();
+        model.addAttribute("product",product);
+
+        return "sale";
+    }
+
+    @PostMapping("/sale")
+    public String createSaleProduct(Principal user, final Product product, final Address address, final Model model) {
         Long loggedInId = getUserId(user);
         Optional<Customer> customer = customerRepo.findById(loggedInId);
         model.addAttribute("user", user);
@@ -123,16 +138,39 @@ public class ProductController {
             product.setOwner(customer.get());
         }
 
+        product.setDeposit(0);
+        product.setDailyFee(0);
+        product.setForSale(true);
         product.setAvailable(true);
         product.setAddress(address);
 
-        if (product.allValuesSet()) {
-            Long productId = productRepo.save(product).getId();
-			StorageService storageService = new FileSystemStorageService(new StorageProperties());
-			storageService.deleteFile(productId);
-			return "addImageToProduct";
+        if (product.allValuesSetSale()) {
+            productRepo.save(product);
         }
-		return "redirect:/home";
+        return "addImageToProduct";
+    }
+
+    @PostMapping("/lend")
+    public String createLendProduct(Principal user, final Product product, final Address address, final Model model) {
+      Long loggedInId = getUserId(user);
+      Optional<Customer> customer = customerRepo.findById(loggedInId);
+      model.addAttribute("user", user);
+
+      if (customer.isPresent()) {
+          product.setOwner(customer.get());
+      }
+
+      product.setAvailable(true);
+      product.setForSale(false);
+      product.setAddress(address);
+
+      if (product.allValuesSet()) {
+          Long productId = productRepo.save(product).getId();
+          StorageService storageService = new FileSystemStorageService(new StorageProperties());
+          storageService.deleteFile(productId);
+          return "addImageToProduct";
+        }
+    return "redirect:/home";
     }
 
     /**
@@ -153,7 +191,7 @@ public class ProductController {
 				return "editProduct";
 			}
 		}
-		return"redirect:/home";
+		return "redirect:/home";
 	}
 
     /**
@@ -166,18 +204,19 @@ public class ProductController {
      * @return
      */
 	@PostMapping("/product/edit/{productId}")
-	public String saveProduct(Principal user, Model model, Product product, final Address address, @PathVariable Long productId)
-	{
+	public String saveProduct(Principal user, Product product, final Address address, @PathVariable Long productId) {
 		Product oldProduct = productRepo.findById(productId).get();
 		Customer owner = oldProduct.getOwner();
 		if(owner.getCustomerId().equals(getUserId(user))){
 			product.setOwner(owner);
 			product.setAvailable(oldProduct.isAvailable());
+			product.setForSale(oldProduct.isForSale());
 			product.setAddress(address);
 			product.setId(productId);
-			return"editProductImage";
+      productRepo.save(product);
+			return "editProductImage";
 		}
-		return("redirect:/home");
+		return "redirect:/home";
 	}
 
     /**
@@ -234,7 +273,7 @@ public class ProductController {
      * @param model
      * @return
      */
-    @GetMapping("/product/{id}")
+    @GetMapping("/productDetails/{id}")
     public String getProductDetails(@PathVariable Long id, final Principal user, final Model model) {
         Long loggedInId = getUserId(user);
         Customer customer = customerRepo.findById(loggedInId).get();
@@ -253,13 +292,65 @@ public class ProductController {
         return "productDetails";
     }
 
+    @PostMapping("/productDetails/{id}")
+    public String buyProduct(@PathVariable Long id, Principal user, Model model) {
+        Customer customer = customerRepo.findByUsername(user.getName()).get();
+        Product product = productRepo.findById(id).get();
+        List<OrderProcess> orderProcessesOfRequester = orderProcessRepository.findAllByRequestId(customer.getCustomerId());
+
+        if (!customer.hasEnoughMoney(product.getSellingPrice(), orderProcessesOfRequester)) {
+            model.addAttribute("note", "Please recharge your ProPayAccount to buy this Product!");
+            return getProductDetails(id, user, model);
+        }
+
+        if (product.getOwner().getCustomerId().equals(customer.getCustomerId())) {
+            model.addAttribute("note", "You already own this Product!");
+            return getProductDetails(id, user, model);
+        }
+        OrderProcess orderProcess = new OrderProcess();
+        orderProcess.setOwnerId(product.getOwner().getCustomerId());
+
+        orderProcess.setRequestId(customer.getCustomerId());
+
+        Product soldProduct = new Product();
+        soldProduct.setTitle(product.getTitle());
+        soldProduct.setOwner(product.getOwner());
+        soldProduct.setAddress(product.getAddress());
+        soldProduct.setForSale(product.isForSale());
+        soldProduct.setAvailable(product.isAvailable());
+        soldProduct.setDescription(product.getDescription());
+        soldProduct.setSellingPrice(product.getSellingPrice());
+
+        orderProcess.setProduct(soldProduct);
+
+        orderProcess.setStatus(OrderProcessStatus.SOLD);
+
+        boolean finishedSuccessful = orderProcessHandler.updateOrderProcess(null ,orderProcess);
+        if(finishedSuccessful){
+            int sellingPrice = orderProcess.getProduct().getSellingPrice();
+            if(sellingPrice>0){
+                String rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get().getUsername();
+                String ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get().getUsername();
+                userHandler.saveTransaction(sellingPrice, TransactionType.BUYPAYMENT, rentingAccount);
+                userHandler.saveTransaction(sellingPrice, TransactionType.RECEIVEDBUYPAYMENT, ownerAccount);
+            }
+            soldProductRepo.save(soldProduct);
+            productRepo.delete(product);
+            return "redirect:/home";
+        }
+        else{
+            model.addAttribute("note", "Sorry, connection to your ProPayAccount failed. Please try it again later.");
+            return getProductDetails(id, user, model);
+        }
+    }
+
     /**
-     * get base template to check availability of a product
-     * @param user
-     * @param model
-     * @param id
-     * @return
-     */
+    * get base template to check availability of a product
+    * @param user
+    * @param model
+    * @param id
+    * @return
+    */
     @GetMapping("/product/availability/{id}")
     public String getAvailability(Principal user, Model model, @PathVariable Long id) {
         Long userId = getUserId(user);

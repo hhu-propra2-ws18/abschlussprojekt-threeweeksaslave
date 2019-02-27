@@ -15,7 +15,7 @@
             <li><a aria-current="page">Home</a></li>
             <li><a th:href="@{'/profile'}">Profile</a></li>
             <li><a href="/products">View Products</a></li>
-            <li><a href="/product">Add Product</a>
+            <li><a href="/lend">Add Product</a>
             <li><a th:href="@{'/requests'}">Requests</a></li>
             <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
             <li><a href="/logout" role="button">Log Out</a></li>
@@ -51,7 +51,7 @@
                         <input type="text" name="city" id="inputCity" class="form-control" pattern="[^0-9]+" th:value="${user?.address.city}" placeholder="City" required autofocus>
                         <label for="inputCity">City</label>
                     </div>
-                    <button type="submit" class="btn btn-lg btn-primary btn-block pinkbtn">Submit</button>
+                    <button type="submit" class="btn btn-lg btn-secondary btn-block pinkbtn">Submit</button>
                 </form>
         </section>
     </div>

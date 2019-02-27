@@ -10,7 +10,7 @@
         <li><a href="/home">Home</a></li>
         <li><a th:href="@{'/profile'}">Profile</a></li>
         <li><a aria-current="page">View Products</a></li>
-        <li><a href="/product">Add Product</a>
+        <li><a href="/lend">Add Product</a>
         <li><a th:href="@{'/requests'}">Requests</a></li>
          <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
         <li><a href="/logout" role="button">Log Out</a></li>
@@ -28,6 +28,8 @@
                     <option th:value="all" th:text="all" th:selected="${filter.equals('all')}"></option>
                     <option th:value="borrowed" th:text="borrowed" th:selected="${filter.equals('borrowed')}"></option>
                     <option th:value="offered" th:text="offered" th:selected="${filter.equals('offered')}"></option>
+                    <option th:value="allToBuy" th:text="AllToBuy" th:selected="${filter.equals('allToBuy')}"></option>
+                    <option th:value="allToLend" th:text="AllToLend" th:selected="${filter.equals('allToLend')}"></option>
                 </select>
                 <button type="submit">Search</button>
             </form>

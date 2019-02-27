@@ -11,7 +11,7 @@
         <li><a href="/home">Home</a></li>
         <li><a th:href="@{'/profile'}">Profile</a></li>
         <li><a aria-current="page">View Products</a></li>
-        <li><a href="/product">Add Product</a>
+        <li><a href="/lend">Add Product</a>
         <li><a th:href="@{'/requests'}">Requests</a></li>
          <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
         <li><a href="/logout" role="button">Log Out</a></li>
@@ -36,7 +36,8 @@
                 <td valign="top">
                     <div th:text="${#strings.abbreviate(product.description,100)}" style="word-break:break-all"></div>
                     <br>
-                    <div th:text="'Daily Fee: ' + ${product.dailyFee} + '€'"></div>
+                    <div th:text="${!product?.forSale} ? 'Daily Fee: ' + ${product?.dailyFee} + ' €'"></div>
+                    <div th:text="${product?.forSale} ? 'Price: ' + ${product?.sellingPrice} + ' €'"></div>
                     <br>
 
                    <div>
@@ -44,7 +45,7 @@
                    </div>
                 </td>
             </table>
-            <a th:href="@{/product/{id}(id=${product.id})}">read more</a>
+            <a th:href="@{/productDetails/{id}(id=${product.id})}">read more</a>
                 <hr>
         </section>
     </div>

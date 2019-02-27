@@ -11,7 +11,7 @@
         <li><a href="/home">Home</a></li>
         <li><a th:href="@{'/profile'}">Profile</a></li>
         <li><a href="/products">View Products</a></li>
-        <li><a href="/product">Add Product</a>
+        <li><a href="/lend">Add Product</a>
         <li><a th:href="@{'/requests'}">Requests</a></li>
          <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
         <li><a href="/logout" role="button">Logout</a></li>
@@ -20,14 +20,14 @@
 <div layout:fragment="content">
 
     <section class="spalte">
-        <h2>Owner</h2>
+        <h2>User</h2>
         <table>
             <tr>
                 <td>
                     Username:
                 </td>
                 <td>
-                    <dd th:text="${owner.username}">user name</dd>
+                    <dd th:text="${owner.username}">Username</dd>
                 </td>
             </tr>
             <tr>
@@ -35,7 +35,7 @@
                     Email address:
                 </td>
                 <td>
-                    <dd th:text="${owner.mail}">mail</dd>
+                    <dd th:text="${owner.mail}">Mail</dd>
                 </td>
             </tr>
         </table>

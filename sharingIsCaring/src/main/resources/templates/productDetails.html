@@ -11,7 +11,7 @@
         <li><a href="/home">Home</a></li>
         <li><a th:href="@{'/profile'}">Profile</a></li>
         <li><a href="/products">View Products</a></li>
-        <li><a href="/product">Add Product</a>
+        <li><a href="/lend">Add Product</a>
         <li><a th:href="@{'/requests'}">Requests</a></li>
          <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
         <li><a href="/logout" role="button">Log Out</a></li>
@@ -49,17 +49,30 @@
                 <td><b>Address:</b></td>
                 <td th:text="${product?.address.street} + ' ' + ${product?.address.houseNumber} + ', ' + ${product?.address.postcode} + ' ' + ${product?.address.city}"></td>
             </tr>
-            <tr bgcolor="#f5f5f5">
+            <tr th:if="${!product?.forSale}" bgcolor="#f5f5f5">
                 <th>Deposit: </th>
                 <td th:text="${#numbers.formatInteger(product.deposit, 1, 'POINT')} + ' €'">Amount</td>
             </tr>
-            <tr bgcolor="#f5f5f5">
+            <tr th:if="${!product?.forSale}" bgcolor="#f5f5f5">
                 <th>Daily Fee: </th>
                 <td th:text="${#numbers.formatInteger(product.dailyFee, 1, 'POINT')} + ' €'">Amount</td>
             </tr>
+            <tr th:if="${product?.forSale}" bgcolor="#f5f5f5">
+                <th>Price: </th>
+                <td th:text="${#numbers.formatInteger(product?.sellingPrice, 1, 'POINT')} + ' €'">Amount</td>
+            </tr>
+            <tr bgcolor="#f5f5f5">
+                <th>Status: </th>
+                <td th:text="${product?.forSale}? 'For sale' : 'For rent'">For Sale</td>
+            </tr>
         </table>
         <br>
-        <a th:if="${!user.equals(owner)}" th:href="@{'/product/' + ${product.id} + '/orderProcess'}">Borrow it!</a>
+        <div th:if="${!user.equals(owner)}">
+            <a th:if="${!product?.forSale}" th:href="@{'/product/' + ${product.id} + '/orderProcess'}">Borrow it!</a>
+            <form th:if="${product?.forSale}" method="post">
+                <button type="submit">Buy it!</button>
+            </form>
+        </div>
         <a th:if="${user.equals(owner) && editable}" th:href="@{'/product/edit/' + ${product.id}}">Edit it!</a>
         <p style="color:red" th:if="${user.equals(owner) && !editable}" >You cannot edit due to unfinished orderprocesses for this product</p>
         <hr>

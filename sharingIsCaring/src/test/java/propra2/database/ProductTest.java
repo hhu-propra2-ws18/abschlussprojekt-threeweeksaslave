@@ -5,8 +5,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.Date;
-
 public class ProductTest {
 
     private Product product;
@@ -41,7 +39,7 @@ public class ProductTest {
         product.setOwner(customer);
         product.setAvailable(true);
 
-        Assert.assertEquals(false, product.allValuesSet());
+        Assert.assertEquals(false, product.allValuesSetRent());
     }
 
     @Test
@@ -57,7 +55,7 @@ public class ProductTest {
         product.setTitle("Putzfrau");
         product.setDescription("Putzt alles blitzblank");
 
-        Assert.assertEquals(true, product.allValuesSet());
+        Assert.assertEquals(true, product.allValuesSetRent());
     }
 
 }

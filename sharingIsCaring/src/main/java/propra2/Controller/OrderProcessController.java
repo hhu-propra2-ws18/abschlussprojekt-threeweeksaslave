@@ -6,15 +6,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import propra2.database.Customer;
-import propra2.database.Message;
-import propra2.database.OrderProcess;
-import propra2.database.Product;
+import propra2.database.*;
 import propra2.handler.OrderProcessHandler;
 import propra2.model.OrderProcessStatus;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
+import propra2.repositories.SoldProductRepository;
 
 import java.security.Principal;
 import java.sql.Date;
@@ -32,6 +30,9 @@ public class OrderProcessController {
 
     @Autowired
     private OrderProcessRepository orderProcessRepo;
+
+    @Autowired
+    private SoldProductRepository soldProductRepo;
 
     @Autowired
     private OrderProcessHandler orderProcessHandler;
@@ -87,16 +88,17 @@ public class OrderProcessController {
             return startOrderProcess(id, user, model, true, false, false, false);
         }
 
-        if (!orderProcessHandler.correctDates(Date.valueOf(from), Date.valueOf(to))) {
-            return startOrderProcess(id, user, model, false, true, false, false);
-        }
-
-        if(!orderProcessHandler.checkAvailability(orderProcessRepo, product, from, to)){
-            return startOrderProcess(id, user, model, false, false, false, true);
-        }
-
-        if(product.getOwner().getCustomerId().equals(customer.getCustomerId())){
+        if (product.getOwner().getCustomerId().equals(customer.getCustomerId())) {
             return startOrderProcess(id, user, model, false, false, true, false);
+        }
+        if(!product.isForSale()) {
+            if (!orderProcessHandler.correctDates(Date.valueOf(from), Date.valueOf(to))) {
+                return startOrderProcess(id, user, model, false, true, false, false);
+            }
+
+            if (!orderProcessHandler.checkAvailability(orderProcessRepo, product, from, to)) {
+                return startOrderProcess(id, user, model, false, false, false, true);
+            }
         }
 
         OrderProcess orderProcess = new OrderProcess();

@@ -1,6 +1,5 @@
 package propra2.handler;
 
-import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -63,10 +62,36 @@ public class OrderProcessHandler {
             case CANCELED:
                 cancelOrder(orderProcess);
                 break;
+            case SOLD:
+                return buyProduct(orderProcess, rentingAccount.getUsername(), ownerAccount.getUsername());
             default:
                 throw new IllegalArgumentException("Bad Request: Unknown Process Status");
         }
         return false;
+    }
+
+    private boolean buyProduct(OrderProcess orderProcess, String buyingAccount, String ownerAccount) {
+        try {
+            int price = orderProcess.getProduct().getSellingPrice();
+            Mono<String> response = WebClient
+                    .create()
+                    .post()
+                    .uri(builder ->
+                            builder.scheme("http")
+                                    .host("localhost")
+                                    .port(8888)
+                                    .path("/account/" + buyingAccount + "/transfer/" + ownerAccount)
+                                    .queryParam("amount", price)
+                                    .build())
+                    .accept(MediaType.APPLICATION_JSON_UTF8)
+                    .retrieve()
+                    .bodyToMono(String.class);
+            response.block();
+            orderProcessRepo.save(orderProcess);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private boolean acceptProcess(OrderProcess orderProcess, Customer rentingAccount, Customer ownerAccount) {

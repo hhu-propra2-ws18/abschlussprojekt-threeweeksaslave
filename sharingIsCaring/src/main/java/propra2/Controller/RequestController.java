@@ -51,20 +51,58 @@ public class RequestController {
         Optional<Customer> customer = customerRepo.findById(userId);
 
         List<OrderProcess> ownerOrderProcesses = orderProcessRepo.findAllByOwnerId(userId);
-        List<OrderProcess> borrowerOrderProcesses = orderProcessRepo.findAllByRequestId(userId);
-        model.addAttribute("user", customer.get());
-        model.addAttribute("ownerOrderProcesses", ownerOrderProcesses);
-        model.addAttribute("borrower", borrowerOrderProcesses);
-        if(ownerOrderProcesses.size()==0){
-            model.addAttribute("lendProductsExist", false);
-        }else{
-            model.addAttribute("lendProductsExist", true);
+        List<OrderProcess> orderProcesses = orderProcessRepo.findAllByRequestId(userId);
+        List<OrderProcess> lenderOrderProcesses = new ArrayList<>();
+        List<OrderProcess> sellerOrderProcesses = new ArrayList<>();
+        List<OrderProcess> buyerOrderProcesses = new ArrayList<>();
+        List<OrderProcess> borrowerOrderProcesses = new ArrayList<>();
+
+        for (OrderProcess orderProcess : orderProcesses) {
+            if (orderProcess.getProduct().isForSale()) {
+                buyerOrderProcesses.add(orderProcess);
+            }
+            else {
+                borrowerOrderProcesses.add(orderProcess);
+            }
         }
 
-        if(borrowerOrderProcesses.size()==0){
+        for (OrderProcess orderProcess : ownerOrderProcesses) {
+            if (orderProcess.getProduct().isForSale()) {
+                sellerOrderProcesses.add(orderProcess);
+            }
+            else {
+                lenderOrderProcesses.add(orderProcess);
+            }
+        }
+
+        model.addAttribute("user", customer.get());
+        model.addAttribute("borrower", borrowerOrderProcesses);
+        model.addAttribute("buyer", buyerOrderProcesses);
+        model.addAttribute("lender", lenderOrderProcesses);
+        model.addAttribute("seller", sellerOrderProcesses);
+
+        if(sellerOrderProcesses.isEmpty()){
+            model.addAttribute("soldProductsExist", false);
+        }else{
+            model.addAttribute("soldProductsExist", true);
+        }
+
+        if(borrowerOrderProcesses.isEmpty()) {
             model.addAttribute("borrowerExist", false);
         }else{
             model.addAttribute("borrowerExist", true);
+        }
+
+        if (buyerOrderProcesses.isEmpty()){
+            model.addAttribute("boughtProductsExist", false);
+        } else {
+            model.addAttribute("boughtProductsExist", true);
+        }
+
+        if (lenderOrderProcesses.isEmpty()){
+            model.addAttribute("lentProductsExist", false);
+        } else {
+            model.addAttribute("lentProductsExist", true);
         }
 
         boolean admin = false;
@@ -188,7 +226,7 @@ public class RequestController {
      * @param model
      * @return
      */
-    @GetMapping("/requests/detailsOwner/{processId}")
+    @GetMapping("/requests/detailsLender/{processId}")
     public String showRequestOwnerDetails(@PathVariable Long processId, Principal user, final Model model) {
         Long userId = getUserId(user);
         Optional<Customer> customer = customerRepo.findById(userId);
@@ -204,7 +242,45 @@ public class RequestController {
             admin = true;
         }
         model.addAttribute("admin", admin);
-        return "requestDetailsOwner";
+        return "requestDetailsLender";
+    }
+
+    @GetMapping("/requests/detailsSeller/{processId}")
+    public String showRequestSellerDetails(@PathVariable Long processId, Principal user, final Model model) {
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepo.findById(userId);
+        Optional<OrderProcess> process = orderProcessRepo.findById(processId);
+
+
+        model.addAttribute("user", customer);
+        model.addAttribute("product", process.get().getProduct());
+        model.addAttribute("process", process.get());
+        model.addAttribute("buyer", customerRepo.findById(process.get().getRequestId()).get());
+        boolean admin = false;
+        if(customer.get().getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
+        return "requestDetailsSeller";
+    }
+
+    @GetMapping("/requests/detailsBuyer/{processId}")
+    public String showRequestBuyerDetails(@PathVariable Long processId, Principal user, final Model model) {
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepo.findById(userId);
+        Optional<OrderProcess> process = orderProcessRepo.findById(processId);
+
+
+        model.addAttribute("user", customer);
+        model.addAttribute("product", process.get().getProduct());
+        model.addAttribute("process", process.get());
+        model.addAttribute("seller", customerRepo.findById(process.get().getOwnerId()).get());
+        boolean admin = false;
+        if(customer.get().getRole().equals("ADMIN")){
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
+        return "requestDetailsBuyer";
     }
 
     /**
@@ -248,8 +324,8 @@ public class RequestController {
      * @param user
      * @return
      */
-    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=acceptReturn")
-    public String finishProcess(@PathVariable Long processId, Model model, Principal user) {
+     @RequestMapping(value="/requests/detailsLender/{processId}", method=RequestMethod.POST, params="action=acceptReturn")
+     public String finishProcess(@PathVariable Long processId, Model model, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.FINISHED);
 
@@ -296,7 +372,7 @@ public class RequestController {
      * @param processId
      * @return
      */
-    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=deleteProcess")
+    @RequestMapping(value="/requests/detailsLender/{processId}", method=RequestMethod.POST, params="action=deleteProcess")
     public String deleteByOwner(@PathVariable Long processId) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcessRepo.delete(orderProcess);
@@ -311,7 +387,7 @@ public class RequestController {
      * @param user
      * @return
      */
-    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=deny")
+    @RequestMapping(value="/requests/detailsLender/{processId}", method=RequestMethod.POST, params="action=deny")
     public String deny(String message, @PathVariable Long processId, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.DENIED);
