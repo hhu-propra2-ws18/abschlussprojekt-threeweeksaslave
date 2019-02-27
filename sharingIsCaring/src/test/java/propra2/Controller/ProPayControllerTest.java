@@ -61,6 +61,9 @@ public class ProPayControllerTest {
     RegistrationService registrationService;
 
     @MockBean
+    SoldProductRepository soldProductRepository;
+
+    @MockBean
     CustomerService customerService;
 
     @MockBean

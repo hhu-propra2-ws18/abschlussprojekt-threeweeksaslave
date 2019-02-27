@@ -14,6 +14,7 @@ import propra2.repositories.TransactionRepository;
 import reactor.core.publisher.Mono;
 
 import javax.transaction.Transactional;
+import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -34,7 +35,9 @@ public class UserHandler {
                              .query("amount=" + amount)
                              .build())
                     .retrieve()
-                    .bodyToMono(ProPayAccount.class);
+                    .bodyToMono(ProPayAccount.class)
+                    .timeout(Duration.ofSeconds(2L))
+                    .retry(4L);
 
             customer.setProPay(account.block());
             return true;
@@ -62,7 +65,9 @@ public class UserHandler {
                                     .build())
                     .accept(MediaType.APPLICATION_JSON_UTF8)
                     .retrieve()
-                    .bodyToMono(type);
+                    .bodyToMono(type)
+                    .timeout(Duration.ofSeconds(2L))
+                    .retry(4L);
             return mono.block();
         }
         catch(Exception e){

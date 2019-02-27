@@ -22,6 +22,7 @@ import propra2.handler.UserHandler;
 import propra2.model.Address;
 import propra2.model.ProPayAccount;
 import propra2.repositories.CustomerRepository;
+import propra2.repositories.SoldProductRepository;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasProperty;
@@ -51,6 +52,9 @@ public class ProfileControllerTest {
 
     @MockBean
     RegistrationService registrationService;
+
+    @MockBean
+    SoldProductRepository soldProductRepository;
 
     @MockBean
     CustomerService customerService;

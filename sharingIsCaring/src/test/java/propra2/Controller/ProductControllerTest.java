@@ -19,6 +19,7 @@ import propra2.database.Customer;
 import propra2.database.Product;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.SearchProductHandler;
+import propra2.handler.UserHandler;
 import propra2.model.Address;
 import propra2.model.ProPayAccount;
 import propra2.repositories.*;
@@ -64,6 +65,12 @@ public class ProductControllerTest {
 
     @MockBean
     CustomerService customerService;
+
+    @MockBean
+    SoldProductRepository soldProductRepository;
+
+    @MockBean
+    UserHandler userHandler;
 
     @MockBean
     OrderProcessHandler orderProcessHandler;
