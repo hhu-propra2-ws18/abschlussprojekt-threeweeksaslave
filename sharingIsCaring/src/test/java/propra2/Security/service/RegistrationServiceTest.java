@@ -3,12 +3,15 @@ package propra2.Security.service;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import propra2.database.Customer;
+import propra2.handler.UserHandler;
 import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
 
@@ -18,6 +21,9 @@ public class RegistrationServiceTest {
 
     @Autowired
     private CustomerRepository customerRepo;
+
+    @MockBean
+    UserHandler userHandler;
 
     PasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
@@ -33,6 +39,8 @@ public class RegistrationServiceTest {
         RegistrationService regService = new RegistrationService();
         regService.bCryptPasswordEncoder = this.bCryptPasswordEncoder;
         regService.customerRepo = this.customerRepo;
+
+        Mockito.when(userHandler.getProPayAccount("peter")).thenReturn(null);
 
         regService.saveCredentials(testUserReg);
 

@@ -38,6 +38,13 @@ public class RequestController {
     @Autowired
     private UserHandler userHandler;
 
+
+    /**
+     * get an overview of all lend an borrowed products and their orderProcesses
+     * @param user
+     * @param model
+     * @return
+     */
     @GetMapping("/requests")
     public String showRequests(Principal user, final Model model) {
         Long userId = getUserId(user);
@@ -75,6 +82,12 @@ public class RequestController {
         return id;
     }
 
+    /**
+     * cancel an orderProcess
+     * @param processId
+     * @param user
+     * @return
+     */
     @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=cancel")
     public String cancelOrder(@PathVariable Long processId, Principal user){
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
@@ -84,6 +97,13 @@ public class RequestController {
         return "requests";
     }
 
+    /**
+     * show details of an orderProcess of a borrowed product
+     * @param processId
+     * @param user
+     * @param model
+     * @return
+     */
     @GetMapping("/requests/detailsBorrower/{processId}")
     public String showRequestBorrowerDetails(@PathVariable Long processId, Principal user, final Model model) {
         Long userId = getUserId(user);
@@ -109,6 +129,11 @@ public class RequestController {
         return "requestDetailsBorrower";
     }
 
+    /**
+     * delete an orderProcess
+     * @param processId
+     * @return
+     */
     @RequestMapping(value="/requests/detailsBorrower/{processId}", method= RequestMethod.POST, params="action=delete")
     public String deleteByBorrower(@PathVariable Long processId) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
@@ -117,6 +142,13 @@ public class RequestController {
         return "redirect:/requests";
     }
 
+    /**
+     * return a product, dailyFee is payed
+     * @param processId
+     * @param user
+     * @param model
+     * @return
+     */
     @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=return")
     public String returnProduct(@PathVariable Long processId, Principal user, Model model) {
         Customer customer = customerRepo.findByUsername(user.getName()).get();
@@ -149,6 +181,13 @@ public class RequestController {
         }
     }
 
+    /**
+     * show details of an orderProcess of a lend product
+     * @param processId
+     * @param user
+     * @param model
+     * @return
+     */
     @GetMapping("/requests/detailsOwner/{processId}")
     public String showRequestOwnerDetails(@PathVariable Long processId, Principal user, final Model model) {
         Long userId = getUserId(user);
@@ -168,6 +207,14 @@ public class RequestController {
         return "requestDetailsOwner";
     }
 
+    /**
+     * as an owner you can accept the orderProcess, the caution is blocked
+     * @param message
+     * @param processId
+     * @param user
+     * @param model
+     * @return
+     */
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=acceptProcess")
     public String accept(String message, @PathVariable Long processId, Principal user, Model model) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
@@ -194,6 +241,13 @@ public class RequestController {
         }
     }
 
+    /**
+     * As an owner you can accept the return, the caution will be released
+     * @param processId
+     * @param model
+     * @param user
+     * @return
+     */
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=acceptReturn")
     public String finishProcess(@PathVariable Long processId, Model model, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
@@ -215,6 +269,13 @@ public class RequestController {
         }
     }
 
+    /**
+     * as an owner you can deny the return, an admin will get a notification to resolve the conflict
+     * @param processId
+     * @param message
+     * @param user
+     * @return
+     */
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=appeal")
     public String appealProcess(@PathVariable Long processId, String message, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
@@ -230,6 +291,11 @@ public class RequestController {
         return "redirect:/requests";
     }
 
+    /**
+     * delete orderProcess as an owner
+     * @param processId
+     * @return
+     */
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=deleteProcess")
     public String deleteByOwner(@PathVariable Long processId) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
@@ -238,6 +304,13 @@ public class RequestController {
         return "redirect:/requests";
     }
 
+    /**
+     * deny the orderProcess
+     * @param message
+     * @param processId
+     * @param user
+     * @return
+     */
     @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=deny")
     public String deny(String message, @PathVariable Long processId, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();

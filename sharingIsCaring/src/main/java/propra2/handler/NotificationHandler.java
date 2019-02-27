@@ -17,6 +17,9 @@ import java.util.List;
 
 import static propra2.model.OrderProcessStatus.ACCEPTED;
 
+//on the home page the customer get notifications about his orderProcesses, if he has to return a product today or tomorrow or if he has
+//forgot to return his product. For this we go through all orderProcesses and check the period to update the notifications all 24h.
+
 @Component
 public class NotificationHandler {
     @Autowired

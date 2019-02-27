@@ -36,6 +36,18 @@ public class OrderProcessController {
     @Autowired
     private OrderProcessHandler orderProcessHandler;
 
+
+    /**
+     * get page to start an orderProcess
+     * @param id
+     * @param user
+     * @param model
+     * @param notEnoughMoney
+     * @param incorrectDates
+     * @param ownProduct
+     * @param availability
+     * @return
+     */
     @GetMapping("/product/{id}/orderProcess")
     public String startOrderProcess(@PathVariable Long id, final Principal user, Model model, boolean notEnoughMoney, boolean incorrectDates, boolean ownProduct, boolean availability){
         Customer customer = customerRepo.findByUsername(user.getName()).get();
@@ -54,6 +66,16 @@ public class OrderProcessController {
         return "orderProcess";
     }
 
+    /**
+     * start an orderProcess, check if customer has enough money and if the period is correct
+     * @param id
+     * @param message
+     * @param from
+     * @param to
+     * @param user
+     * @param model
+     * @return
+     */
     @PostMapping("/product/{id}/orderProcess")
     public String postOrderProcess(@PathVariable Long id, String message, String from, String to, final Principal user, Model model) {
         Customer customer = customerRepo.findByUsername(user.getName()).get();
@@ -98,25 +120,4 @@ public class OrderProcessController {
         return "redirect:/home";
     }
 
-    @GetMapping("/offers/{customerId}")
-    public List<Product> getOffers(@PathVariable Long customerId) {
-        Optional<Customer> customer = customerRepo.findById(customerId);
-        List<Product> products = productRepo.findByOwner(customer.get());
-        return products;
-    }
-
-    @GetMapping("/orders/{customerId}")
-    public List<Product> getOrders(@PathVariable Long customerId) {
-        Customer customer = customerRepo.findById(customerId).get();
-        List<Product> products = customer.getBorrowedProducts();
-        return products;
-    }
-
-    @PostMapping("/orderProcess")
-    public String addOrderProcess(OrderProcess newOrderProcess) {
-        if (newOrderProcess.allValuesSet()) {
-            orderProcessRepo.save(newOrderProcess);
-        }
-        return "";
-    }
 }

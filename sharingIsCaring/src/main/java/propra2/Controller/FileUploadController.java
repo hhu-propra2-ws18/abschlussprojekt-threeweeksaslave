@@ -33,6 +33,12 @@ public class FileUploadController {
         this.storageService = storageService;
     }
 
+    /**
+     * get a list of all uploaded files
+     * @param model
+     * @return
+     * @throws IOException
+     */
     @GetMapping("/")
     public String listUploadedFiles(Model model) throws IOException {
 
@@ -44,6 +50,12 @@ public class FileUploadController {
         return "uploadForm";
     }
 
+    /**
+     * load file
+     * @param filename
+     * @param productId
+     * @return
+     */
     @GetMapping("/files/{productId}/{filename}")
     @ResponseBody
     public Resource serveFile(@PathVariable String filename, @PathVariable Long productId) {
@@ -53,6 +65,15 @@ public class FileUploadController {
         return file;
     }
 
+    /**
+     * upload file
+     * @param model
+     * @param file
+     * @param fileName
+     * @param productId
+     * @param redirectAttributes
+     * @return
+     */
     @PostMapping("/")
     public String handleFileUpload(Model model, @RequestParam("file") MultipartFile file, @RequestParam("fileName") String fileName,
 								   @RequestParam("productId") String productId, RedirectAttributes redirectAttributes) {
@@ -72,6 +93,13 @@ public class FileUploadController {
         return "editProductImage";
     }
 
+
+    /**
+     * delete current image
+     * @param productId
+     * @param model
+     * @return
+     */
     @PostMapping("/{productId}/deleteCurrentImage")
     public String deleteCurrentImage(@PathVariable Long productId, Model model){
         storageService.deleteFile(productId);

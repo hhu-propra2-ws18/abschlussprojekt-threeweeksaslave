@@ -40,6 +40,12 @@ public class ConflictController {
     private UserHandler userHandler;
 
 
+    /**
+     * get overview of all conflicts
+     * @param user
+     * @param model
+     * @return
+     */
     @GetMapping("/conflicts")
     public String getConflicts(Principal user, Model model){
         Long userId = getUserId(user);
@@ -61,6 +67,13 @@ public class ConflictController {
         return id;
     }
 
+    /**
+     * get Details to a specific conflict
+     * @param processId
+     * @param user
+     * @param model
+     * @return
+     */
     @GetMapping("/conflicts/details/{processId}")
     public String showConflictDetails(@PathVariable Long processId, Principal user, final Model model) {
         Long userId = getUserId(user);
@@ -80,6 +93,13 @@ public class ConflictController {
         return "conflictDetails";
     }
 
+    /**
+     * confirm Conflict -> the caution is send to the owner
+     * @param processId
+     * @param model
+     * @param user
+     * @return
+     */
     @RequestMapping(value="/conflicts/details/{processId}", method= RequestMethod.POST, params="action=confirm")
     public String confirmConflict(@PathVariable Long processId, Model model, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
@@ -114,6 +134,11 @@ public class ConflictController {
 
     }
 
+    /**
+     * reject conflict -> the caution will be released
+     * @param processId
+     * @return
+     */
     @RequestMapping(value="/conflicts/details/{processId}", method=RequestMethod.POST, params="action=reject")
     public String rejectConflict(@PathVariable Long processId) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();

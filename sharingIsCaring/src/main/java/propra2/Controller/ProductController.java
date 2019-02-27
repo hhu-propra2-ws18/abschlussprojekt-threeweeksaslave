@@ -76,6 +76,13 @@ public class ProductController {
         return "productsSearch";
     }
 
+    /**
+     * return owner of a product
+     * @param customerId
+     * @param model
+     * @param user
+     * @return
+     */
     @GetMapping("/customer/{customerId}")
     public String searchForOwner(@PathVariable Long customerId, Model model, Principal user) {
         Customer owner = customerRepo.findById(customerId).get();
@@ -95,11 +102,17 @@ public class ProductController {
     public String getProduct(Principal user, Model model) {
         addUserAndAdmin(user, model);
 
-        Product product = new Product();
-
         return "addProduct";
     }
 
+    /**
+     * create a new Product, check if all values are set
+     * @param user
+     * @param product
+     * @param address
+     * @param model
+     * @return
+     */
     @PostMapping("/product")
     public String createProduct(Principal user, final Product product, final Address address, final Model model) {
         Long loggedInId = getUserId(user);
@@ -110,10 +123,8 @@ public class ProductController {
             product.setOwner(customer.get());
         }
 
-        //product.setOwnerId(loggedInId);
         product.setAvailable(true);
         product.setAddress(address);
-        //TODO set borrowed until
 
         if (product.allValuesSet()) {
             Long productId = productRepo.save(product).getId();
@@ -124,6 +135,13 @@ public class ProductController {
 		return "redirect:/home";
     }
 
+    /**
+     * get base template to edit a product find bei its id
+     * @param user
+     * @param model
+     * @param id
+     * @return
+     */
 	@GetMapping("/product/edit/{id}")
 	public String editProduct(Principal user, Model model, @PathVariable Long id) {
 		addUserAndAdmin(user, model);
@@ -138,6 +156,15 @@ public class ProductController {
 		return"redirect:/home";
 	}
 
+    /**
+     * save the new product, get base template to add a product image
+     * @param user
+     * @param model
+     * @param product
+     * @param address
+     * @param productId
+     * @return
+     */
 	@PostMapping("/product/edit/{productId}")
 	public String saveProduct(Principal user, Model model, Product product, final Address address, @PathVariable Long productId)
 	{
@@ -148,13 +175,18 @@ public class ProductController {
 			product.setAvailable(oldProduct.isAvailable());
 			product.setAddress(address);
 			product.setId(productId);
-			product = productRepo.save(product);
-			/*model.addAttribute(product);*/
 			return"editProductImage";
 		}
 		return("redirect:/home");
 	}
 
+    /**
+     * delete a product and its image
+     * @param model
+     * @param user
+     * @param productId
+     * @return
+     */
 	@PostMapping("/product/delete")
     public String deleteProduct(Model model,Principal user, Long productId){
         Product product = productRepo.findById(productId).get();
@@ -195,6 +227,13 @@ public class ProductController {
         return resultList;
     }
 
+    /**
+     * get details to a specific product
+     * @param id
+     * @param user
+     * @param model
+     * @return
+     */
     @GetMapping("/product/{id}")
     public String getProductDetails(@PathVariable Long id, final Principal user, final Model model) {
         Long loggedInId = getUserId(user);
@@ -214,6 +253,13 @@ public class ProductController {
         return "productDetails";
     }
 
+    /**
+     * get base template to check availability of a product
+     * @param user
+     * @param model
+     * @param id
+     * @return
+     */
     @GetMapping("/product/availability/{id}")
     public String getAvailability(Principal user, Model model, @PathVariable Long id) {
         Long userId = getUserId(user);
@@ -230,6 +276,15 @@ public class ProductController {
         return "productAvailability";
     }
 
+    /**
+     * check availability of a product
+     * @param user
+     * @param model
+     * @param id
+     * @param from
+     * @param to
+     * @return
+     */
     @PostMapping("/product/availability/{id}")
     public String checkAvailability(Principal user, Model model, @PathVariable Long id, String from, String to) {
         Long userId = getUserId(user);

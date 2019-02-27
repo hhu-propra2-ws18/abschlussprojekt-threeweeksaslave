@@ -22,7 +22,9 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
+
+//To handel the orderProcesses there are different cases. For each of them there is a different behaviour like
+//pay the caution or the dailyFee or release the caution. The messages history is updated and the orderProcess saved.
 
 @Service
 public class OrderProcessHandler {

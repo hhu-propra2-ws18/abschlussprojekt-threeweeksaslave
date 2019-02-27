@@ -33,6 +33,10 @@ public class AuthenticationController {
     private RegistrationService registrationService;
 
 
+    /**
+     * if there is no admin existing an admin is automatically generated
+     * @return
+     */
     @GetMapping("/")
     public String start() {
         if (!customerRepo.findByUsername("admin").isPresent()) {
