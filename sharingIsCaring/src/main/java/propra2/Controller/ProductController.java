@@ -41,6 +41,9 @@ public class ProductController {
     @Autowired
     private SearchProductHandler searchProductHandler;
 
+    @Autowired
+    private SoldProductRepository soldProductRepo;
+
     /**
      * return base template of product poverview
      *
@@ -274,16 +277,29 @@ public class ProductController {
 
         orderProcess.setRequestId(customer.getCustomerId());
 
-        orderProcess.setProduct(product);
+        Product soldProduct = new Product();
+        soldProduct.setTitle(product.getTitle());
+        soldProduct.setOwner(product.getOwner());
+        soldProduct.setAddress(product.getAddress());
+        soldProduct.setForSale(product.isForSale());
+        soldProduct.setAvailable(product.isAvailable());
+        soldProduct.setDescription(product.getDescription());
+        soldProduct.setSellingPrice(product.getSellingPrice());
+
+        orderProcess.setProduct(soldProduct);
 
         orderProcess.setStatus(OrderProcessStatus.SOLD);
+
         boolean finishedSuccessful = orderProcessHandler.updateOrderProcess(null ,orderProcess);
-        if(finishedSuccessful) return "redirect:/home";
+        if(finishedSuccessful){
+            soldProductRepo.save(soldProduct);
+            productRepo.delete(product);
+            return "redirect:/home";
+        }
         else{
             model.addAttribute("note", "Sorry, connection to your ProPayAccount failed. Please try it again later.");
             return getProductDetails(id, user, model);
         }
-        // productRepo.delete(product);
     }
 
     @GetMapping("/product/availability/{id}")
