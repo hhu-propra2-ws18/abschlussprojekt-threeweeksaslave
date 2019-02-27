@@ -98,41 +98,21 @@ public class ProductController {
      * @return
      */
     @GetMapping("/lend")
-    public String getLendProduct(Principal user, Model model) {
+    public String getLendProduct(Principal user, final Model model) {
         addUserAndAdmin(user, model);
 
         Product product = new Product();
-
-        product.setTitle("TestTitle");
-//        product.setDescription("TestDescription");
-        Address address = new Address();
-        address.setCity("TestCity");
-        address.setHouseNumber(1);
-        address.setPostcode(1);
-        address.setStreet("TestStreet");
-        product.setAddress(address);
-
-        model.addAttribute("product",product);
+        model.addAttribute("product", product);
         return "lend";
     }
 
     @GetMapping("/sale")
-    public String getSaleProduct(Principal user, Model model) {
+    public String getSaleProduct(Principal user, final Model model) {
         addUserAndAdmin(user, model);
 
         Product product = new Product();
-
-        product.setTitle("TestTitle");
-        product.setDeposit(0);
-        product.setDailyFee(0);
-        Address address = new Address();
-        address.setCity("TestCity");
-        address.setHouseNumber(1);
-        address.setPostcode(1);
-        address.setStreet("TestStreet");
-        product.setAddress(address);
-
         model.addAttribute("product",product);
+
         return "sale";
     }
 
@@ -189,24 +169,23 @@ public class ProductController {
 				return "editProduct";
 			}
 		}
-		return"redirect:/home";
+		return "redirect:/home";
 	}
 
 	@PostMapping("/product/edit/{productId}")
-	public String saveProduct(Principal user, Model model, Product product, final Address address, @PathVariable Long productId)
-	{
+	public String saveProduct(Principal user, Product product, final Address address, @PathVariable Long productId) {
 		Product oldProduct = productRepo.findById(productId).get();
 		Customer owner = oldProduct.getOwner();
 		if(owner.getCustomerId().equals(getUserId(user))){
 			product.setOwner(owner);
 			product.setAvailable(oldProduct.isAvailable());
+			product.setForSale(oldProduct.isForSale());
 			product.setAddress(address);
 			product.setId(productId);
-			product = productRepo.save(product);
-			/*model.addAttribute(product);*/
-			return"editProductImage";
+			productRepo.save(product);
+			return "editProductImage";
 		}
-		return("redirect:/home");
+		return "redirect:/home";
 	}
 
     private Long getUserId(Principal user) {

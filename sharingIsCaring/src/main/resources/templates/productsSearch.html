@@ -36,7 +36,8 @@
                 <td valign="top">
                     <div th:text="${#strings.abbreviate(product.description,100)}" style="word-break:break-all"></div>
                     <br>
-                    <div th:text="'Daily Fee: ' + ${product.dailyFee} + '€'"></div>
+                    <div th:text="${!product?.forSale} ? 'Daily Fee: ' + ${product?.dailyFee} + ' €'"></div>
+                    <div th:text="${product?.forSale} ? 'Price: ' + ${product?.sellingPrice} + ' €'"></div>
                     <br>
 
                    <div>
