@@ -29,6 +29,8 @@ public class OrderProcessHandlerTest {
     @Autowired
     CustomerRepository customerRepository;
 
+    UserHandler userHandler = new UserHandler();
+
     public OrderProcessHandlerTest() {
 
         orderProcessHandler = new OrderProcessHandler();
@@ -36,9 +38,10 @@ public class OrderProcessHandlerTest {
 
     @Test
     public void updateOrderProcessTest() throws IOException {
+        orderProcessHandler.customerRepo = this.customerRepository;
+        orderProcessHandler.orderProcessRepo = this.orderProcessRepository;
+        orderProcessHandler.userHandler = this.userHandler;
         OrderProcess orderProcess = new OrderProcess();
-        orderProcess.setOwnerId(5678L);
-        orderProcess.setRequestId(3456L);
         orderProcess.setStatus(OrderProcessStatus.PENDING);
 
         Customer customer1 = new Customer();
@@ -46,8 +49,11 @@ public class OrderProcessHandlerTest {
         Customer customer2 = new Customer();
         customer2.setCustomerId(3456L);
 
-        customerRepository.save(customer1);
-        customerRepository.save(customer2);
+        customer1 = customerRepository.save(customer1);
+        customer2 = customerRepository.save(customer2);
+
+        orderProcess.setOwnerId(customer1.getCustomerId());
+        orderProcess.setRequestId(customer2.getCustomerId());
 
         orderProcess = orderProcessRepository.save(orderProcess);
 
