@@ -18,6 +18,7 @@ import propra2.repositories.OrderProcessRepository;
 import reactor.core.publisher.Mono;
 
 import java.sql.Date;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +86,9 @@ public class OrderProcessHandler {
                                     .build())
                     .accept(MediaType.APPLICATION_JSON_UTF8)
                     .retrieve()
-                    .bodyToMono(String.class);
+                    .bodyToMono(String.class)
+                    .timeout(Duration.ofSeconds(2L))
+                    .retry(4L);
             response.block();
             orderProcessRepo.save(orderProcess);
             return true;
@@ -112,7 +115,9 @@ public class OrderProcessHandler {
                                     .build())
                     .accept(MediaType.APPLICATION_JSON_UTF8)
                     .retrieve()
-                    .bodyToMono(Reservation.class);
+                    .bodyToMono(Reservation.class)
+                    .timeout(Duration.ofSeconds(2L))
+                    .retry(4L);
 
             if(userHandler.getProPayAccount(rentingAccount.getUsername())!=null) {
                 rentingAccount.setProPay(userHandler.getProPayAccount(rentingAccount.getUsername()));
@@ -141,7 +146,9 @@ public class OrderProcessHandler {
                                     .build())
                     .accept(MediaType.APPLICATION_JSON_UTF8)
                     .retrieve()
-                    .bodyToMono(ProPayAccount.class);
+                    .bodyToMono(ProPayAccount.class)
+                    .timeout(Duration.ofSeconds(2L))
+                    .retry(4L);
 
             rentingAccount.setProPay(account.block());
             orderProcessRepo.save(orderProcess);
@@ -163,7 +170,9 @@ public class OrderProcessHandler {
                             .build())
                     .accept(MediaType.APPLICATION_JSON_UTF8)
                     .retrieve()
-                    .bodyToMono(ProPayAccount.class);
+                    .bodyToMono(ProPayAccount.class)
+                    .timeout(Duration.ofSeconds(2L))
+                    .retry(4L);
 
             rentingAccount.setProPay(account.block());
             orderProcessRepo.save(orderProcess);
@@ -238,7 +247,9 @@ public class OrderProcessHandler {
                                     .build())
                     .accept(MediaType.APPLICATION_JSON_UTF8)
                     .retrieve()
-                    .bodyToMono(String.class);
+                    .bodyToMono(String.class)
+                    .timeout(Duration.ofSeconds(2L))
+                    .retry(4L);
             response.block();
 
             return true;
