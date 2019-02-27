@@ -2,24 +2,36 @@ package propra2.Controller;
 
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import propra2.Security.service.CustomerService;
 import propra2.Security.service.RegistrationService;
 import propra2.Security.validator.CustomerValidator;
 import propra2.database.Customer;
+import propra2.database.OrderProcess;
 import propra2.database.Product;
+import propra2.handler.OrderProcessHandler;
 import propra2.handler.SearchProductHandler;
 import propra2.model.Address;
 import propra2.model.ProPayAccount;
 import propra2.repositories.*;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static propra2.model.OrderProcessStatus.ACCEPTED;
+
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers =OrderProcessController.class)
+@WebMvcTest(controllers = OrderProcessController.class)
 //@ContextConfiguration
 public class OrderProcessControllerTest {
 
@@ -54,6 +66,9 @@ public class OrderProcessControllerTest {
     SoldProductRepository soldProductRepository;
 
     @MockBean
+    OrderProcessHandler orderProcessHandler;
+
+    @MockBean
     CustomerService customerService;
 
 
@@ -82,6 +97,7 @@ public class OrderProcessControllerTest {
         bendisposto.setAddress(address);
         bendisposto.setPassword("propra2");
         bendisposto.setProPay(account);
+        bendisposto.setRole("User");
 
 
 
@@ -111,5 +127,33 @@ public class OrderProcessControllerTest {
         product2.setAvailable(false);
     }
 
+    @Test
+    @WithMockUser(username="Zoidberg", password = "propra2")
+    public void testStartOrderProcess() throws Exception{
+        OrderProcess orderProcess = new OrderProcess();
+        orderProcess.setStatus(ACCEPTED);
+        orderProcess.setRequestId(111L);
+        orderProcess.setOwnerId(2L);
+        orderProcess.setProduct(product1);
 
+        Mockito.when(customerRepository.findByUsername("Zoidberg")).thenReturn(java.util.Optional.of(bendisposto));
+        Mockito.when(productRepository.findById(34L)).thenReturn(java.util.Optional.of(product1));
+
+        mvc.perform(get("/product/{id}/orderProcess", 34L)
+                .requestAttr("hasEnoughMoney", true)
+                .requestAttr("incorrectDates", false)
+                .requestAttr("ownProduct", false)
+                .requestAttr("availability", false))
+
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("orderProcess"))
+                .andExpect(MockMvcResultMatchers.model().attribute("product", allOf(
+                        hasProperty("title", is("Baumstamm")))))
+                .andExpect(MockMvcResultMatchers.model().attribute("user", allOf(
+                        hasProperty("username", is("Zoidberg")))))
+                .andExpect(MockMvcResultMatchers.model().attribute("notEnoughMoney", false))
+                .andExpect(MockMvcResultMatchers.model().attribute("incorrectDates", false))
+                .andExpect(MockMvcResultMatchers.model().attribute("ownProduct", false))
+                .andExpect(MockMvcResultMatchers.model().attribute("availability", false));
+    }
 }
