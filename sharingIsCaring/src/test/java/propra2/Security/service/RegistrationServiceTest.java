@@ -22,9 +22,6 @@ public class RegistrationServiceTest {
     @Autowired
     private CustomerRepository customerRepo;
 
-    @MockBean
-    UserHandler userHandler;
-
     PasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     UserHandler userHandler = new UserHandler();
@@ -42,8 +39,6 @@ public class RegistrationServiceTest {
         regService.bCryptPasswordEncoder = this.bCryptPasswordEncoder;
         regService.customerRepo = this.customerRepo;
         regService.userHandler = this.userHandler;
-
-        Mockito.when(userHandler.getProPayAccount("peter")).thenReturn(null);
 
         regService.saveCredentials(testUserReg);
 
