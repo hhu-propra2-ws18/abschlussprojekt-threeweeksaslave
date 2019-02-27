@@ -164,7 +164,9 @@ public class ProductController {
       product.setForSale(false);
       product.setAddress(address);
 
-      if (product.allValuesSet()) {
+
+
+      if (product.allValuesSetRent()) {
           Long productId = productRepo.save(product).getId();
           StorageService storageService = new FileSystemStorageService(new StorageProperties());
           storageService.deleteFile(productId);

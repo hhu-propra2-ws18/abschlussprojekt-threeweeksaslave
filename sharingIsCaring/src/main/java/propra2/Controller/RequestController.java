@@ -291,7 +291,7 @@ public class RequestController {
      * @param model
      * @return
      */
-    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=acceptProcess")
+    @RequestMapping(value="/requests/detailsLender/{processId}", method=RequestMethod.POST, params="action=acceptProcess")
     public String accept(String message, @PathVariable Long processId, Principal user, Model model) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.ACCEPTED);
@@ -352,7 +352,7 @@ public class RequestController {
      * @param user
      * @return
      */
-    @RequestMapping(value="/requests/detailsOwner/{processId}", method=RequestMethod.POST, params="action=appeal")
+    @RequestMapping(value="/requests/detailsLender/{processId}", method=RequestMethod.POST, params="action=appeal")
     public String appealProcess(@PathVariable Long processId, String message, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.CONFLICT);
