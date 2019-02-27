@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import propra2.database.Customer;
+import propra2.handler.UserHandler;
 import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
 
@@ -20,6 +21,8 @@ public class RegistrationServiceTest {
     private CustomerRepository customerRepo;
 
     PasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+    UserHandler userHandler = new UserHandler();
 
     @Test
     public void testSaveCredentials(){
@@ -33,6 +36,7 @@ public class RegistrationServiceTest {
         RegistrationService regService = new RegistrationService();
         regService.bCryptPasswordEncoder = this.bCryptPasswordEncoder;
         regService.customerRepo = this.customerRepo;
+        regService.userHandler = this.userHandler;
 
         regService.saveCredentials(testUserReg);
 

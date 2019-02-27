@@ -19,7 +19,7 @@ public class RegistrationService {
     CustomerRepository customerRepo;
 
     @Autowired
-    private UserHandler userHandler;
+    UserHandler userHandler;
 
     @Autowired
     PasswordEncoder bCryptPasswordEncoder;
