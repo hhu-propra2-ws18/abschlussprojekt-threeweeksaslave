@@ -271,7 +271,7 @@ public class ProductController {
         soldProduct.setDescription(product.getDescription());
         soldProduct.setSellingPrice(product.getSellingPrice());
 
-        orderProcess.setProduct(soldProduct);
+        orderProcess.setProduct(product);
 
         orderProcess.setStatus(OrderProcessStatus.SOLD);
 
@@ -284,6 +284,7 @@ public class ProductController {
                 userHandler.saveTransaction(sellingPrice, TransactionType.BUYPAYMENT, rentingAccount);
                 userHandler.saveTransaction(sellingPrice, TransactionType.RECEIVEDBUYPAYMENT, ownerAccount);
             }
+            orderProcess.setProduct(soldProduct);
             soldProductRepo.save(soldProduct);
             productRepo.delete(product);
             return "redirect:/home";
