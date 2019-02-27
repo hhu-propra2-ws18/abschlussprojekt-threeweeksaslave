@@ -21,10 +21,9 @@ public class NotificationRepositoryTest {
     @Test
     public void testFindById(){
         Notification notification = new Notification();
-        notification.setId(1L);
         notification.setNotification("notification");
 
-        notificationRepository.save(notification);
+        notification.setId(notificationRepository.save(notification).getId());
 
         Optional<Notification> notification1 = notificationRepository.findById(notification.getId());
 
