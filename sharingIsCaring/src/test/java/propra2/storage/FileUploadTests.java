@@ -65,5 +65,4 @@ public class FileUploadTests {
         given(this.storageService.loadAsResource("1",1L)).willThrow(StorageFileNotFoundException.class);
         this.mvc.perform(get("/upload/files/1/1")).andExpect(status().isNotFound());
     }
-
 }
