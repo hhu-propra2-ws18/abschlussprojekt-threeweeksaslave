@@ -294,7 +294,6 @@ public class RequestController {
     public String deleteByBuyer(@PathVariable Long processId) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcessRepo.delete(orderProcess);
-        System.out.println(Arrays.asList(orderProcessRepo.findAll()));
 
         return "redirect:/requests";
     }
