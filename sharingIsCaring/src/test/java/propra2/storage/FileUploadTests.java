@@ -12,6 +12,9 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import propra2.database.Customer;
+import propra2.database.Product;
+import propra2.model.Address;
 import propra2.repositories.ProductRepository;
 
 import java.nio.file.Paths;
@@ -26,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-@DataJpaTest
 public class FileUploadTests {
 
 	@Autowired
@@ -41,14 +43,17 @@ public class FileUploadTests {
     @Test
 	@WithMockUser(username="tester", password = "passwordtest")
     public void shouldSaveUploadedFile() throws Exception {
+
+    	Product product = new Product();
+    	product = productRepository.save(product);
+
         MockMultipartFile multipartFile = new MockMultipartFile("file", "test.png",
                 "text/plain", "Spring Framework".getBytes());
         this.mvc.perform(fileUpload("/upload/")
 				.file(multipartFile)
 				.param("fileName", "test.png")
-				.param("productId", "1"))
-                .andExpect(status().isFound())
-                .andExpect(header().string("Location", "/"));
+				.param("productId", product.getId().toString()))
+                .andExpect(status().isOk());
 
         then(this.storageService).should().store(multipartFile,"test.png", 1L);
     }
