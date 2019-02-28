@@ -19,6 +19,7 @@ import propra2.database.OrderProcess;
 import propra2.database.Product;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.SearchProductHandler;
+import propra2.handler.UserHandler;
 import propra2.model.Address;
 import propra2.model.ProPayAccount;
 import propra2.repositories.*;
@@ -71,6 +72,9 @@ public class ConflictControllerTest {
 
     @MockBean
     OrderProcessHandler orderProcessHandler;
+
+    @MockBean
+    UserHandler userHandler;
 
 
     Customer bendisposto = new Customer();
