@@ -230,7 +230,7 @@ public class ProductControllerTest {
 
     }
 
-    @Ignore
+
     @Test
     @WithMockUser(username="Kevin", password = "Baumhaus")
     public void postCreateLendProduct() throws Exception{
@@ -242,7 +242,6 @@ public class ProductControllerTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .requestAttr("product", product2)
                 .requestAttr("address", new Address()))
-                .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/home"));
     }
