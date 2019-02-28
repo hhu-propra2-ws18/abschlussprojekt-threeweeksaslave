@@ -30,7 +30,7 @@
 
     <section class="spalte">
         <!--Produkte, die wir verleihen-->
-        <h1>Lent products</h1>
+        <h3>Lent products</h3>
         <div th:switch="${lentProductsExist}">
             <div th:case="false">
                   <p>No lent products</p>
@@ -55,7 +55,7 @@
 
     <section class="spalte">
         <!--Produkte, die wir selber ausleihen-->
-        <h1>Borrowed products</h1>
+        <h3>Borrowed products</h3>
         <div th:switch="${borrowerExist}">
             <div th:case="true">
                 <table>
@@ -79,7 +79,7 @@
     </section>
 
     <section class="spalte">
-        <h1>Sold products</h1>
+        <h3>Sold products</h3>
         <div th:switch="${soldProductsExist}">
             <div th:case="false">
                 <p>No sold products</p>
@@ -103,7 +103,7 @@
     </section>
 
     <section class="spalte">
-        <h1>Bought products</h1>
+        <h3>Bought products</h3>
         <div th:switch="${boughtProductsExist}">
             <div th:case="false">
                 <p>No bought products</p>
