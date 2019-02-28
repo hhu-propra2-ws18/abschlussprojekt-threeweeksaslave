@@ -5,8 +5,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import propra2.database.Notification;
 import propra2.database.OrderProcess;
-import propra2.database.Product;
-import propra2.model.OrderProcessStatus;
 import propra2.repositories.NotificationRepository;
 import propra2.repositories.OrderProcessRepository;
 

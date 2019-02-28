@@ -1,17 +1,15 @@
 package propra2.database;
 
 import lombok.Data;
-import org.apache.tomcat.util.digester.ArrayStack;
+import propra2.model.Message;
 import propra2.model.OrderProcessStatus;
 
 import javax.persistence.*;
 import java.security.Principal;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.sql.Date;
-import java.util.List;
 
 @Data
 @Entity

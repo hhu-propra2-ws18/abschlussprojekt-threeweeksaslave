@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import propra2.database.*;
 import propra2.handler.OrderProcessHandler;
+import propra2.model.Message;
 import propra2.model.OrderProcessStatus;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
