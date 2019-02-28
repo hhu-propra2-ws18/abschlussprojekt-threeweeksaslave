@@ -3,6 +3,7 @@ package propra2.storage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -69,8 +70,10 @@ public class FileSystemStorageService implements StorageService {
 				return runningCurrentRootLocation;
 			}
 		}
-		currentRootLocation = Paths.get("src/main/resources/static/img");
-		return currentRootLocation.resolve("dummyProductPicture.JPG");
+
+		URL url = this.getClass().getClassLoader().getResource("static/img/dummyProductPicture.JPG");
+		currentRootLocation = Paths.get(url.getPath());
+		return currentRootLocation;
 
     }
 
