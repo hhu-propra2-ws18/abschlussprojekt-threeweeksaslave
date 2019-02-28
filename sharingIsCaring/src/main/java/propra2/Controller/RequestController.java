@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import propra2.database.*;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.UserHandler;
+import propra2.model.Message;
 import propra2.model.OrderProcessStatus;
 import propra2.model.ProPayAccount;
 import propra2.model.TransactionType;
@@ -15,7 +16,6 @@ import propra2.repositories.ProductRepository;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

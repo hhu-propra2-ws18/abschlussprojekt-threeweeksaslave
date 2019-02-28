@@ -1,6 +1,5 @@
 package propra2.model;
 
-import antlr.debug.ParserTokenEvent;
 import lombok.Data;
 import propra2.database.OrderProcess;
 
