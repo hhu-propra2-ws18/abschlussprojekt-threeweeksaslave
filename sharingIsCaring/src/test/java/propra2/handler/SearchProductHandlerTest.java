@@ -29,14 +29,17 @@ public class SearchProductHandlerTest {
 		Product product1 = new Product();
 		product1.setTitle("testProduct1");
 		product1.setDescription("this is One product");
+		product1.setAvailable(true);
 
 		Product product2 = new Product();
 		product2.setTitle("testProduct2");
 		product2.setDescription("this is Two product kappa");
+		product2.setAvailable(true);
 
 		Product product3 = new Product();
 		product3.setTitle("testProduct3");
 		product3.setDescription("this is Three product kappa");
+		product3.setAvailable(true);
 
 		productRepository.save(product1);
 		productRepository.save(product2);
