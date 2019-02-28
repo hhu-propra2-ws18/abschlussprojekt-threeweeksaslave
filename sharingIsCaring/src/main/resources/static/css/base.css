@@ -94,7 +94,8 @@ h3	{
 p {
     text-align: left;
     line-height: 1.6em;
-    padding: 20px 0px
+    padding: 20px 0px;
+    margin-bottom: 1px;
 }
 
 a 	{
