@@ -20,36 +20,36 @@
 <div layout:fragment="content">
 
     <section class="spalte">
-        <h2>User</h2>
-        <table>
-            <tr>
-                <td>
-                    Username:
-                </td>
-                <td>
-                    <dd th:text="${owner.username}">Username</dd>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Email address:
-                </td>
-                <td>
-                    <dd th:text="${owner.mail}">Mail</dd>
-                </td>
-            </tr>
-        </table>
-        <br/>
-        <table>
-            <tr>
-                <td>
-                    Address:
-                </td>
-                <td>
-                    <dd th:text="${owner.address.street} + ' ' + ${owner.address.houseNumber} + ', ' + ${owner.address.postcode} + ' ' + ${owner.address.city}"></dd>
-                </td>
-            </tr>
-        </table>
+        <div class="text-center mb-4">
+            <h2>User</h2>
+        </div>
+         <div class="form-label-group">
+            <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" th:value="${owner?.username}"
+                   disabled minlength="6" maxlength="32" autofocus>
+            <label for="inputUsername">Username</label>
+        </div>
+        <div class="form-label-group">
+            <input type="email" name="mail" id="inputEmail" class="form-control" placeholder="Email address" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" th:value="${owner?.mail}"
+                   disabled minlength="6" maxlength="32" autofocus>
+            <label for="inputEmail">Email</label>
+        </div>
+         <div class="form-label-group">
+            <input type="text" name="street" id="inputStreet" class="form-control" placeholder="Street" pattern="[^0-9]+" th:value="${owner?.address.street}" disabled autofocus>
+            <label for="inputStreet">Street</label>
+        </div>
+        <div class="form-label-group">
+            <input type="number" name="houseNumber" id="inputHouseNo" class="form-control" th:value="${owner?.address.houseNumber}" placeholder="House No." disabled autofocus>
+            <label for="inputEmail">House No.</label>
+        </div>
+        <div class="form-label-group">
+            <input type="number" name="postcode" id="inputPostcode" class="form-control" th:value="${owner?.address.postcode}" placeholder="Postcode" disabled autofocus>
+            <label for="inputPostcode">Postcode</label>
+        </div>
+        <div class="form-label-group">
+            <input type="text" name="city" id="inputCity" class="form-control" pattern="[^0-9]+" th:value="${owner?.address.city}" placeholder="City" disabled autofocus>
+            <label for="inputCity">City</label>
+        </div>
+
     </section>
 </div>
 
