@@ -51,7 +51,7 @@ public class FileUploadTests {
                 "text/plain", "Spring Framework".getBytes());
         this.mvc.perform(fileUpload("/upload/")
 				.file(multipartFile)
-				.param("fileName", "test.png")
+				.param("fileName", "test")
 				.param("productId", product.getId().toString()))
                 .andExpect(status().isOk());
 
@@ -60,11 +60,12 @@ public class FileUploadTests {
 
     @SuppressWarnings("unchecked")
     @Test
+    @WithMockUser(username="tester", password = "passwordtest")
     public void should404WhenMissingFile() throws Exception {
-        given(this.storageService.loadAsResource("test.png",1L))
+        given(this.storageService.loadAsResource("1",1L))
                 .willThrow(StorageFileNotFoundException.class);
 
-        this.mvc.perform(get("/files/test.txt")).andExpect(status().isNotFound());
+        this.mvc.perform(get("/files/1/1")).andExpect(status().isNotFound());
     }
 
 }
