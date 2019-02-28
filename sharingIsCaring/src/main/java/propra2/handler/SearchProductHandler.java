@@ -45,7 +45,7 @@ public class SearchProductHandler {
 				}
 				products = allProductsToBuy;
 				break;
-			case "allToLend":
+			case "allToBorrow":
 				List<Product> allProductsToLend = new ArrayList<>();
 				for(Product product: products){
 					if(!product.isForSale()){
@@ -57,7 +57,7 @@ public class SearchProductHandler {
 			case "all":
 				List<Product> allProducts = new ArrayList<>();
 				for(Product product: products){
-					if(product.isAvailable()){
+					if(product.isAvailable() ){
 						allProducts.add(product);
 					}
 				}

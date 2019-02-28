@@ -81,7 +81,8 @@ public class Product {
 		for(OrderProcess orderProcess : orderProcesses){
 			if(!(orderProcess.status == OrderProcessStatus.DENIED ||
 					orderProcess.status == OrderProcessStatus.FINISHED ||
-					orderProcess.status == OrderProcessStatus.PUNISHED)){
+					orderProcess.status == OrderProcessStatus.PUNISHED ||
+					orderProcess.status == OrderProcessStatus.SOLD)){
 				return false;
 			}
 		}
