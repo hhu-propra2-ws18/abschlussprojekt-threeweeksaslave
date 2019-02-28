@@ -1,6 +1,7 @@
 package propra2.Controller;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,16 +39,6 @@ public class FileUploadController {
      * @return
      * @throws IOException
      */
-    @GetMapping("/")
-    public String listUploadedFiles(Model model) throws IOException {
-
-        model.addAttribute("files", storageService.loadAll().map(
-                path -> MvcUriComponentsBuilder.fromMethodName(FileUploadController.class,
-                        "serveFile", path.getFileName().toString()).build().toString())
-                .collect(Collectors.toList()));
-
-        return "uploadForm";
-    }
 
     /**
      * load file
@@ -75,20 +66,23 @@ public class FileUploadController {
      */
     @PostMapping("/")
     public String handleFileUpload(Model model, @RequestParam("file") MultipartFile file, @RequestParam("fileName") String fileName,
-								   @RequestParam("productId") String productId, RedirectAttributes redirectAttributes) {
+								   @RequestParam("productId") Long productId, RedirectAttributes redirectAttributes) {
 
         String originalFilename = file.getOriginalFilename();
         if(originalFilename != null) {
 			String[] originalFilenameArray = originalFilename.split("\\.");
 			if (originalFilenameArray.length == 2) {
-				deleteCurrentImage(Long.parseLong(productId), model);
+				deleteCurrentImage(productId, model);
 				storageService.store(file, fileName + "." + originalFilenameArray[1], productId);
 				redirectAttributes.addFlashAttribute("message",
 						"You successfully uploaded " + file.getOriginalFilename() + "!");
 			}
 		}
-        Product product = productRepository.findById(Long.parseLong(productId)).get();
-        model.addAttribute(product);
+        Optional<Product> productopt = productRepository.findById(productId);
+        if(productopt.isPresent()){
+        	Product product = productopt.get();
+			model.addAttribute(product);
+		}
         return "editProductImage";
     }
 
@@ -102,8 +96,11 @@ public class FileUploadController {
     @PostMapping("/{productId}/deleteCurrentImage")
     public String deleteCurrentImage(@PathVariable Long productId, Model model){
         storageService.deleteFile(productId);
-        Product product = productRepository.findById(productId).get();
-        model.addAttribute(product);
+		Optional<Product> productopt = productRepository.findById(productId);
+        if(productopt.isPresent()) {
+			Product product = productopt.get();
+			model.addAttribute(product);
+		}
         return "editProductImage";
     }
 

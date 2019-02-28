@@ -14,7 +14,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
-import org.springframework.util.SocketUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,7 +30,7 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public void store(MultipartFile file, String fileName, String productId) {
+    public void store(MultipartFile file, String fileName, Long productId) {
         String filename = StringUtils.cleanPath(fileName);
         try {
             if (file.isEmpty()) {
@@ -60,21 +59,9 @@ public class FileSystemStorageService implements StorageService {
         }
     }
 
-    @Override
-    public Stream<Path> loadAll() {
-        try {
-            return Files.walk(this.rootLocation, 1)
-                .filter(path -> !path.equals(this.rootLocation))
-                .map(this.rootLocation::relativize);
-        }
-        catch (IOException e) {
-            throw new StorageException("Failed to read stored files", e);
-        }
-
-    }
 
     @Override
-    public Path load(String filename, Long productId, boolean searchDummyProductPicture) {
+    public Path load(String filename, Long productId) {
 		Path currentRootLocation = Paths.get(properties.getLocation() + "/" + productId);
 		for(String fileEnding : properties.fileEndings) {
 			Path runningCurrentRootLocation = Paths.get(currentRootLocation.toString() + "/" + filename + fileEnding);
@@ -90,7 +77,7 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public Resource loadAsResource(String filename, Long productId) {
         try {
-            Path file = load(filename, productId,false);
+            Path file = load(filename, productId);
             return new UrlResource(file.toUri());
         }
         catch (MalformedURLException e) {

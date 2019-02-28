@@ -1,10 +1,8 @@
 package propra2.Controller;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -13,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import propra2.Security.service.CustomerService;
 import propra2.Security.service.RegistrationService;
@@ -23,6 +20,7 @@ import propra2.handler.OrderProcessHandler;
 import propra2.handler.SearchProductHandler;
 import propra2.handler.UserHandler;
 import propra2.model.Address;
+import propra2.model.Message;
 import propra2.model.ProPayAccount;
 import propra2.repositories.*;
 

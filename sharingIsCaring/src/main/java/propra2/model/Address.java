@@ -1,10 +1,8 @@
 package propra2.model;
 
 import lombok.Data;
-import reactor.util.annotation.Nullable;
 
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 
 @Data
 @Embeddable
