@@ -1,5 +1,7 @@
 # Dokumentation Abschlussprojekt
 
+image:./sharingIsCaring/src/main/resources/static/img/nashornPresslufthammer.png[]
+
 WARNING: *Hinweis zu unserer GitHub-Nutzung:* +
 Wir haben oft zu zweit programmiert. Da dann immer nur eine Person in Github vermerkt ist,
 haben wir uns geeinigt, die Personen (GitHub-Name), die an einem Commit/Merge beteiligt waren, in die
