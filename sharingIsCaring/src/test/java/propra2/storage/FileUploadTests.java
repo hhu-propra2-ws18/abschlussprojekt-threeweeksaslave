@@ -62,10 +62,8 @@ public class FileUploadTests {
     @Test
     @WithMockUser(username="tester", password = "passwordtest")
     public void should404WhenMissingFile() throws Exception {
-        given(this.storageService.loadAsResource("1",1L))
-                .willThrow(StorageFileNotFoundException.class);
-
-        this.mvc.perform(get("/files/1/1")).andExpect(status().isNotFound());
+        given(this.storageService.loadAsResource("1",1L)).willThrow(StorageFileNotFoundException.class);
+        this.mvc.perform(get("/upload/files/1/1")).andExpect(status().isNotFound());
     }
 
 }
