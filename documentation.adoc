@@ -28,9 +28,9 @@ Für unsere Anwendung setzen wir hier die spring.datasource unserer Datenbank, s
 Wir haben uns für unser Projekt für die relationale Datenbank postgersql entschieden. Diese läuft wie gefordert nicht im Java Prozess sondern wird im Dockerfile gestartet.
 
 
-### Die eigentliche Anwendung
+## Die eigentliche Anwendung
 
-#### Die Struktur
+## Die Struktur
 
 ### Spring Security
 Für das login und die Registrierung unsere Webanwendung benutzen wir Spring Security. Spring Security stellt den Rahmen unserer Anwendung. Hier definieren wir auf welche Resourcen der Nutzen eingeloggt drauf zugreifen kann. Außerdem definieren wir für den Nutzer eine Role um zwischen User und Admin zu unterscheiden. Der nichteingeloggte Nutzer kann nur auf wenige Resourcen drauf zugreifen. Da das login erst die Anwendung ermöglicht haben wir auf die base url "/" eine Startseite gelegt von der aus man sich bei Spring Security einloggen kann oder aber neu registrieren kann. Alle Resourcen nach dem Login sind nur für eingeloggte Nutzer erreichbar. Außerdem haben wir hier einen statischen Admin angelegt, der beim ersten Aufrufen der Resource angelegt wird.
@@ -63,7 +63,7 @@ Ein gekauftes Produkt wird nicht mehr in der Produktübersicht angezeigt. Als Ei
 ### FAQs
 Hat man Fragen zur Benutzung der Anwendung findet man in den FAQs die oben beschriebenen Prozesse detailiert beschrieben.
 
-#### Das System
+## Das System
 
 Unser System ist eine Springboot Anwendung
 
