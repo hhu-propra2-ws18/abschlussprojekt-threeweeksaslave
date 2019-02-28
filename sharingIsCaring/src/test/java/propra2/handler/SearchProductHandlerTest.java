@@ -1,5 +1,6 @@
 package propra2.handler;
 
+import org.h2.util.AbbaDetector;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -9,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import propra2.database.Customer;
 import propra2.database.Product;
+import propra2.model.Address;
+import propra2.repositories.CustomerRepository;
 import propra2.repositories.ProductRepository;
 
 import java.util.ArrayList;
@@ -20,6 +23,9 @@ public class SearchProductHandlerTest {
 
 	@Autowired
 	ProductRepository productRepository;
+
+	@Autowired
+	CustomerRepository customerRepository;
 
 	private SearchProductHandler searchProductHandler = new SearchProductHandler();
 
@@ -102,15 +108,17 @@ public class SearchProductHandlerTest {
 
 	}
 
-	@Ignore
 	@Test
 	public void findOfferedByContainingString(){
-
 		Customer customer = new Customer();
 		Long id = 69L;
 		customer.setCustomerId(id);
 
 		Customer customer2 = new Customer();
+		customer2.setCustomerId(23L);
+
+		customer = customerRepository.save(customer);
+		customer2= customerRepository.save(customer2);
 
 		Product product1 = new Product();
 		product1.setTitle("testProduct1");
@@ -137,17 +145,12 @@ public class SearchProductHandlerTest {
 		product3 = productRepository.save(product3);
 		product4 = productRepository.save(product4);
 
-		List<Long> borrowedProductIds = new ArrayList<>();
-		borrowedProductIds.add(product1.getId());
-		borrowedProductIds.add(product2.getId());
-		borrowedProductIds.add(product3.getId());
 
 		List<Product> allProducts = searchProductHandler.getSearchedProducts("test", "offered", customer, productRepository);
 		List<Product> productTitle1 = searchProductHandler.getSearchedProducts("1", "offered", customer, productRepository);
 		List<Product> productDescriptionOne = searchProductHandler.getSearchedProducts("One", "offered", customer, productRepository);
 		List<Product> kappaProducts = searchProductHandler.getSearchedProducts("kappa", "offered", customer, productRepository);
 
-		//TODO Assert.assertEquals schlägt fehl, wir wissen nicht, was genau die Methode getSearchedProducts tut, aber auf jeden Fall sehen wir dort keine if-Abfrage für den filter: "lent"(haben den solange ignored)
 		Assert.assertEquals(3, allProducts.size());
 		Assert.assertEquals(1 ,productTitle1.size());
 		Assert.assertEquals(1, productDescriptionOne.size());
