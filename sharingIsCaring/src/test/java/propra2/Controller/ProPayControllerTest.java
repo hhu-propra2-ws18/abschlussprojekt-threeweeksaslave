@@ -88,8 +88,12 @@ public class ProPayControllerTest {
     @WithMockUser(username="Kevin", password = "Baumhaus")
     public void getRechargeCreditTest() throws Exception{
         Mockito.when(customerRepository.findByUsername("Kevin")).thenReturn(java.util.Optional.of(customer));
+        Mockito.when(userHandler.rechargeCredit(customer, 10)).thenReturn(true);
 
-        mvc.perform(get("/rechargeCredit"))
+        mvc.perform(get("/rechargeCredit")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("amount", "10")
+                .param("iban", "iban"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.model().attribute("user", customer))
                 .andExpect(MockMvcResultMatchers.view().name("rechargeCredit"));
