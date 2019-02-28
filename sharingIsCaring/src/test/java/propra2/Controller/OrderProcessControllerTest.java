@@ -63,9 +63,6 @@ public class OrderProcessControllerTest {
     RegistrationService registrationService;
 
     @MockBean
-    SoldProductRepository soldProductRepository;
-
-    @MockBean
     OrderProcessHandler orderProcessHandler;
 
     @MockBean

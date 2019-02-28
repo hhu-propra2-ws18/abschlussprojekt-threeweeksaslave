@@ -70,9 +70,6 @@ public class ProductControllerTest {
     CustomerService customerService;
 
     @MockBean
-    SoldProductRepository soldProductRepository;
-
-    @MockBean
     UserHandler userHandler;
 
     @MockBean

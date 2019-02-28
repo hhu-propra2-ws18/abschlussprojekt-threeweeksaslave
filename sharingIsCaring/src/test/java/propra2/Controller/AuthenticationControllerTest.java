@@ -61,9 +61,6 @@ public class AuthenticationControllerTest {
     RegistrationService registrationService;
 
     @MockBean
-    SoldProductRepository soldProductRepository;
-
-    @MockBean
     CustomerService customerService;
 
 

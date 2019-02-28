@@ -61,8 +61,7 @@ public class RequestControllerTests {
     CustomerRepository customerRepository;
     @MockBean
     ProductRepository productRepository;
-    @MockBean
-    SoldProductRepository soldProductRepository;
+
     @MockBean
     OrderProcessHandler orderProcessHandler;
     @MockBean
