@@ -9,7 +9,7 @@ Im Folgenden wird die Struktur unseres Projektes erläutert.
 
 
 ### Das Dockerfile
-Das Dockerfile ist ein einfaches Skript, um ein Docker-Image zu erstellen. Dabei wird unsere Person-Anwendung gebaut und die Datenbank gestartet. Wir haben zusätzlich eine Funktion (wait-for-it.sh) eingebaut.
+Das Dockerfile ist ein einfaches Skript, um ein Docker-Image zu erstellen. Dabei wird unsere SharingIsCaring-Anwendung gebaut und die Datenbank gestartet. Wir haben zusätzlich eine Funktion (wait-for-it.sh) eingebaut.
 Diese ist dafür verantwortlich sicherzustellen, dass zuerst die Datenbank gestartet wird
 und dann erst die Anwendung darauf zugreifen kann, um Fehlern vorzugreifen.
 
@@ -36,32 +36,32 @@ Wir haben uns für unser Projekt für die relationale Datenbank postgersql entsc
 Für das login und die Registrierung unsere Webanwendung benutzen wir Spring Security. Spring Security stellt den Rahmen unserer Anwendung. Hier definieren wir auf welche Resourcen der Nutzen eingeloggt drauf zugreifen kann. Außerdem definieren wir für den Nutzer eine Role um zwischen User und Admin zu unterscheiden. Der nichteingeloggte Nutzer kann nur auf wenige Resourcen drauf zugreifen. Da das login erst die Anwendung ermöglicht haben wir auf die base url "/" eine Startseite gelegt von der aus man sich bei Spring Security einloggen kann oder aber neu registrieren kann. Alle Resourcen nach dem Login sind nur für eingeloggte Nutzer erreichbar. Außerdem haben wir hier einen statischen Admin angelegt, der beim ersten Aufrufen der Resource angelegt wird.
 
 ### Home
-Hat der Nutzer sich erfolgreich eingeloggt gelangt er auf seine Homepage. Auf dieser erhält er Informationen zur Anwendung und bekommt persönliche Meldungen, wie zum Beispiel die Nachricht, dass der Nutzer morgen ein Produkt zurück geben muss. Den Header, die SideNav und den Footer haben wir in ein base.html ausgelagert, da sie auf jeder Resource verfügbar sein soll. Unsere Navigation führt den Nutzer zu den Hauptanwendungen unseres Portals.
+Hat der Nutzer sich erfolgreich eingeloggt, gelangt er auf seine Homepage. Auf dieser erhält er Informationen zur Anwendung und bekommt persönliche Meldungen, wie zum Beispiel die Nachricht, dass der Nutzer morgen ein Produkt zurückgeben muss. Den Header, die SideNav und den Footer haben wir in ein base.html ausgelagert, da sie auf jeder Ressource verfügbar sein soll. Unsere Navigation führt den Nutzer zu den Hauptanwendungen unseres Portals.
 
 ### Profile
 Auf seinem Profile kann der Nutzer seine persönlichen Daten einsehen und bearbeiten. Außerdem sieht er wieviel Geld auf seinem ProPayAccount liegt und kann dieses Aufladen. Er sieht eine Übersicht der aktuell blockierten Cautionen und kann über einen Button zu einer Übersicht aller Transactionen gelangen.
 
 ### Add Product
-Möchte der Nutzer ein Product erstellen gelangt er über die Navigation auf "add Product". Hier kann er sich entscheiden, ob er ein Produkt zum leihen oder zum verkaufen anbieten möchte und die entsprechenden Angaben zum Produkt eintragen. Anschließend kann er ein entsprechendes Bild hochladen.
+Möchte der Nutzer ein Product erstellen gelangt er über die Navigation auf "add Product". Hier kann er sich entscheiden, ob er ein Produkt zum Verleih oder zum Kauf anbieten möchte und die entsprechenden Angaben zum Produkt eintragen. Anschließend kann er ein entsprechendes Bild hochladen. Standardmäßig wird hier ein Dummybild ausgewählt.
 
 ### View Products
-Über View Products gelangt der Nutzer zu unserer Suchfunktion. Standardmäßig werden ihm hier alle Produkte angezeigt. Er kann spezifisch nach einem Produkt oder Eigenschaften eines Produkts suchen oder aber einen unserer Filter verwenden. Dabei kann er sich seine aktuell ausgeliehenen Produkte, seine angebotenen Produkte, alle Produkte die zum Kauf verfügbar sind oder alle Produkte die zum Leihen verfügbar sind auswählen. +
+Über View Products gelangt der Nutzer zu unserer Suchfunktion. Standardmäßig werden ihm hier alle Produkte angezeigt. Er kann spezifisch nach einem Produkt oder Eigenschaften eines Produkts suchen oder aber einen unserer Filter verwenden. Dabei kann er sich seine aktuell ausgeliehenen Produkte, seine angebotenen Produkte, alle Produkte die zum Kauf verfügbar sind oder alle Produkte, die zum Leihen verfügbar sind, auswählen. +
 Über check Availability kann man die Verfügbarkeit eines Produkts prüfen. +
-Über "read more" gelangt man zu einer Detailübersicht des Produkts. Als Besitzer hat man hier die Möglichkeit das Produkt zu bearbeiten oder zu löschen, man kann das Produkt allerdings nur löschen, wenn es nicht verliehen ist. +
-Als Interessent hat man hier die Möglichkeit das Produkt zu leihen bzw zu kaufen.
+Über "read more" gelangt man zu einer Detailübersicht des Produkts. Als Besitzer hat man hier die Möglichkeit, das Produkt zu bearbeiten oder zu löschen, man kann das Produkt allerdings nur löschen, wenn es nicht verliehen ist. +
+Neben den Änderungen am Produkt selbst (Name, Adresse, ...) ist es durch die Weiterleitung auf eine weitere Seite ebenfalls möglich, das angezeigte Produktbild zu ändern/ zu löschen, wobei letzteres die Ersetzung durch das Dummybild bewirkt. Als Interessent hat man hier die Möglichkeit, das Produkt auszuleihen bzw zu kaufen.
 
 ### Ausleihprozess
-Möchte ein Nutzer ein Produkt leihen, kann er dem Eigentümer eine Nachricht hinterlassen und den gewünschten ausleihzeitraum. Hier wird geprüft, ob der Leihende genug Guthaben auf seinem ProPayAccount hat und ob der Zeitraum für das Produkt verfügbar ist. +
+Möchte ein Nutzer ein Produkt leihen, kann er dem Eigentümer eine Nachricht hinterlassen und den gewünschten Ausleihzeitraum angeben. Hier wird geprüft, ob der Leihende genug Guthaben auf seinem ProPayAccount hat und, ob der Zeitraum für das Produkt verfügbar ist. +
 Die Dokumentation des Ausleihprozesses findet man unter "requests". Hier bekommt der Eigentümer die Anfrage und kann diese, ebenfalls mit einer Nachricht akzeptieren oder ablehnen. +
-Der Leihende kann den Prozess ebenfalls einsehen. Wird seine Anfrage akzeptiert, hat er bis zum geforderten Zeitraum zeit die Anfrage zurückzuziehen. Danach hat er die Möglichkeit das Produkt zurückzugeben. In diesem Fall wird der Tagessatz für das Produkt abgebucht. Der Eigentümer hat nun die Möglichkeit die Rückgabe zu akzeptieren oder aber abzulehnen. In diesem Fall wird ein Conflict angemeldet. Hier kommt der Admin ins Spiel. Dieser hat einen Bereich Conflicts in dem ihm konflikthafte Prozesse angezeigt werden. Der Admin muss nun entscheiden ob er den Konflikt bestätigt oder ablehnt. Wird der Konflikt bestätigt wird die Kaution automatisch überwiesen. +
+Der Leihende kann den Prozess ebenfalls einsehen. Wird seine Anfrage akzeptiert, hat er bis zum geforderten Zeitraum Zeit, die Anfrage zurückzuziehen. Danach hat er die Möglichkeit, das Produkt zurückzugeben. In diesem Fall wird der Tagessatz für das Produkt abgebucht. Der Eigentümer hat nun die Möglichkeit, die Rückgabe zu akzeptieren oder eben abzulehnen. In diesem Fall wird ein Conflict angemeldet. Hier kommt der Admin ins Spiel. Dieser hat einen Bereich Conflicts, in dem ihm konflikthafte Prozesse angezeigt werden. Der Admin muss nun entscheiden ob er den Konflikt bestätigt oder ablehnt. Wird der Konflikt bestätigt, wird die Kaution automatisch überwiesen. +
 Ist ein Prozess abgeschlossen kann er gelöscht werden.
 
 ### Kaufprozess
-Kaufe ich ein Produkt, wird der Pres von meinem ProPayAccount abgebucht. Meine gekauften und verkauften Produkte finde ich ebenfalls unter "requests". +
-Ein gekauftes Produkt wird nicht mehr in der Produktübersicht angezeigt. Als Eigentümer sehe ich es allerdings immer noch unter meinen angebotenen Produkte mit availability=false. Der Eigentümer hat die Möglichkeit das verkaufte Produkt zu löschen.
+Kaufe ich ein Produkt, wird der Preis von meinem ProPayAccount abgebucht. Meine gekauften und verkauften Produkte finde ich ebenfalls unter "requests". +
+Ein gekauftes Produkt wird nicht mehr in der Produktübersicht angezeigt. Als Eigentümer sehe ich es allerdings immer noch unter meinen angebotenen Produkten mit availability=false. Der Eigentümer hat die Möglichkeit, das verkaufte Produkt zu löschen.
 
 ### FAQs
-Hat man Fragen zur Benutzung der Anwendung findet man in den FAQs die oben beschriebenen Prozesse detailiert beschrieben.
+Hat man Fragen zur Benutzung der Anwendung, findet man in den FAQs die oben beschriebenen Prozesse detailiert erläutert vor.
 
 ## Das System
 
@@ -74,7 +74,7 @@ Im AuthenticationController bearbeiten wir Anfragen zur Startseite unsere Anwend
 ProfileController: +
 Der ProfileController beantwortet Anfragen die aus dem Profil heraus gestellt werden, wie das updaten der userDaten. Auch die Anfrage an die FAQs resource wird hier verarbeitet. +
 ProductController: +
-Der ProductController beantwortet die Anfragen für die Suche nach Produkten, das erstellen eines Produkts und das bearbeiten eines Produkts. +
+Der ProductController beantwortet die Anfragen für die Suche nach Produkten, das Erstellen eines Produkts und das Bearbeiten eines Produktes. +
 OrderProcessController: +
 Der OrderProcessController starten einen orderProcess. +
 RequestController: +
@@ -87,29 +87,25 @@ FileUploadController: +
 Der FileUploadController ist zuständig für die Produktbilder. +
 
 ### Datenbank
-Unsere Datenbank Customer speichert unsere Nutzer und Admins. Für die Produkte haben wir eine Datenbank Product, die Verleih- und Kaufprozesse speichern wir in der Datenbank OrderProcess. Alle Transaktionen die während dieser Prozesse passieren werden in der Transaction Datenbank gespeichert. Für die Benachrichtigungen an den Nutzer haben wir eine Datenbank Notification. +
+Unsere Datenbank Customer speichert unsere Nutzer und Admins. Für die Produkte haben wir eine Datenbank Product. Die Verleih- und Kaufprozesse speichern wir in der Datenbank OrderProcess. Alle Transaktionen, die während dieser Prozesse passieren, werden in der Transaction Datenbank gespeichert. Für die Benachrichtigungen an den Nutzer haben wir eine Datenbank Notification. +
 Alle zusätzlichen Datenklassen oder enums liegen im package model.
 
 ### Handler
 In unseren Handlern liegt der große Teil der Logik unseres Programms. +
 Unser NotificationHandler führt alle 24h eine Datensynchronisation durch. Dabei durchlaufen wir alle orderProcessen und filtern die Prozesse heraus, die heute oder morgen enden oder aber in der Vergangenheit hätten enden sollen. Für diese Prozesse bekommt der Nutzer eine Meldung auf seiner Homepage. +
-Im OrderProcessHandler behandeln wir den kompletten Ausleihprozess. Je nach Status des Prozesses wird werden hier Anfragen an ProPay gestellt wie das blocken oder überweisen von Kautionen. +
-Der SearchProductHandler verarbeitet die Filter unserer Produktsuche und filtert die entsprechenden Produkte heraus. +
-Der UserHandler verarbeitet Anfragen an ProPay die der Nutzer stellt ohne Beteiligung anderer, wie das Aufladen seines Guthabens. Außerdem wird hier bei jedem Aufrufen des Profils der ProPayAccount synchronisiert. +
+Im OrderProcessHandler behandeln wir den kompletten Ausleihprozess. Je nach Status des Prozesses werden hier Anfragen an ProPay gestellt, wie das Blocken oder Überweisen von Kautionen. +
+Der SearchProductHandler verarbeitet die Filter unserer Produktsuche und filtert die entsprechenden Produkte heraus, die dann auf der Website angezeigt werden können. +
+Der UserHandler verarbeitet Anfragen an ProPay, die der Nutzer stellt ohne Beteiligung anderer, wie das Aufladen seines Guthabens. Außerdem wird hier bei jedem Aufrufen des Profils der ProPayAccount synchronisiert. +
 
 ### ProPay
-ProPay ist unser Zahlungsprogramm. Über Anfragen mit Spring WebClient greifen wir auf ProPay zu. Es kann jedoch passieren, dass ProPay nicht erreichbar ist. Um diesen Fall abzufangen führen wir jede ProPayAnfrage in einem try-catch aus. Zusätzlich haben wir einen timeout und ein retry zu den Anfragen an ProPay hinzugefügt. Erreicht unsere Anwendung ProPay nicht in unserem angegebenen Zeitraum wird die Anfrage nocheinmal ausgeführt. Schlägt die Anfrage an ProPay fehl, werden die Änderungen zurückgesetzt und der Nutzer bekommt folgende Meldung: Sorry, connection to your ProPayAccount failed. Please try it again later. +
-Erreichen wir bei der Registrierung ProPay nicht, wird ein default Account angelegt. Bei der nächsten Anfrage an ProPay, die erfolgreich ist wird ein richtiger ProPayAccount angelegt. +
+ProPay ist unser Zahlungsprogramm. Über Anfragen mit Spring WebClient greifen wir auf ProPay zu. Es kann jedoch passieren, dass ProPay nicht erreichbar ist. Um diesen Fall abzufangen führen wir jede ProPayAnfrage in einem try-catch aus. Zusätzlich haben wir einen timeout und ein retry zu den Anfragen an ProPay hinzugefügt. Erreicht unsere Anwendung ProPay nicht in unserem angegebenen Zeitraum, wird die Anfrage nocheinmal ausgeführt. Schlägt die Anfrage an ProPay fehl, werden die Änderungen zurückgesetzt und der Nutzer bekommt folgende Meldung: Sorry, connection to your ProPayAccount failed. Please try it again later. +
+Erreichen wir bei der Registrierung ProPay nicht, wird ein default Account angelegt. Bei der nächsten Anfrage an ProPay, die erfolgreich ist, wird ein richtiger ProPayAccount angelegt. +
 
 ### Tests
 Wir testen in unseren Testklassen unsere Repositories, die Controller, die Handler und unsere Security. +
 Für die Tests nutzen wir Mockito, um unsere
 Test-Umgebungen zu schaffen. +
 Mit Integrationtests prüfen wir unsere Controller. Dabei werden Anfragen simuliert (beim Anlegen und Ändern einer Person) und die Weiterleitung geprüft. Außerdem prüfen wir, ob wir unsere Templates erreichen. +
-In den Repository Tests prüfen wir unsere Datenbank. Dabei prüfen wir, ob für unsere Entitys die Repository Methoden, wie FindById richtig ausführen. +
-Außerdem prüfen wir unsere Logik in den Handler und in unserer Security. +
+In den Repository Tests prüfen wir unsere Datenbank. Dabei stellen wir sicher, dass die Repository Methoden für unsere Entities, wie FindById, richtig funktionieren. +
+Außerdem prüfen wir unsere Logik im Handler und in unserer Security. +
 Für unsere Tests benutzen wir die relationale Datenbank h2, daher haben wir für die Tests eine separate application.properties geschrieben.
-
-
-
-
