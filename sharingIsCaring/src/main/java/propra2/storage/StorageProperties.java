@@ -13,7 +13,7 @@ public class StorageProperties {
      */
     public List<String> fileEndings = Arrays.asList(".jpg", ".png", ".JPG", ".PNG", ".jpeg",".JPEG", ".gif", ".GIF");
 
-    private String location = "src/main/resources/static/upload-dir";
+    private String location = "upload-dir";
 
     public String getLocation() {
         return location;
