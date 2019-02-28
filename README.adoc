@@ -3,7 +3,7 @@ WS18/19
 :icons: font
 :icon-set: octicon
 
-docker run --rm -e POSTGRES_PASSWORD=secret -e POSTGRES_DB=propra -p 5432:5432 postgres
+docker-compose up
 
 docker run -p 8888:8888 propra/propay:1.0.5
 
