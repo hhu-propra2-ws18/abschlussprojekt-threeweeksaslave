@@ -1,7 +1,6 @@
 package propra2.Controller;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -26,12 +25,9 @@ import propra2.model.Address;
 import propra2.model.ProPayAccount;
 import propra2.repositories.*;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 

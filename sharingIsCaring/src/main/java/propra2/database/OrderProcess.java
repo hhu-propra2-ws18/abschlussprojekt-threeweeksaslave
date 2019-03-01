@@ -6,10 +6,10 @@ import propra2.model.OrderProcessStatus;
 
 import javax.persistence.*;
 import java.security.Principal;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.sql.Date;
 
 @Data
 @Entity

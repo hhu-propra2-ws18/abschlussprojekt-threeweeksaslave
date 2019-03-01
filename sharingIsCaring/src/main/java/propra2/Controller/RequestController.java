@@ -4,14 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import propra2.database.*;
+import propra2.database.Customer;
+import propra2.database.Notification;
+import propra2.database.OrderProcess;
+import propra2.database.Product;
 import propra2.handler.OrderProcessHandler;
 import propra2.handler.UserHandler;
 import propra2.model.Message;
 import propra2.model.OrderProcessStatus;
 import propra2.model.ProPayAccount;
 import propra2.model.TransactionType;
-import propra2.repositories.*;
+import propra2.repositories.CustomerRepository;
+import propra2.repositories.NotificationRepository;
+import propra2.repositories.OrderProcessRepository;
 import propra2.repositories.ProductRepository;
 
 import java.security.Principal;
@@ -43,6 +48,7 @@ public class RequestController {
 
     /**
      * get an overview of all lend an borrowed products and their orderProcesses
+     *
      * @param user
      * @param model
      * @return
@@ -62,8 +68,7 @@ public class RequestController {
         for (OrderProcess orderProcess : orderProcesses) {
             if (orderProcess.getProduct().isForSale()) {
                 buyerOrderProcesses.add(orderProcess);
-            }
-            else {
+            } else {
                 borrowerOrderProcesses.add(orderProcess);
             }
         }
@@ -71,8 +76,7 @@ public class RequestController {
         for (OrderProcess orderProcess : ownerOrderProcesses) {
             if (orderProcess.getProduct().isForSale()) {
                 sellerOrderProcesses.add(orderProcess);
-            }
-            else {
+            } else {
                 lenderOrderProcesses.add(orderProcess);
             }
         }
@@ -83,32 +87,32 @@ public class RequestController {
         model.addAttribute("lender", lenderOrderProcesses);
         model.addAttribute("seller", sellerOrderProcesses);
 
-        if(sellerOrderProcesses.isEmpty()){
+        if (sellerOrderProcesses.isEmpty()) {
             model.addAttribute("soldProductsExist", false);
-        }else{
+        } else {
             model.addAttribute("soldProductsExist", true);
         }
 
-        if(borrowerOrderProcesses.isEmpty()) {
+        if (borrowerOrderProcesses.isEmpty()) {
             model.addAttribute("borrowerExist", false);
-        }else{
+        } else {
             model.addAttribute("borrowerExist", true);
         }
 
-        if (buyerOrderProcesses.isEmpty()){
+        if (buyerOrderProcesses.isEmpty()) {
             model.addAttribute("boughtProductsExist", false);
         } else {
             model.addAttribute("boughtProductsExist", true);
         }
 
-        if (lenderOrderProcesses.isEmpty()){
+        if (lenderOrderProcesses.isEmpty()) {
             model.addAttribute("lentProductsExist", false);
         } else {
             model.addAttribute("lentProductsExist", true);
         }
 
         boolean admin = false;
-        if(customer.get().getRole().equals("ADMIN")){
+        if (customer.get().getRole().equals("ADMIN")) {
             admin = true;
         }
         model.addAttribute("admin", admin);
@@ -124,12 +128,13 @@ public class RequestController {
 
     /**
      * cancel an orderProcess
+     *
      * @param processId
      * @param user
      * @return
      */
-    @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=cancel")
-    public String cancelOrder(@PathVariable Long processId, Principal user){
+    @RequestMapping(value = "/requests/detailsBorrower/{processId}", method = RequestMethod.POST, params = "action=cancel")
+    public String cancelOrder(@PathVariable Long processId, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.CANCELED);
         orderProcessHandler.updateOrderProcess(new ArrayList<>(), orderProcess);
@@ -139,6 +144,7 @@ public class RequestController {
 
     /**
      * show details of an orderProcess of a borrowed product
+     *
      * @param processId
      * @param user
      * @param model
@@ -162,7 +168,7 @@ public class RequestController {
         model.addAttribute("process", process.get());
         model.addAttribute("user", customer);
         boolean admin = false;
-        if(customer.getRole().equals("ADMIN")){
+        if (customer.getRole().equals("ADMIN")) {
             admin = true;
         }
         model.addAttribute("admin", admin);
@@ -171,10 +177,11 @@ public class RequestController {
 
     /**
      * delete an orderProcess
+     *
      * @param processId
      * @return
      */
-    @RequestMapping(value="/requests/detailsBorrower/{processId}", method= RequestMethod.POST, params="action=delete")
+    @RequestMapping(value = "/requests/detailsBorrower/{processId}", method = RequestMethod.POST, params = "action=delete")
     public String deleteByBorrower(@PathVariable Long processId) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcessRepo.delete(orderProcess);
@@ -184,24 +191,25 @@ public class RequestController {
 
     /**
      * return a product, dailyFee is payed
+     *
      * @param processId
      * @param user
      * @param model
      * @return
      */
-    @RequestMapping(value="/requests/detailsBorrower/{processId}", method=RequestMethod.POST, params="action=return")
+    @RequestMapping(value = "/requests/detailsBorrower/{processId}", method = RequestMethod.POST, params = "action=return")
     public String returnProduct(@PathVariable Long processId, Principal user, Model model) {
         Customer customer = customerRepo.findByUsername(user.getName()).get();
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
 
         boolean successful = orderProcessHandler.payDailyFee(orderProcess);
 
-        if(successful) {
+        if (successful) {
             double dailyFee = orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate());
             String rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get().getUsername();
             String ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get().getUsername();
 
-            if(dailyFee>0){
+            if (dailyFee > 0) {
                 userHandler.saveTransaction(dailyFee, TransactionType.DAILYFEEPAYMENT, rentingAccount);
                 userHandler.saveTransaction(dailyFee, TransactionType.RECEIVEDDAILYFEE, ownerAccount);
             }
@@ -215,7 +223,7 @@ public class RequestController {
                 notificationRepository.delete(notification.get());
             }
             return "redirect:/requests";
-        }else{
+        } else {
             model.addAttribute("note", "Sorry, connection to your ProPayAccount failed please try it again later!");
             return showRequests(user, model);
         }
@@ -223,6 +231,7 @@ public class RequestController {
 
     /**
      * show details of an orderProcess of a lend product
+     *
      * @param processId
      * @param user
      * @param model
@@ -240,7 +249,7 @@ public class RequestController {
         model.addAttribute("process", process.get());
         model.addAttribute("borrower", customerRepo.findById(process.get().getRequestId()).get());
         boolean admin = false;
-        if(customer.get().getRole().equals("ADMIN")){
+        if (customer.get().getRole().equals("ADMIN")) {
             admin = true;
         }
         model.addAttribute("admin", admin);
@@ -259,7 +268,7 @@ public class RequestController {
         model.addAttribute("process", process.get());
         model.addAttribute("buyer", customerRepo.findById(process.get().getRequestId()).get());
         boolean admin = false;
-        if(customer.get().getRole().equals("ADMIN")){
+        if (customer.get().getRole().equals("ADMIN")) {
             admin = true;
         }
         model.addAttribute("admin", admin);
@@ -278,7 +287,7 @@ public class RequestController {
         model.addAttribute("process", process.get());
         model.addAttribute("seller", customerRepo.findById(process.get().getOwnerId()).get());
         boolean admin = false;
-        if(customer.get().getRole().equals("ADMIN")){
+        if (customer.get().getRole().equals("ADMIN")) {
             admin = true;
         }
         model.addAttribute("admin", admin);
@@ -287,6 +296,7 @@ public class RequestController {
 
     /**
      * delete an orderProcess
+     *
      * @param processId
      * @return
      */
@@ -300,13 +310,14 @@ public class RequestController {
 
     /**
      * as an owner you can accept the orderProcess, the caution is blocked
+     *
      * @param message
      * @param processId
      * @param user
      * @param model
      * @return
      */
-    @RequestMapping(value="/requests/detailsLender/{processId}", method=RequestMethod.POST, params="action=acceptProcess")
+    @RequestMapping(value = "/requests/detailsLender/{processId}", method = RequestMethod.POST, params = "action=acceptProcess")
     public String accept(String message, @PathVariable Long processId, Principal user, Model model) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.ACCEPTED);
@@ -320,10 +331,10 @@ public class RequestController {
         product.setBorrowedUntil(orderProcess.getToDate());
 
         boolean finishedSuccessful = orderProcessHandler.updateOrderProcess(oldMessages, orderProcess);
-        if(finishedSuccessful){
+        if (finishedSuccessful) {
             productRepo.save(product);
             return "redirect:/requests";
-        }else{
+        } else {
             orderProcess.setStatus(OrderProcessStatus.PENDING);
             orderProcess.setMessages(oldMessages);
             orderProcessRepo.save(orderProcess);
@@ -334,13 +345,14 @@ public class RequestController {
 
     /**
      * As an owner you can accept the return, the caution will be released
+     *
      * @param processId
      * @param model
      * @param user
      * @return
      */
-     @RequestMapping(value="/requests/detailsLender/{processId}", method=RequestMethod.POST, params="action=acceptReturn")
-     public String finishProcess(@PathVariable Long processId, Model model, Principal user) {
+    @RequestMapping(value = "/requests/detailsLender/{processId}", method = RequestMethod.POST, params = "action=acceptReturn")
+    public String finishProcess(@PathVariable Long processId, Model model, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.FINISHED);
 
@@ -348,9 +360,9 @@ public class RequestController {
         ProPayAccount proPayAccount = rentingAccount.getProPay();
 
         boolean successful = orderProcessHandler.updateOrderProcess(orderProcess.getMessages(), orderProcess);
-        if(successful){
+        if (successful) {
             return "redirect:/requests";
-        }else{
+        } else {
             orderProcess.setStatus(OrderProcessStatus.RETURNED);
             rentingAccount.setProPay(proPayAccount);
             customerRepo.save(rentingAccount);
@@ -362,12 +374,13 @@ public class RequestController {
 
     /**
      * as an owner you can deny the return, an admin will get a notification to resolve the conflict
+     *
      * @param processId
      * @param message
      * @param user
      * @return
      */
-    @RequestMapping(value="/requests/detailsLender/{processId}", method=RequestMethod.POST, params="action=appeal")
+    @RequestMapping(value = "/requests/detailsLender/{processId}", method = RequestMethod.POST, params = "action=appeal")
     public String appealProcess(@PathVariable Long processId, String message, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.CONFLICT);
@@ -384,10 +397,11 @@ public class RequestController {
 
     /**
      * delete orderProcess as an owner
+     *
      * @param processId
      * @return
      */
-    @RequestMapping(value="/requests/detailsLender/{processId}", method=RequestMethod.POST, params="action=deleteProcess")
+    @RequestMapping(value = "/requests/detailsLender/{processId}", method = RequestMethod.POST, params = "action=deleteProcess")
     public String deleteByOwner(@PathVariable Long processId) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcessRepo.delete(orderProcess);
@@ -397,12 +411,13 @@ public class RequestController {
 
     /**
      * deny the orderProcess
+     *
      * @param message
      * @param processId
      * @param user
      * @return
      */
-    @RequestMapping(value="/requests/detailsLender/{processId}", method=RequestMethod.POST, params="action=deny")
+    @RequestMapping(value = "/requests/detailsLender/{processId}", method = RequestMethod.POST, params = "action=deny")
     public String deny(String message, @PathVariable Long processId, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.DENIED);
