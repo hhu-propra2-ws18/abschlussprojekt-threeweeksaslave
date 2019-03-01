@@ -59,22 +59,23 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public Path load(String filename, Long productId) {
-        Path currentRootLocation = Paths.get(properties.getLocation() + "/" + productId);
-        for (String fileEnding : properties.fileEndings) {
-            Path runningCurrentRootLocation = Paths.get(currentRootLocation.toString() + "/" + filename + fileEnding);
-            if (Files.exists(runningCurrentRootLocation) || Files.isReadable(runningCurrentRootLocation)) {
-                return runningCurrentRootLocation;
-            }
-        }
-        currentRootLocation = Paths.get("src/main/resources/static/img");
-        return currentRootLocation.resolve("dummyProductPicture.JPG");
-
+		Path currentRootLocation = Paths.get(properties.getLocation() + "/" + productId);
+		for(String fileEnding : properties.fileEndings) {
+			Path runningCurrentRootLocation = Paths.get(currentRootLocation.toString() + "/" + filename + fileEnding);
+			if (Files.exists(runningCurrentRootLocation) || Files.isReadable(runningCurrentRootLocation)) {
+				return runningCurrentRootLocation;
+			}
+		}
+		return  null;
     }
 
     @Override
     public Resource loadAsResource(String filename, Long productId) {
         try {
             Path file = load(filename, productId);
+            if(file == null){
+                return new UrlResource("https://dummyimage.com/600x400/7d377d/ffffff&text=-No+image-");
+            }
             return new UrlResource(file.toUri());
         } catch (MalformedURLException e) {
             throw new StorageFileNotFoundException("Could not read file: " + filename, e);
