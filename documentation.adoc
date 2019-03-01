@@ -109,7 +109,7 @@ Alle zusätzlichen Datenklassen oder enums liegen im package model.
 
 ### Handler
 In unseren Handlern liegt der große Teil der Logik unseres Programms. +
-Unser *NotificationHandler* führt alle 24h eine Datensynchronisation durch. Dabei durchlaufen wir alle orderProcesses und filtern die Prozesse heraus, die heute oder morgen enden oder aber in der Vergangenheit hätten enden sollen. Für diese Prozesse bekommt der Nutzer eine Meldung auf seiner Homepage. +
+Unser *NotificationHandler* führt alle 20 Sekunden eine Datensynchronisation durch. Dabei durchlaufen wir alle orderProcesses und filtern die Prozesse heraus, die heute oder morgen enden oder aber in der Vergangenheit hätten enden sollen. Für diese Prozesse bekommt der Nutzer eine Meldung auf seiner Home-page. +
 Im *OrderProcessHandler* behandeln wir den kompletten Ausleihprozess. Je nach Status des Prozesses werden hier Anfragen an ProPay gestellt, wie das Blocken oder Überweisen von Kautionen. +
 Der *SearchProductHandler* verarbeitet die Filter unserer Produktsuche und filtert die entsprechenden Produkte heraus, die dann auf der Website angezeigt werden können. +
 Der *UserHandler* verarbeitet Anfragen an ProPay, die der Nutzer stellt ohne Beteiligung anderer, wie das Aufladen seines Guthabens. Außerdem wird hier bei jedem Aufrufen des Profils der ProPayAccount synchronisiert. +
