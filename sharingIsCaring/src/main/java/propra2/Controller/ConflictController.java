@@ -40,18 +40,19 @@ public class ConflictController {
 
     /**
      * get overview of all conflicts
+     *
      * @param user
      * @param model
      * @return
      */
     @GetMapping("/conflicts")
-    public String getConflicts(Principal user, Model model){
+    public String getConflicts(Principal user, Model model) {
         Long userId = getUserId(user);
         Optional<Customer> customer = customerRepo.findById(userId);
         List<OrderProcess> processes = orderProcessRepo.findByStatus(OrderProcessStatus.CONFLICT);
         model.addAttribute("processes", processes);
         boolean admin = false;
-        if(customer.get().getRole().equals("ADMIN")){
+        if (customer.get().getRole().equals("ADMIN")) {
             admin = true;
         }
         model.addAttribute("admin", admin);
@@ -67,6 +68,7 @@ public class ConflictController {
 
     /**
      * get Details to a specific conflict
+     *
      * @param processId
      * @param user
      * @param model
@@ -84,7 +86,7 @@ public class ConflictController {
         model.addAttribute("owner", customerRepo.findById(process.get().getOwnerId()).get());
         model.addAttribute("borrower", customerRepo.findById(process.get().getRequestId()).get());
         boolean admin = false;
-        if(customer.get().getRole().equals("ADMIN")){
+        if (customer.get().getRole().equals("ADMIN")) {
             admin = true;
         }
         model.addAttribute("admin", admin);
@@ -93,12 +95,13 @@ public class ConflictController {
 
     /**
      * confirm Conflict -> the caution is send to the owner
+     *
      * @param processId
      * @param model
      * @param user
      * @return
      */
-    @RequestMapping(value="/conflicts/details/{processId}", method= RequestMethod.POST, params="action=confirm")
+    @RequestMapping(value = "/conflicts/details/{processId}", method = RequestMethod.POST, params = "action=confirm")
     public String confirmConflict(@PathVariable Long processId, Model model, Principal user) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.PUNISHED);
@@ -110,15 +113,15 @@ public class ConflictController {
         double amount = proPayAccount.findReservationById(reservationId).getAmount();
 
         boolean successful = orderProcessHandler.updateOrderProcess(new ArrayList<>(), orderProcess);
-        if(successful){
+        if (successful) {
             Customer ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get();
 
-            if(amount>0){
+            if (amount > 0) {
                 userHandler.saveTransaction(amount, TransactionType.DEPOSITCHARGE, rentingAccount.getUsername());
                 userHandler.saveTransaction(amount, TransactionType.RECEIVEDDEPOSIT, ownerAccount.getUsername());
             }
             return "redirect:/conflicts";
-        }else{
+        } else {
 
             orderProcess.setStatus(OrderProcessStatus.CONFLICT);
             rentingAccount.setProPay(proPayAccount);
@@ -134,10 +137,11 @@ public class ConflictController {
 
     /**
      * reject conflict -> the caution will be released
+     *
      * @param processId
      * @return
      */
-    @RequestMapping(value="/conflicts/details/{processId}", method=RequestMethod.POST, params="action=reject")
+    @RequestMapping(value = "/conflicts/details/{processId}", method = RequestMethod.POST, params = "action=reject")
     public String rejectConflict(@PathVariable Long processId) {
         OrderProcess orderProcess = orderProcessRepo.findById(processId).get();
         orderProcess.setStatus(OrderProcessStatus.FINISHED);

@@ -8,8 +8,8 @@ import javax.persistence.*;
 import java.util.List;
 
 @Data
-@Table (name = "customer")
-@Entity (name = "Customer")
+@Table(name = "customer")
+@Entity(name = "Customer")
 
 public class Customer {
 
@@ -31,7 +31,7 @@ public class Customer {
     @OneToMany
     private List<Product> borrowedProducts;
 
-    void addBorrowedProduct(Product newProduct){
+    void addBorrowedProduct(Product newProduct) {
         borrowedProducts.add(newProduct);
     }
 

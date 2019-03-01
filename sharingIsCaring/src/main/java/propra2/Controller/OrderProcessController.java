@@ -6,7 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import propra2.database.*;
+import propra2.database.Customer;
+import propra2.database.OrderProcess;
+import propra2.database.Product;
 import propra2.handler.OrderProcessHandler;
 import propra2.model.Message;
 import propra2.model.OrderProcessStatus;
@@ -36,6 +38,7 @@ public class OrderProcessController {
 
     /**
      * get page to start an orderProcess
+     *
      * @param id
      * @param user
      * @param model
@@ -46,7 +49,7 @@ public class OrderProcessController {
      * @return
      */
     @GetMapping("/product/{id}/orderProcess")
-    public String startOrderProcess(@PathVariable Long id, final Principal user, Model model, boolean notEnoughMoney, boolean incorrectDates, boolean ownProduct, boolean availability){
+    public String startOrderProcess(@PathVariable Long id, final Principal user, Model model, boolean notEnoughMoney, boolean incorrectDates, boolean ownProduct, boolean availability) {
         Customer customer = customerRepo.findByUsername(user.getName()).get();
         Product product = productRepo.findById(id).get();
         model.addAttribute("product", product);
@@ -56,7 +59,7 @@ public class OrderProcessController {
         model.addAttribute("ownProduct", ownProduct);
         model.addAttribute("availability", availability);
         boolean admin = false;
-        if(customer.getRole().equals("ADMIN")){
+        if (customer.getRole().equals("ADMIN")) {
             admin = true;
         }
         model.addAttribute("admin", admin);
@@ -65,6 +68,7 @@ public class OrderProcessController {
 
     /**
      * start an orderProcess, check if customer has enough money and if the period is correct
+     *
      * @param id
      * @param message
      * @param from
@@ -87,7 +91,7 @@ public class OrderProcessController {
         if (product.getOwner().getCustomerId().equals(customer.getCustomerId())) {
             return startOrderProcess(id, user, model, false, false, true, false);
         }
-        if(!product.isForSale()) {
+        if (!product.isForSale()) {
             if (!orderProcessHandler.correctDates(Date.valueOf(from), Date.valueOf(to))) {
                 return startOrderProcess(id, user, model, false, true, false, false);
             }

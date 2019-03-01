@@ -7,7 +7,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import propra2.database.Customer;
 import propra2.database.OrderProcess;
 import propra2.database.Product;
-import propra2.model.*;
+import propra2.model.Message;
+import propra2.model.OrderProcessStatus;
+import propra2.model.ProPayAccount;
+import propra2.model.Reservation;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.OrderProcessRepository;
 import reactor.core.publisher.Mono;
@@ -114,7 +117,7 @@ public class OrderProcessHandler {
                     .timeout(Duration.ofSeconds(2L))
                     .retry(4L);
 
-            if(userHandler.getProPayAccount(rentingAccount.getUsername())!=null) {
+            if (userHandler.getProPayAccount(rentingAccount.getUsername()) != null) {
                 rentingAccount.setProPay(userHandler.getProPayAccount(rentingAccount.getUsername()));
             }
             orderProcess.setReservationId(reservation.block().getId());
@@ -172,7 +175,9 @@ public class OrderProcessHandler {
             rentingAccount.setProPay(account.block());
             orderProcessRepo.save(orderProcess);
             return true;
-        }catch(Exception e) {return false;}
+        } catch (Exception e) {
+            return false;
+        }
 
     }
 
@@ -193,10 +198,10 @@ public class OrderProcessHandler {
                 if (dateFrom.before(checkFrom) && dateTo.before(checkFrom)) {
                 } else if (dateFrom.after(checkTo) && dateTo.after(checkTo)) {
                 } else {
-                	if(!(process.getStatus() == OrderProcessStatus.DENIED ||
-							process.getStatus() == OrderProcessStatus.PUNISHED ||
-							process.getStatus() == OrderProcessStatus.FINISHED))
-                    available = false;
+                    if (!(process.getStatus() == OrderProcessStatus.DENIED ||
+                            process.getStatus() == OrderProcessStatus.PUNISHED ||
+                            process.getStatus() == OrderProcessStatus.FINISHED))
+                        available = false;
                     break;
                 }
             }
@@ -208,18 +213,18 @@ public class OrderProcessHandler {
     public boolean correctDates(Date from, Date to) {
         Date today = new Date(1);
         today.setDate(LocalDate.now().getDayOfMonth());
-        today.setMonth(LocalDate.now().getMonthValue()-1);
-        today.setYear(LocalDate.now().getYear()-1900);
+        today.setMonth(LocalDate.now().getMonthValue() - 1);
+        today.setYear(LocalDate.now().getYear() - 1900);
         //case today until today
-        if(from.toString().equals(to.toString()) && from.toString().equals(today.toString())){
+        if (from.toString().equals(to.toString()) && from.toString().equals(today.toString())) {
             return true;
         }
         //case to is before today
-        if(to.before(today)){
+        if (to.before(today)) {
             return false;
         }
         //case future rent for single day
-        if(from.toString().equals(to.toString()) && today.before(from)){
+        if (from.toString().equals(to.toString()) && today.before(from)) {
             return true;
         }
         return from.before(to);
@@ -253,7 +258,7 @@ public class OrderProcessHandler {
         }
     }
 
-    public void cancelOrder(OrderProcess orderProcess){
+    public void cancelOrder(OrderProcess orderProcess) {
         Customer rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get();
         finished(orderProcess, rentingAccount);
         orderProcessRepo.delete(orderProcess);

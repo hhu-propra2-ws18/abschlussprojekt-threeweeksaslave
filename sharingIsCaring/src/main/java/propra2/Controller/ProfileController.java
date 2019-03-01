@@ -34,16 +34,16 @@ public class ProfileController {
 
         Customer customer = customerRepo.findById(loggedInId).get();
         ProPayAccount newProPayAcc = userHandler.getProPayAccount(customer.getUsername());
-        if(newProPayAcc!=null){
+        if (newProPayAcc != null) {
             customer.setProPay(newProPayAcc);
             customerRepo.save(customer);
         }
         model.addAttribute("user", customer);
 
-         boolean admin = false;
-         if (customer.getRole().equals("ADMIN")) {
-              admin = true;
-            }
+        boolean admin = false;
+        if (customer.getRole().equals("ADMIN")) {
+            admin = true;
+        }
         model.addAttribute("admin", admin);
         return "profile";
     }
@@ -93,10 +93,26 @@ public class ProfileController {
     }
 
     @GetMapping("/faqs")
-    public String getFAQs(Principal user, Model model){
+    public String getFAQs(Principal user, Model model) {
         Long userId = getUserId(user);
         Optional<Customer> customer = customerRepo.findById(userId);
         model.addAttribute("user", customer.get());
         return "faqs";
+    }
+
+    @GetMapping("/imprint")
+    public String imprint(Principal user, Model model){
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepo.findById(userId);
+        model.addAttribute("user", customer.get());
+        return "imprint";
+    }
+
+    @GetMapping("/privacyPolicy")
+    public String privacyPolicy(Principal user, Model model){
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepo.findById(userId);
+        model.addAttribute("user", customer.get());
+        return "privacyPolicy";
     }
 }

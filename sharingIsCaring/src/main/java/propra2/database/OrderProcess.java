@@ -6,10 +6,10 @@ import propra2.model.OrderProcessStatus;
 
 import javax.persistence.*;
 import java.security.Principal;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.sql.Date;
 
 @Data
 @Entity
@@ -35,23 +35,19 @@ public class OrderProcess {
     private Date fromDate;
     private Date toDate;
 
-    public void addMessages(ArrayList<Message> list){
+    public void addMessages(ArrayList<Message> list) {
         list.addAll(messages);
         this.messages = list;
     }
 
     public boolean allValuesSet() {
-        if(this.getId() == null||
-                this.getOwnerId() == null ||
-                this.getRequestId() == null ||
-                this.getStatus() == null) {
-
-            return false;
-        }
-        return true;
+        return this.getId() != null &&
+                this.getOwnerId() != null &&
+                this.getRequestId() != null &&
+                this.getStatus() != null;
     }
 
-    public Message createMessage(Principal user, String stringMessage){
+    public Message createMessage(Principal user, String stringMessage) {
         Message message = new Message();
         message.setMessage(stringMessage);
         message.setDate(new java.sql.Date(System.currentTimeMillis()));
@@ -62,7 +58,6 @@ public class OrderProcess {
 
     public boolean isCancelable() {
         Date today = new java.sql.Date(System.currentTimeMillis());
-        if(ChronoUnit.DAYS.between(LocalDate.parse(fromDate.toString()), LocalDate.parse(today.toString()))<0) return true;
-        return false;
+        return ChronoUnit.DAYS.between(LocalDate.parse(fromDate.toString()), LocalDate.parse(today.toString())) < 0;
     }
 }

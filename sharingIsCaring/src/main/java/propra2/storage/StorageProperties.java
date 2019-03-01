@@ -11,7 +11,7 @@ public class StorageProperties {
     /**
      * Folder location for storing files
      */
-    public List<String> fileEndings = Arrays.asList(".jpg", ".png", ".JPG", ".PNG", ".jpeg",".JPEG", ".gif", ".GIF");
+    public List<String> fileEndings = Arrays.asList(".jpg", ".png", ".JPG", ".PNG", ".jpeg", ".JPEG", ".gif", ".GIF");
 
     private String location = "upload-dir";
 

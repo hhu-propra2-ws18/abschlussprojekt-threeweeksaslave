@@ -16,8 +16,6 @@ public interface OrderProcessRepository extends CrudRepository<OrderProcess, Lon
     List<OrderProcess> findAllByOwnerId(Long id);
     @Transactional
     List<OrderProcess> findAllByRequestId(Long id);
-    Optional<Customer> findByOwnerId(Long id);
-    Optional<Customer> findByRequestId(Long id);
 
     @Transactional
     List<OrderProcess> findByProduct(Product product);

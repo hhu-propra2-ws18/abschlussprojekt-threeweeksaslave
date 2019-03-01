@@ -1,6 +1,5 @@
 package propra2;
 
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -15,12 +14,5 @@ public class SharingIsCaringApplication {
     public static void main(String[] args) {
         SpringApplication.run(SharingIsCaringApplication.class, args);
     }
- /*   @Bean
-    CommandLineRunner init(StorageService storageService) {
-        return (args) -> {
-            storageService.deleteAll();
-            storageService.init();
-        };
-    }*/
 }
 

@@ -25,15 +25,15 @@ public class UserHandler {
     @Autowired
     TransactionRepository transactionRepository;
 
-    public boolean rechargeCredit(Customer customer, int amount){
+    public boolean rechargeCredit(Customer customer, int amount) {
         ProPayAccount proPayAccount = customer.getProPay();
 
         try {
-            Mono<ProPayAccount> account =  WebClient.create().post().uri(builder ->
-                     builder
-                             .path("propay:8888/account/" + customer.getUsername())
-                             .query("amount=" + amount)
-                             .build())
+            Mono<ProPayAccount> account = WebClient.create().post().uri(builder ->
+                    builder
+                            .path("propay:8888/account/" + customer.getUsername())
+                            .query("amount=" + amount)
+                            .build())
                     .retrieve()
                     .bodyToMono(ProPayAccount.class)
                     .timeout(Duration.ofSeconds(2L))
@@ -48,8 +48,8 @@ public class UserHandler {
     }
 
     @Transactional
-    public ProPayAccount getProPayAccount(String username){
-        ProPayAccount proPayAccount = getEntity(ProPayAccount.class,username);
+    public ProPayAccount getProPayAccount(String username) {
+        ProPayAccount proPayAccount = getEntity(ProPayAccount.class, username);
 
         return proPayAccount;
     }
@@ -69,13 +69,12 @@ public class UserHandler {
                     .timeout(Duration.ofSeconds(2L))
                     .retry(4L);
             return mono.block();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
 
-    public void saveTransaction(double amount, TransactionType transactionType, String userName){
+    public void saveTransaction(double amount, TransactionType transactionType, String userName) {
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         transaction.setTransactionType(transactionType);
@@ -84,18 +83,19 @@ public class UserHandler {
 
         transactionRepository.save(transaction);
     }
-    
+
     @Scheduled(fixedRate = 60000)
-    public void syncProPayAcounts(){
+    public void syncProPayAcounts() {
         List<Customer> customers = customerRepo.findAll();
 
         for (Customer customer : customers) {
             try {
-                if(getProPayAccount(customer.getUsername())!=null) {
+                if (getProPayAccount(customer.getUsername()) != null) {
                     customer.setProPay(getProPayAccount(customer.getUsername()));
                 }
                 customerRepo.save(customer);
-            } catch (Exception e) { }
+            } catch (Exception e) {
+            }
         }
     }
 }

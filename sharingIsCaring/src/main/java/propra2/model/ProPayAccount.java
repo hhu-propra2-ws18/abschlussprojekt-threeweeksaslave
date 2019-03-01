@@ -26,13 +26,13 @@ public class ProPayAccount {
         reservations.add(reservation);
     }
 
-    public int getAvailableAmount(List<OrderProcess> orderProcessList){
-        int result= (int) amount;
-        for(Reservation reservation : reservations){
+    public int getAvailableAmount(List<OrderProcess> orderProcessList) {
+        int result = (int) amount;
+        for (Reservation reservation : reservations) {
             result -= reservation.getAmount();
         }
-        for(OrderProcess orderProcess : orderProcessList){
-            if(orderProcess.getStatus()==PENDING || orderProcess.getStatus()==ACCEPTED){
+        for (OrderProcess orderProcess : orderProcessList) {
+            if (orderProcess.getStatus() == PENDING || orderProcess.getStatus() == ACCEPTED) {
                 result -= orderProcess.getProduct().getTotalDailyFee(orderProcess.getFromDate());
             }
         }
@@ -44,8 +44,8 @@ public class ProPayAccount {
     }
 
     public Reservation findReservationById(int reservationId) {
-        for(Reservation reservation : reservations){
-            if(reservation.getId() == reservationId) return reservation;
+        for (Reservation reservation : reservations) {
+            if (reservation.getId() == reservationId) return reservation;
         }
 
         return null;

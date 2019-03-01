@@ -27,8 +27,6 @@ import propra2.repositories.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static propra2.model.OrderProcessStatus.ACCEPTED;
 import static propra2.model.OrderProcessStatus.CONFLICT;

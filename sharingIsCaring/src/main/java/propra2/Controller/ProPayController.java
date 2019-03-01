@@ -63,12 +63,12 @@ public class ProPayController {
         }
         Customer customer = customerRepo.findByUsername(user.getName()).get();
         boolean successful = userHandler.rechargeCredit(customer, amount);
-        if(successful){
+        if (successful) {
             userHandler.saveTransaction(amount, TransactionType.RECHARGE, customer.getUsername());
             customerRepo.save(customer);
             model.addAttribute("user", customer);
             return "redirect:/profile";
-        }else{
+        } else {
             model.addAttribute("note", "Sorry, connection to your ProPayAccount failed please try it again later!");
             return getRechargeCredit(user, model);
         }
@@ -87,12 +87,12 @@ public class ProPayController {
         Customer customer = customerRepo.findByUsername(user.getName()).get();
         model.addAttribute("user", customer);
         model.addAttribute("transactions", transactions);
-        if(transactions.size()==0){
+        if (transactions.size() == 0) {
             model.addAttribute("transactionsExist", false);
-        }else{
+        } else {
             model.addAttribute("transactionsExist", true);
         }
-        
+
         boolean admin = false;
         if (customer.getRole().equals("ADMIN")) {
             admin = true;

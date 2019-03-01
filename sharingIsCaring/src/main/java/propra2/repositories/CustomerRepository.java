@@ -1,7 +1,7 @@
 package propra2.repositories;
 
-import propra2.database.Customer;
 import org.springframework.data.repository.CrudRepository;
+import propra2.database.Customer;
 
 import java.util.List;
 import java.util.Optional;

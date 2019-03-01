@@ -1,8 +1,6 @@
 package propra2.handler;
 
-import org.h2.util.AbbaDetector;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import propra2.database.Customer;
 import propra2.database.Product;
-import propra2.model.Address;
 import propra2.repositories.CustomerRepository;
 import propra2.repositories.ProductRepository;
 

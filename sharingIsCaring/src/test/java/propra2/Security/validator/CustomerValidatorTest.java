@@ -1,7 +1,6 @@
 package propra2.Security.validator;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import propra2.database.Customer;
-import propra2.model.Address;
 import propra2.model.UserRegistration;
 import propra2.repositories.CustomerRepository;
 
