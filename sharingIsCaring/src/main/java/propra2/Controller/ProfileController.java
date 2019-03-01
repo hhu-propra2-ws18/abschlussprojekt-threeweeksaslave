@@ -99,4 +99,20 @@ public class ProfileController {
         model.addAttribute("user", customer.get());
         return "faqs";
     }
+
+    @GetMapping("/imprint")
+    public String imprint(Principal user, Model model){
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepo.findById(userId);
+        model.addAttribute("user", customer.get());
+        return "imprint";
+    }
+
+    @GetMapping("/privacyPolicy")
+    public String privacyPolicy(Principal user, Model model){
+        Long userId = getUserId(user);
+        Optional<Customer> customer = customerRepo.findById(userId);
+        model.addAttribute("user", customer.get());
+        return "privacyPolicy";
+    }
 }

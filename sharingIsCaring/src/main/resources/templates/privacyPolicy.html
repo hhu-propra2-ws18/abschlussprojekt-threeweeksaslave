@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/css/base.css">
+
+    <title>Home</title>
+</head>
+<body>
+
+<header>
+    <a class="ribbon" tabindex="-1" title="zurück zur Startseite!" href="/home">
+        <h1 id="logo">Sharing is Caring</h1>
+        <p>Ing. Three Weeks a Slave GmbH</p>
+    </a>
+</header>
+<main>
+
+    <nav  id="navigation">
+        <ul>
+            <li><a aria-current="page">Home</a></li>
+            <li><a th:href="@{'/profile'}">Profile</a></li>
+            <li><a href="/products">View Products</a></li>
+            <li><a href="/lend">Add Product</a>
+            <li><a th:href="@{'/requests'}">Requests</a></li>
+            <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
+            <li><a href="/logout" role="button">Log Out</a></li>
+        </ul>
+    </nav>
+
+
+        <section class="spalte">
+
+            <h2>Datenschutzerklärung</h2>
+
+                 Diese Datenschutzerklärung klärt Sie über die Art, den Umfang und Zweck der Verarbeitung
+                 von personenbezogenen Daten (nachfolgend kurz „Daten“) im Rahmen der Erbringung unserer Leistungen sowie innerhalb unseres
+                 Onlineangebotes und der mit ihm verbundenen Webseiten, Funktionen und Inhalte sowie externen Onlinepräsenzen, wie z.B. unser
+                 Social Media Profile auf (nachfolgend gemeinsam bezeichnet als „Onlineangebot“). Im Hinblick auf die verwendeten Begrifflichkeiten,
+                 wie z.B. „Verarbeitung“ oder „Verantwortlicher“ verweisen wir auf die Definitionen im Art. 4 der Datenschutzgrundverordnung (DSGVO). <br>
+                 <br>
+                 <h3 id="dsg-general-controller">Verantwortlicher</h3>
+                 ThreeWeeksASlave AG<br>
+                 Universitätsstr. 1<br>
+                 40225 Düsseldorf <br>
+                 Germany<br>
+                 <br>
+                 Phone: +49 777 00 00 7-0<br>
+                 Fax: +49 777 00 00 7-77<br>
+                 <br>
+                 E-Mail: threeWeeksASlave@gmx.de<br>
+                 <br>
+                 Executive Board: Jens Bendisposto<br>
+                 <br>
+                 Imprint: localhost:8080/imprint<br>
+                 <br>
+                 Data Protection Officer: dataprotection@threeweeksaslave.com
+                 <h3>Arten der verarbeiteten Daten</h3>
+                 -	Bestandsdaten (z.B., Personen-Stammdaten, Namen oder Adressen).<br>
+                 -	Kontaktdaten (z.B., E-Mail, Telefonnummern).<br>
+                 -	Inhaltsdaten (z.B., Texteingaben, Fotografien, Videos).<br>
+                 -	Nutzungsdaten (z.B., besuchte Webseiten, Interesse an Inhalten, Zugriffszeiten).<br>
+                 -	Meta-/Kommunikationsdaten (z.B., Geräte-Informationen, IP-Adressen).</p>
+
+                 <h3>Kategorien betroffener Personen</h3>
+                 Besucher und Nutzer des Onlineangebotes (Nachfolgend bezeichnen wir die betroffenen Personen zusammenfassend auch als „Nutzer“).<br>
+
+                 <h3>Zweck der Verarbeitung</h3>
+                 -	Zurverfügungstellung des Onlineangebotes, seiner Funktionen und  Inhalte.<br>
+                 -	Beantwortung von Kontaktanfragen und Kommunikation mit Nutzern.<br>
+                 -	Sicherheitsmaßnahmen.<br>
+                 -	Reichweitenmessung/Marketing<br>
+
+                 <h3>Verwendete Begrifflichkeiten </h3>
+                 „Personenbezogene Daten“ sind alle Informationen, die sich auf eine identifizierte oder identifizierbare natürliche Person
+                  (im Folgenden „betroffene Person“) beziehen; als identifizierbar wird eine natürliche Person angesehen, die direkt oder indirekt,
+                  insbesondere mittels Zuordnung zu einer Kennung wie einem Namen, zu einer Kennnummer, zu Standortdaten, zu einer Online-Kennung
+                  (z.B. Cookie) oder zu einem oder mehreren besonderen Merkmalen identifiziert werden kann, die Ausdruck der physischen, physiologischen,
+                  genetischen, psychischen, wirtschaftlichen, kulturellen oder sozialen Identität dieser natürlichen Person sind.<br>
+                 <br>
+                 „Verarbeitung“ ist jeder mit oder ohne Hilfe automatisierter Verfahren ausgeführte Vorgang oder jede solche Vorgangsreihe im Zusammenhang
+                  mit personenbezogenen Daten. Der Begriff reicht weit und umfasst praktisch jeden Umgang mit Daten.<br>
+                 <br>
+                 „Pseudonymisierung“ die Verarbeitung personenbezogener Daten in einer Weise, dass die personenbezogenen Daten ohne Hinzuziehung zusätzlicher
+                 Informationen nicht mehr einer spezifischen betroffenen Person zugeordnet werden können, sofern diese zusätzlichen Informationen gesondert
+                 aufbewahrt werden und technischen und organisatorischen Maßnahmen unterliegen, die gewährleisten, dass die personenbezogenen Daten nicht einer
+                 identifizierten oder identifizierbaren natürlichen Person zugewiesen werden.<br>
+                 <br>
+                 „Profiling“ jede Art der automatisierten Verarbeitung personenbezogener Daten, die darin besteht, dass diese personenbezogenen Daten verwendet
+                 werden, um bestimmte persönliche Aspekte, die sich auf eine natürliche Person beziehen, zu bewerten, insbesondere um Aspekte bezüglich Arbeitsleistung,
+                 wirtschaftliche Lage, Gesundheit, persönliche Vorlieben, Interessen, Zuverlässigkeit, Verhalten, Aufenthaltsort oder Ortswechsel dieser natürlichen
+                 Person zu analysieren oder vorherzusagen.<br>
+                 <br>
+                 Als „Verantwortlicher“ wird die natürliche oder juristische Person, Behörde, Einrichtung oder andere Stelle, die allein oder gemeinsam mit anderen
+                 über die Zwecke und Mittel der Verarbeitung von personenbezogenen Daten entscheidet, bezeichnet.<br>
+                 <br>
+                 „Auftragsverarbeiter“ eine natürliche oder juristische Person, Behörde, Einrichtung oder andere Stelle, die personenbezogene Daten im Auftrag
+                 des Verantwortlichen verarbeitet.<br>
+
+                 <h3>Maßgebliche Rechtsgrundlagen</h3>
+                 Nach Maßgabe des Art. 13 DSGVO teilen wir Ihnen die Rechtsgrundlagen unserer Datenverarbeitungen mit.  Für Nutzer aus dem Geltungsbereich
+                 der Datenschutzgrundverordnung (DSGVO), d.h. der EU und des EWG gilt, sofern die Rechtsgrundlage in der Datenschutzerklärung nicht genannt wird, Folgendes: <br>
+                 Die Rechtsgrundlage für die Einholung von Einwilligungen ist Art. 6 Abs. 1 lit. a und Art. 7 DSGVO;<br>
+                 Die Rechtsgrundlage für die Verarbeitung zur Erfüllung unserer Leistungen und Durchführung vertraglicher Maßnahmen sowie Beantwortung von Anfragen ist Art. 6 Abs. 1 lit. b DSGVO;<br>
+                 Die Rechtsgrundlage für die Verarbeitung zur Erfüllung unserer rechtlichen Verpflichtungen ist Art. 6 Abs. 1 lit. c DSGVO;<br>
+                 Für den Fall, dass lebenswichtige Interessen der betroffenen Person oder einer anderen natürlichen Person eine Verarbeitung personenbezogener
+                  Daten erforderlich machen, dient Art. 6 Abs. 1 lit. d DSGVO als Rechtsgrundlage.<br>
+                 Die Rechtsgrundlage für die erforderliche Verarbeitung zur Wahrnehmung einer Aufgabe, die im öffentlichen Interesse liegt oder in Ausübung öffentlicher
+                  Gewalt erfolgt, die dem Verantwortlichen übertragen wurde ist Art. 6 Abs. 1 lit. e DSGVO. <br>
+                 Die Rechtsgrundlage für die Verarbeitung zur Wahrung unserer berechtigten Interessen ist Art. 6 Abs. 1 lit. f DSGVO. <br>
+                 Die Verarbeitung von Daten zu anderen Zwecken als denen, zu denen sie erhoben wurden, bestimmt sich nach den Vorgaben des Art 6 Abs. 4 DSGVO. <br>
+                 Die Verarbeitung von besonderen Kategorien von Daten (entsprechend Art. 9 Abs. 1 DSGVO) bestimmt sich nach den Vorgaben des Art. 9 Abs. 2 DSGVO. <br>
+
+                 <h3>Sicherheitsmaßnahmen</h3>
+                 Wir treffen nach Maßgabe der gesetzlichen Vorgabenunter Berücksichtigung des Standard der Technik, der Implementierungskosten und der Art, des Umfangs,
+                 der Umstände und der Zwecke der Verarbeitung sowie der unterschiedlichen Eintrittswahrscheinlichkeit und Schwere des Risikos für die Rechte und Freiheiten
+                 natürlicher Personen, geeignete technische und organisatorische Maßnahmen, um ein dem Risiko angemessenes Schutzniveau zu gewährleisten.<br>
+                 <br>
+                 Zu den Maßnahmen gehören insbesondere die Sicherung der Vertraulichkeit, Integrität und Verfügbarkeit von Daten durch Kontrolle des physischen
+                 Zugangs zu den Daten, als auch des sie betreffenden Zugriffs, der Eingabe, Weitergabe, der Sicherung der Verfügbarkeit und ihrer Trennung. Des Weiteren
+                 haben wir Verfahren eingerichtet, die eine Wahrnehmung von Betroffenenrechten, Löschung von Daten und Reaktion auf Gefährdung der Daten gewährleisten.
+                 Ferner berücksichtigen wir den Schutz personenbezogener Daten bereits bei der Entwicklung, bzw. Auswahl von Hardware, Software sowie Verfahren,
+                 entsprechend dem Prinzip des Datenschutzes durch Technikgestaltung und durch datenschutzfreundliche Voreinstellungen.<br>
+
+                 <h3>Zusammenarbeit mit Auftragsverarbeitern, gemeinsam Verantwortlichen und Dritten</h3>
+                 Sofern wir im Rahmen unserer Verarbeitung Daten gegenüber anderen Personen und Unternehmen (Auftragsverarbeitern, gemeinsam Verantwortlichen oder Dritten)
+                 offenbaren, sie an diese übermitteln oder ihnen sonst Zugriff auf die Daten gewähren, erfolgt dies nur auf Grundlage einer gesetzlichen Erlaubnis
+                 (z.B. wenn eine Übermittlung der Daten an Dritte, wie an Zahlungsdienstleister, zur Vertragserfüllung erforderlich ist), Nutzer eingewilligt haben,
+                 eine rechtliche Verpflichtung dies vorsieht oder auf Grundlage unserer berechtigten Interessen (z.B. beim Einsatz von Beauftragten, Webhostern, etc.). <br>
+                 <br>
+                 Sofern wir Daten anderen Unternehmen unserer Unternehmensgruppe offenbaren, übermitteln oder ihnen sonst den Zugriff gewähren, erfolgt dies insbesondere
+                 zu administrativen Zwecken als berechtigtes Interesse und darüberhinausgehend auf einer den gesetzlichen Vorgaben entsprechenden Grundlage. <br>
+
+                 <h3>Übermittlungen in Drittländer</h3>
+                 Sofern wir Daten in einem Drittland (d.h. außerhalb der Europäischen Union (EU), des Europäischen Wirtschaftsraums (EWR) oder der Schweizer Eidgenossenschaft)
+                 verarbeiten oder dies im Rahmen der Inanspruchnahme von Diensten Dritter oder Offenlegung, bzw. Übermittlung von Daten an andere Personen oder Unternehmen
+                 geschieht, erfolgt dies nur, wenn es zur Erfüllung unserer (vor)vertraglichen Pflichten, auf Grundlage Ihrer Einwilligung, aufgrund einer rechtlichen Verpflichtung
+                 oder auf Grundlage unserer berechtigten Interessen geschieht. Vorbehaltlich ausdrücklicher Einwilligung oder vertraglich erforderlicher Übermittlung, verarbeiten oder
+                 lassen wir die Daten nur in Drittländern mit einem anerkannten Datenschutzniveau, zu denen die unter dem "Privacy-Shield" zertifizierten US-Verarbeiter gehören oder
+                 auf Grundlage besonderer Garantien, wie z.B. vertraglicher Verpflichtung durch sogenannte Standardschutzklauseln der EU-Kommission, dem Vorliegen von Zertifizierungen
+                 oder verbindlichen internen Datenschutzvorschriften verarbeiten (Art. 44 bis 49 DSGVO,
+                 <a href="https://ec.europa.eu/info/law/law-topic/data-protection/data-transfers-outside-eu_de" target="blank">Informationsseite der EU-Kommission</a>).
+
+                 <h3>Rechte der betroffenen Personen</h3>
+                 Sie haben das Recht, eine Bestätigung darüber zu verlangen, ob betreffende Daten verarbeitet werden und auf Auskunft über diese Daten sowie auf weitere Informationen
+                 und Kopie der Daten entsprechend den gesetzlichen Vorgaben.<br>
+                 <br>
+                 Sie haben entsprechend. den gesetzlichen Vorgaben das Recht, die Vervollständigung der Sie betreffenden Daten oder die Berichtigung der Sie betreffenden unrichtigen
+                 Daten zu verlangen.<br>
+                 <br>
+                 Sie haben nach Maßgabe der gesetzlichen Vorgaben das Recht zu verlangen, dass betreffende Daten unverzüglich gelöscht werden, bzw. alternativ nach Maßgabe der gesetzlichen
+                 Vorgaben eine Einschränkung der Verarbeitung der Daten zu verlangen.<br>
+                 <br>
+                 Sie haben das Recht zu verlangen, dass die Sie betreffenden Daten, die Sie uns bereitgestellt haben nach Maßgabe der gesetzlichen Vorgaben zu erhalten und deren Übermittlung
+                 an andere Verantwortliche zu fordern. <br>
+                 <br>
+                 Sie haben ferner nach Maßgabe der gesetzlichen Vorgaben das Recht, eine Beschwerde bei der zuständigen Aufsichtsbehörde einzureichen.<br>
+
+                 <h3>Widerrufsrecht</h3>
+                 Sie haben das Recht, erteilte Einwilligungen mit Wirkung für die Zukunft zu widerrufen.
+
+
+                <h3>Widerspruchsrecht</h3>
+                <strong>Sie können der künftigen Verarbeitung der Sie betreffenden Daten nach Maßgabe der gesetzlichen Vorgaben jederzeit widersprechen. Der Widerspruch kann
+                insbesondere gegen die Verarbeitung für Zwecke der Direktwerbung erfolgen.</strong>
+
+                <h3>Cookies und Widerspruchsrecht bei Direktwerbung</h3>
+                Als „Cookies“ werden kleine Dateien bezeichnet, die auf Rechnern der Nutzer gespeichert werden. Innerhalb der Cookies können unterschiedliche Angaben gespeichert
+                werden. Ein Cookie dient primär dazu, die Angaben zu einem Nutzer (bzw. dem Gerät auf dem das Cookie gespeichert ist) während oder auch nach seinem Besuch innerhalb
+                eines Onlineangebotes zu speichern. Als temporäre Cookies, bzw. „Session-Cookies“ oder „transiente Cookies“, werden Cookies bezeichnet, die gelöscht werden, nachdem
+                ein Nutzer ein Onlineangebot verlässt und seinen Browser schließt. In einem solchen Cookie kann z.B. der Inhalt eines Warenkorbs in einem Onlineshop oder ein Login-Status
+                gespeichert werden. Als „permanent“ oder „persistent“ werden Cookies bezeichnet, die auch nach dem Schließen des Browsers gespeichert bleiben. So kann z.B. der Login-Status
+                gespeichert werden, wenn die Nutzer diese nach mehreren Tagen aufsuchen. Ebenso können in einem solchen Cookie die Interessen der Nutzer gespeichert werden, die für
+                Reichweitenmessung oder Marketingzwecke verwendet werden. Als „Third-Party-Cookie“ werden Cookies bezeichnet, die von anderen Anbietern als dem Verantwortlichen, der
+                das Onlineangebot betreibt, angeboten werden (andernfalls, wenn es nur dessen Cookies sind spricht man von „First-Party Cookies“).<br>
+                <br>
+                Wir können temporäre und permanente Cookies einsetzen und klären hierüber im Rahmen unserer Datenschutzerklärung auf.<br>
+                <br>
+                Sofern wir die Nutzer um eine Einwilligung in den Einsatz von Cookies bitten (z.B. im Rahmen einer Cookie-Einwilligung), ist die Rechtsgrundlage dieser Verarbeitung Art. 6 Abs. 1 lit. a. DSGVO. Ansonsten werden die personenbezogenen Cookies der Nutzer entsprechend den nachfolgenden Erläuterungen im Rahmen dieser Datenschutzerklärung auf Grundlage unserer berechtigten Interessen (d.h. Interesse an der Analyse, Optimierung und wirtschaftlichem Betrieb unseres Onlineangebotes im Sinne des Art. 6 Abs. 1 lit. f. DSGVO) oder sofern der Einsatz von Cookies zur Erbringung unserer vertragsbezogenen Leistungen erforderlich ist, gem. Art. 6 Abs. 1 lit. b. DSGVO, bzw. sofern der Einsatz von Cookies für die Wahrnehmung einer Aufgabe, die im öffentlichen Interesse liegt erforderlich ist oder in Ausübung öffentlicher Gewalt erfolgt, gem. Art. 6 Abs. 1 lit. e. DSGVO, verarbeitet.<br>
+                <br>
+                Falls die Nutzer nicht möchten, dass Cookies auf ihrem Rechner gespeichert werden, werden sie gebeten die entsprechende Option in den Systemeinstellungen ihres Browsers zu deaktivieren. Gespeicherte Cookies können in den Systemeinstellungen des Browsers gelöscht werden. Der Ausschluss von Cookies kann zu Funktionseinschränkungen dieses Onlineangebotes führen.<br>
+                <br>
+                Ein genereller Widerspruch gegen den Einsatz der zu Zwecken des Onlinemarketing eingesetzten Cookies kann bei einer Vielzahl der Dienste, vor allem im Fall des Trackings, über die US-amerikanische Seite <a href="http://www.aboutads.info/choices/">http://www.aboutads.info/choices/</a> oder die EU-Seite <a href="http://www.youronlinechoices.com/">http://www.youronlinechoices.com/</a> erklärt werden. Des Weiteren kann die Speicherung von Cookies mittels deren Abschaltung in den Einstellungen des Browsers erreicht werden. Bitte beachten Sie, dass dann gegebenenfalls nicht alle Funktionen dieses Onlineangebotes genutzt werden können.
+                <h3>Löschung von Daten</h3>
+                Die von uns verarbeiteten Daten werden nach Maßgabe der gesetzlichen Vorgaben gelöscht oder in ihrer Verarbeitung eingeschränkt. Sofern nicht im Rahmen dieser Datenschutzerklärung ausdrücklich angegeben, werden die bei uns gespeicherten Daten gelöscht, sobald sie für ihre Zweckbestimmung nicht mehr erforderlich sind und der Löschung keine gesetzlichen Aufbewahrungspflichten entgegenstehen. <br>
+                <br>
+                Sofern die Daten nicht gelöscht werden, weil sie für andere und gesetzlich zulässige Zwecke erforderlich sind, wird deren Verarbeitung eingeschränkt. D.h. die Daten werden gesperrt und nicht für andere Zwecke verarbeitet. Das gilt z.B. für Daten, die aus handels- oder steuerrechtlichen Gründen aufbewahrt werden müssen.
+
+                <h3>Änderungen und Aktualisierungen der Datenschutzerklärung</h3>
+                Wir bitten Sie sich regelmäßig über den Inhalt unserer Datenschutzerklärung zu informieren. Wir passen die Datenschutzerklärung an, sobald die Änderungen der von uns durchgeführten Datenverarbeitungen dies erforderlich machen. Wir informieren Sie, sobald durch die Änderungen eine Mitwirkungshandlung Ihrerseits (z.B. Einwilligung) oder eine sonstige individuelle Benachrichtigung erforderlich wird.
+
+                <h3>Bestellabwicklung im Onlineshop und Kundenkonto</h3>
+                Wir verarbeiten die Daten unserer Kunden im Rahmen der Bestellvorgänge in unserem Onlineshop, um ihnen die Auswahl und die Bestellung der gewählten Produkte und Leistungen, sowie deren Bezahlung und Zustellung, bzw. Ausführung zu ermöglichen.<br>
+
+                <br>
+                Zu den verarbeiteten Daten gehören Bestandsdaten, Kommunikationsdaten, Vertragsdaten, Zahlungsdaten und zu den von der Verarbeitung betroffenen Personen
+                gehören unsere Kunden, Interessenten und sonstige Geschäftspartner. Die Verarbeitung erfolgt zum Zweck der Erbringung von Vertragsleistungen im Rahmen des
+                Betriebs eines Onlineshops, Abrechnung, Auslieferung und der Kundenservices. Hierbei setzen wir Session Cookies für die Speicherung des Warenkorb-Inhalts und
+                permanente Cookies für die Speicherung des Login-Status ein.<br>
+                <br>
+                Die Verarbeitung erfolgt zur Erfüllung unserer Leistungen und Durchführung vertraglicher Maßnahmen (z.B. Durchführung von Bestellvorgängen) und soweit sie
+                gesetzlich vorgeschrieben ist (z.B., gesetzlich erforderliche Archivierung von Geschäftsvorgängen zu Handels und Steuerzwecken). Dabei sind die als erforderlich
+                gekennzeichneten Angaben zur Begründung und Erfüllung des Vertrages erforderlich. Die Daten offenbaren wir gegenüber Dritten nur im Rahmen der Auslieferung, Zahlung
+                oder im Rahmen der gesetzlichen Erlaubnisse und Pflichten, als auch wenn dies auf Grundlage unserer berechtigten Interessen erfolgt, worüber wir Sie im Rahmen dieser
+                Datenschutzerklärung informieren (z.B.,  gegenüber Rechts- und Steuerberatern, Finanzinstituten, Frachtunternehmen sowie Behörden). <br>
+                <br>
+                Nutzer können optional ein Nutzerkonto anlegen, indem sie insbesondere ihre Bestellungen einsehen können. Im Rahmen der Registrierung, werden die erforderlichen
+                Pflichtangaben den Nutzern mitgeteilt. Die Nutzerkonten sind nicht öffentlich und können von Suchmaschinen nicht indexiert werden. Wenn Nutzer ihr Nutzerkonto gekündigt
+                haben, werden deren Daten im Hinblick auf das Nutzerkonto gelöscht, vorbehaltlich deren Aufbewahrung ist aus handels- oder steuerrechtlichen Gründen  notwendig. Angaben
+                im Kundenkonto verbleiben bis zu dessen Löschung mit anschließender Archivierung im Fall einer rechtlichen Verpflichtung oder unser berechtigten Interessen (z.B., im Fall
+                von Rechtsstreitigkeiten). Es obliegt den Nutzern, ihre Daten bei erfolgter Kündigung vor dem Vertragsende zu sichern.<br>
+                <br>
+                Im Rahmen der Registrierung und erneuter Anmeldungen sowie Inanspruchnahme unserer Onlinedienste, speichern wir die IP-Adresse und den Zeitpunkt der jeweiligen
+                Nutzerhandlung. Die Speicherung erfolgt auf Grundlage unserer berechtigten Interessen, als auch der Nutzer an Schutz vor Missbrauch und sonstiger unbefugter Nutzung.
+                Eine Weitergabe dieser Daten an Dritte erfolgt grundsätzlich nicht, außer sie ist zur Verfolgung unserer gesetzlichen Ansprüche als berechtigtes Interesse erforderlich
+                oder es besteht hierzu eine gesetzliche Verpflichtung.<br>
+                <br>
+                Die Löschung erfolgt nach Ablauf gesetzlicher Gewährleistungs- und sonstiger vertraglicher Rechte oder Pflichten (z.B., Zahlungsansprüche oder Leistungspflichten aus
+                Verträgen mir Kunden), wobei die Erforderlichkeit der Aufbewahrung der Daten alle drei Jahre überprüft wird; im Fall der Aufbewahrung aufgrund gesetzlicher
+                Archivierungspflichten, erfolgt die Löschung insoweit nach deren Ablauf.
+
+                <h3>Externe Zahlungsdienstleister</h3>
+                Wir setzen externe Zahlungsdienstleister ein, über deren Plattformen die Nutzer und wir Zahlungstransaktionen vornehmen können. Zu diesen Zahlungsdienstleistern
+                können gehören, jeweils mit Link zur Datenschutzerklärung: Paypal (<a target="_blank" href="https://www.paypal.com/de/webapps/mpp/ua/privacy-full">https://www.paypal.com/de/webapps/mpp/ua/privacy-full</a>),
+                Klarna (<a target="_blank" href="https://www.klarna.com/de/datenschutz/">https://www.klarna.com/de/datenschutz/</a>),
+                Skrill (<a target="_blank" href="https://www.skrill.com/de/fusszeile/datenschutzrichtlinie/">https://www.skrill.com/de/fusszeile/datenschutzrichtlinie/</a>),
+                Giropay (<a target="_blank" href="https://www.giropay.de/rechtliches/datenschutz-agb/">https://www.giropay.de/rechtliches/datenschutz-agb/</a>),
+                Visa (<a target="_blank" href="https://www.visa.de/datenschutz">https://www.visa.de/datenschutz</a>),
+                Mastercard (<a target="_blank" href="https://www.mastercard.de/de-de/datenschutz.html">https://www.mastercard.de/de-de/datenschutz.html</a>),
+                American Express (<a target="_blank" href="https://www.americanexpress.com/de/content/privacy-policy-statement.html">https://www.americanexpress.com/de/content/privacy-policy-statement.html</a>),
+                Stripe (<a target="_blank" href="https://stripe.com/de/privacy">https://stripe.com/de/privacy</a>).<br>
+                <br>
+                Im Rahmen der Erfüllung von&nbsp;Verträgen setzen wir die Zahlungsdienstleister auf Grundlage des Art. 6 Abs. 1 lit. b. DSGVO ein. Im
+                Übrigen setzen wir externe&nbsp;Zahlungsdienstleister auf Grundlage unserer berechtigten Interessen gem. Art. 6 Abs. 1 lit. f. DSGVO ein, um unseren
+                Nutzern effektive und sichere Zahlungsmöglichkeit zu bieten.<br>
+                <br>
+                Zu den, durch die Zahlungsdienstleister verarbeiteten Daten gehören Bestandsdaten, wie z.B. der Name und die Adresse, Bankdaten, wie z.B.
+                Kontonummern oder Kreditkartennummern, Passwörter, TANs und Prüfsummen sowie die Vertrags-, Summen und empfängerbezogenen Angaben. Die Angaben sind erforderlich,
+                um die Transaktionen durchzuführen. Die eingegebenen Daten werden jedoch nur durch die Zahlungsdienstleister verarbeitet und bei diesen gespeichert. D.h. wir erhalten
+                keine konto- oder kreditkartenbezogenen Informationen, sondern lediglich Informationen mit Bestätigung oder Negativbeauskunftung der Zahlung.&nbsp;Unter Umständen werden
+                die Daten seitens der Zahlungsdienstleister an Wirtschaftsauskunfteien übermittelt. Diese Übermittlung bezweckt die Identitäts- und Bonitätsprüfung. Hierzu verweisen wir
+                auf die AGB und Datenschutzhinweise der&nbsp;Zahlungsdienstleister.<br>
+                <br>
+                Für die Zahlungsgeschäfte gelten die Geschäftsbedingungen und die Datenschutzhinweise der jeweiligen Zahlungsdienstleister, welche innerhalb der jeweiligen Webseiten,
+                bzw. Transaktionsapplikationen abrufbar sind. Wir verweisen auf diese ebenfalls zwecks weiterer Informationen und Geltendmachung von Widerrufs-, Auskunfts- und anderen
+                Betroffenenrechten.
+
+                <h3>Administration, Finanzbuchhaltung, Büroorganisation, Kontaktverwaltung</h3>
+                Wir verarbeiten Daten im Rahmen von Verwaltungsaufgaben sowie Organisation unseres Betriebs, Finanzbuchhaltung und Befolgung der gesetzlichen Pflichten, wie
+                z.B. der Archivierung. Hierbei verarbeiten wir dieselben Daten, die wir im Rahmen der Erbringung unserer vertraglichen Leistungen verarbeiten. Die Verarbeitungsgrundlagen
+                sind Art. 6 Abs. 1 lit. c. DSGVO, Art. 6 Abs. 1 lit. f. DSGVO. Von der Verarbeitung sind Kunden, Interessenten, Geschäftspartner und Websitebesucher betroffen. Der Zweck und
+                unser Interesse an der Verarbeitung liegt in der Administration, Finanzbuchhaltung, Büroorganisation, Archivierung von Daten, also Aufgaben die der Aufrechterhaltung unserer
+                Geschäftstätigkeiten, Wahrnehmung unserer Aufgaben und Erbringung unserer Leistungen dienen. Die Löschung der Daten im Hinblick auf vertragliche Leistungen und die vertragliche
+                Kommunikation entspricht den, bei diesen Verarbeitungstätigkeiten genannten Angaben.<br>
+                <br>
+                Wir offenbaren oder übermitteln hierbei Daten an die Finanzverwaltung, Berater, wie z.B., Steuerberater oder Wirtschaftsprüfer sowie weitere Gebührenstellen und Zahlungsdienstleister.<br>
+                <br>
+                Ferner speichern wir auf Grundlage unserer betriebswirtschaftlichen Interessen Angaben zu Lieferanten, Veranstaltern und sonstigen Geschäftspartnern, z.B. zwecks späterer
+                Kontaktaufnahme. Diese mehrheitlich unternehmensbezogenen Daten, speichern wir grundsätzlich dauerhaft.<br>
+
+                <h3>Betriebswirtschaftliche Analysen und Marktforschung</h3>
+                Um unser Geschäft wirtschaftlich betreiben, Markttendenzen, Wünsche der Vertragspartner und Nutzer erkennen zu können, analysieren wir die uns vorliegenden Daten zu
+                Geschäftsvorgängen, Verträgen, Anfragen, etc. Wir verarbeiten dabei Bestandsdaten, Kommunikationsdaten, Vertragsdaten, Zahlungsdaten, Nutzungsdaten, Metadaten auf Grundlage
+                 des Art. 6 Abs. 1 lit. f. DSGVO, wobei zu den betroffenen Personen Vertragspartner, Interessenten, Kunden, Besucher und Nutzer unseres Onlineangebotes gehören. <br>
+                <br>
+                Die Analysen erfolgen zum Zweck betriebswirtschaftlicher Auswertungen, des Marketings und der Marktforschung. Dabei können wir die Profile der registrierten Nutzer mit
+                Angaben, z.B. zu deren in Anspruch genommenen Leistungen, berücksichtigen. Die Analysen dienen uns zur Steigerung der Nutzerfreundlichkeit, der Optimierung unseres
+                Angebotes und der Betriebswirtschaftlichkeit. Die Analysen dienen alleine uns und werden nicht extern offenbart, sofern es sich nicht um anonyme Analysen mit zusammengefassten
+                Werten handelt. <br>
+                <br>
+                Sofern diese Analysen oder Profile personenbezogen sind, werden sie mit Kündigung der Nutzer gelöscht oder anonymisiert, sonst nach zwei Jahren ab Vertragsschluss. Im
+                Übrigen werden die gesamtbetriebswirtschaftlichen Analysen und allgemeine Tendenzbestimmungen nach Möglichkeit anonym erstellt.<br>
+
+                <h3>Registrierfunktion</h3>
+                Nutzer können ein Nutzerkonto anlegen. Im Rahmen der Registrierung werden die erforderlichen Pflichtangaben den Nutzern mitgeteilt und auf Grundlage des Art. 6 Abs. 1 lit.
+                b DSGVO zu Zwecken der Bereitstellung des Nutzerkontos verarbeitet. Zu den verarbeiteten Daten gehören insbesondere die Login-Informationen (Name, Passwort sowie eine E-Mailadresse).
+                Die im Rahmen der Registrierung eingegebenen Daten werden für die Zwecke der Nutzung des Nutzerkontos und dessen Zwecks verwendet. <br>
+                <br>
+                Die Nutzer können über Informationen, die für deren Nutzerkonto relevant sind, wie z.B. technische Änderungen, per E-Mail informiert werden. Wenn Nutzer ihr Nutzerkonto
+                gekündigt haben, werden deren Daten im Hinblick auf das Nutzerkonto, vorbehaltlich einer gesetzlichen Aufbewahrungspflicht, gelöscht. Es obliegt den Nutzern, ihre Daten bei
+                erfolgter Kündigung vor dem Vertragsende zu sichern. Wir sind berechtigt, sämtliche während der Vertragsdauer gespeicherten Daten des Nutzers unwiederbringlich zu löschen.<br>
+                <br>
+                Im Rahmen der Inanspruchnahme unserer Registrierungs- und Anmeldefunktionen sowie der Nutzung des Nutzerkontos, speichern wir die IP-Adresse und den Zeitpunkt der jeweiligen
+                Nutzerhandlung. Die Speicherung erfolgt auf Grundlage unserer berechtigten Interessen, als auch der Nutzer an Schutz vor Missbrauch und sonstiger unbefugter Nutzung. Eine
+                Weitergabe dieser Daten an Dritte erfolgt grundsätzlich nicht, außer sie ist zur Verfolgung unserer Ansprüche erforderlich oder es besteht hierzu besteht eine gesetzliche
+                Verpflichtung gem. Art. 6 Abs. 1 lit. c. DSGVO. Die IP-Adressen werden spätestens nach 7 Tagen anonymisiert oder gelöscht.<br>
+
+                <h3>Kommentare und Beiträge</h3>
+                Wenn Nutzer Kommentare oder sonstige Beiträge hinterlassen, können ihre IP-Adressen auf Grundlage unserer berechtigten Interessen im Sinne des Art. 6 Abs. 1 lit. f. DSGVO für
+                7 Tage gespeichert werden. Das erfolgt zu unserer Sicherheit, falls jemand in Kommentaren und Beiträgen widerrechtliche Inhalte hinterlässt (Beleidigungen, verbotene politische
+                Propaganda, etc.). In diesem Fall können wir selbst für den Kommentar oder Beitrag belangt werden und sind daher an der Identität des Verfassers interessiert.<br>
+                <br>
+                Des Weiteren behalten wir uns vor, auf Grundlage unserer berechtigten Interessen gem. Art. 6 Abs. 1 lit. f. DSGVO, die Angaben der Nutzer zwecks Spamerkennung zu verarbeiten.<br>
+                <br>
+                Auf derselben Rechtsgrundlage behalten wir uns vor, im Fall von Umfragen die IP-Adressen der Nutzer für deren Dauer zu speichern und Cookies zu verwenden, um
+                Mehrfachabstimmungen zu vermeiden.<br>
+                <br>
+                Die im Rahmen der Kommentare und Beiträge mitgeteilte Informationen zur Person, etwaige Kontakt- sowie Websiteinformationen als auch die inhaltlichen Angaben,
+                werden von uns bis zum Widerspruch der Nutzer dauerhaft gespeichert.
+
+                <h3>Kontaktaufnahme</h3>
+                Bei der Kontaktaufnahme mit uns (z.B. per Kontaktformular, E-Mail, Telefon oder via sozialer Medien) werden die Angaben des Nutzers zur Bearbeitung der Kontaktanfrage und
+                deren Abwicklung gem. Art. 6 Abs. 1 lit. b. (im Rahmen vertraglicher-/vorvertraglicher Beziehungen),  Art. 6 Abs. 1 lit. f. (andere Anfragen) DSGVO verarbeitet.. Die Angaben
+                der Nutzer können in einem Customer-Relationship-Management System ("CRM System") oder vergleichbarer Anfragenorganisation gespeichert werden.<br>
+                <br>
+                Wir löschen die Anfragen, sofern diese nicht mehr erforderlich sind. Wir überprüfen die Erforderlichkeit alle zwei Jahre; Ferner gelten die gesetzlichen
+                Archivierungspflichten.
+
+                <h3>Erhebung von Zugriffsdaten und Logfiles</h3>
+                Wir, bzw. unser Hostinganbieter, erhebt auf Grundlage unserer berechtigten Interessen im Sinne des Art. 6 Abs. 1 lit. f. DSGVO Daten über jeden Zugriff auf den
+                Server, auf dem sich dieser Dienst befindet (sogenannte Serverlogfiles). Zu den Zugriffsdaten gehören Name der abgerufenen Webseite, Datei, Datum und Uhrzeit des Abrufs,
+                übertragene Datenmenge, Meldung über erfolgreichen Abruf, Browsertyp nebst Version, das Betriebssystem des Nutzers, Referrer URL (die zuvor besuchte Seite), IP-Adresse und
+                der anfragende Provider.<br>
+                <br>
+                Logfile-Informationen werden aus Sicherheitsgründen (z.B. zur Aufklärung von Missbrauchs- oder Betrugshandlungen) für die Dauer von maximal 7 Tagen gespeichert und danach
+                gelöscht. Daten, deren weitere Aufbewahrung zu Beweiszwecken erforderlich ist, sind bis zur endgültigen Klärung des jeweiligen Vorfalls von der Löschung ausgenommen.
+                <a href="https://datenschutz-generator.de" class="dsg1-6" rel="nofollow" target="_blank">Erstellt mit Datenschutz-Generator.de von RA Dr. Thomas Schwenke</a>
+
+
+        </section>
+</main>
+
+<footer class="grid">
+    <ul id="footer-nav">
+    		<li><a href="/faqs" title="FAQs">FAQs</a></li>
+            <li><a href="/imprint" title="Imprint">Imprint</a></li>
+            <li><a href="/privacyPolicy">Privacy policy</a></li>
+
+    </ul>
+    <p>
+        Design: ThreeWeeksASlave<br>
+        technical implementation: ThreeWeeksASlave
+    </p>
+</footer>
+
+
+</body>
