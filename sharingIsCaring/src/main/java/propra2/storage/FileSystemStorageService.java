@@ -69,8 +69,9 @@ public class FileSystemStorageService implements StorageService {
 				return runningCurrentRootLocation;
 			}
 		}
-		currentRootLocation = Paths.get("src/main/resources/static/img");
-		return currentRootLocation.resolve("dummyProductPicture.JPG");
+		/*currentRootLocation = Paths.get("src/main/resources/static/img");
+		return currentRootLocation.resolve("dummyProductPicture.JPG");*/
+		return  null;
 
     }
 
@@ -78,6 +79,9 @@ public class FileSystemStorageService implements StorageService {
     public Resource loadAsResource(String filename, Long productId) {
         try {
             Path file = load(filename, productId);
+            if(file == null){
+                return new UrlResource("https://dummyimage.com/600x400/7d377d/ffffff&text=-No+image-");
+            }
             return new UrlResource(file.toUri());
         }
         catch (MalformedURLException e) {
