@@ -35,7 +35,7 @@ Es mussten einige dependencies erweitert werden, wie spring-security. Die wichti
 Für unsere Anwendung setzen wir hier die spring.datasource unserer Datenbank, sowie die applications für hibernate und springframework.web Außerdem haben wir das error-whitelable ausgeschaltet um auf eine eigene error page zu verweisen. Unsere Tests haben eine eigene application.properties, in der der Consolen-Output für unsere TestDatenbank h2 aktiviert wird. Für unsere Entwicklung haben wir eine application.properties.dev verwendet, die unseren localhost anspricht.
 
 ### Die Datenbank
-Wir haben uns für unser Projekt für die relationale Datenbank postgersql entschieden. Diese läuft wie gefordert nicht im Java Prozess sondern wird im Dockerfile gestartet.
+Wir haben uns für unser Projekt für die relationale Datenbank postgresql entschieden. Diese läuft wie gefordert nicht im Java Prozess sondern wird im Dockerfile gestartet.
 
 
 ## Die eigentliche Anwendung
@@ -43,7 +43,7 @@ Wir haben uns für unser Projekt für die relationale Datenbank postgersql entsc
 ## Die Struktur
 
 ### Spring Security
-Für den Login und die Registrierung unserer Webanwendung benutzen wir Spring Security. Spring Security stellt den Rahmen unserer Anwendung. Hier definieren wir, auf welche Resourcen der Nutzen eingeloggt drauf zugreifen kann. Außerdem definieren wir für den Nutzer eine Role, um zwischen User und Admin zu unterscheiden. Der nichteingeloggte Nutzer kann nur auf wenige Resourcen drauf zugreifen. Da das Login erst die Anwendung ermöglicht haben wir auf die base url "/" eine Startseite gelegt, von der aus man sich bei Spring Security einloggen kann oder aber neu registrieren kann. Alle Resourcen nach dem Login sind nur für eingeloggte Nutzer erreichbar. Außerdem haben wir hier einen statischen Admin angelegt, der beim ersten Aufrufen der Resource angelegt wird.
+Für den Login und die Registrierung unserer Webanwendung benutzen wir Spring Security. Spring Security stellt den Rahmen unserer Anwendung. Hier definieren wir, auf welche Resourcen der Nutzer eingeloggt zugreifen kann. Außerdem definieren wir für den Nutzer eine Role, um zwischen User und Admin zu unterscheiden. Der nichteingeloggte Nutzer kann nur auf wenige Resourcen zugreifen. Da das Login erst die Anwendung ermöglicht haben wir auf die base url "/" eine Startseite gelegt, von der aus man sich bei Spring Security einloggen kann oder aber neu registrieren kann. Alle Resourcen nach dem Login sind nur für eingeloggte Nutzer erreichbar. Außerdem haben wir hier einen statischen Admin angelegt, der beim ersten Aufrufen der Resource angelegt wird.
 
 ### Home
 Hat der Nutzer sich erfolgreich eingeloggt, gelangt er auf seine Homepage. Auf dieser erhält er Informationen zur Anwendung und bekommt persönliche Meldungen, wie zum Beispiel die Nachricht, dass der Nutzer morgen ein Produkt zurückgeben muss. Den Header, die SideNav und den Footer haben wir in ein base.html ausgelagert, da sie auf jeder Ressource verfügbar sein soll. Unsere Navigation führt den Nutzer zu den Hauptanwendungen unseres Portals.
@@ -72,6 +72,13 @@ Ein gekauftes Produkt wird nicht mehr in der Produktübersicht angezeigt. Als Ei
 
 ### FAQs
 Hat man Fragen zur Benutzung der Anwendung, findet man in den FAQs die oben beschriebenen Prozesse detailiert erläutert vor.
+
+### Impressum
+Im Impressum findet der User alle Angaben zum Unternehmen ThreeWeeksASlave AG, sowie die Angaben zu verwendeten Bildern, _Statement on privacy_ und _Liability Notes_.
+
+### Datenschutzerklärung
+Zusammen mit den FAQs und dem Impressum befindet sich unsere Datenschutzerklärung am Ende der Seite.
+Wir haben diese generieren lassen über https://datenschutz-generator.de/.
 
 ## Das System
 
@@ -119,3 +126,20 @@ Mit Integrationtests prüfen wir unsere Controller. Dabei werden Anfragen simuli
 In den Repository Tests prüfen wir unsere Datenbank. Dabei stellen wir sicher, dass die Repository Methoden für unsere Entities, wie FindById, richtig funktionieren. +
 Außerdem prüfen wir unsere Logik im Handler und in unserer Security. +
 Für unsere Tests benutzen wir die relationale Datenbank h2, daher haben wir für die Tests eine separate application.properties geschrieben.
+
+## Notwendige Änderungen bei der Umsetzung der Kaufmöglichkeit
+
+Um auch Produkte einstellen zu können, die verkauft werden können, mussten wir nur wenig an der Anwendung
+ändern. +
+Um die zu verleihenden Produkte von den zu verkaufenden Produkten unterscheiden zu können, haben
+wir dem Produkt ein zusätzliches Attribut gegeben. +
+Wir mussten zum Einen die Templates abändern: mit if-Abfragen prüfen wir an den kritischen Stellen, ob ein Produkt zu Leihen
+oder zu Verkaufen ist. Da sich die Produkte abgesehen von z.B. dem Preis und der Kaution bzw. dem Tagessatz nicht groß unterscheiden,
+wird nur an wenigen Stellen auf eine if-Abfrage zurückgegriffen. Wir haben uns aus diesem Grund dagegen
+entschieden, für jedes verschiedene Produkt ein eigenes Template zu machen bzw. mit Fragmenten zu arbeiten.
+In diesem Fall ist die Anwendung unserer Meinung nach verständlicher, wenn man die kurzen Unterscheidungen
+in einem Template lässt. Nur an wenigen Stellen (z.B. neues Produkt anlegen) haben wir uns entschieden,
+zwei verschiedene Templates zu verwenden, weil dort die Unterschiede zu groß waren. +
+Auch die Controller-Methoden mussten so angepasst werden, dass z.B. bei einer Anfrage zum Kaufen einmalig Geld abgebucht wird und einige Schritte des Verleihens nicht
+ausgeführt werden. +
+Um mehr Möglichleiten bei der Produktsuche zu haben, mussten der Suche weitere Filter hinzugefügt werden.
