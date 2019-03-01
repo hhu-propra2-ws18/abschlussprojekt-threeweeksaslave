@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/css/base.css">
+
+    <title>Imprint</title>
+</head>
+<body>
+
+<header>
+    <a class="ribbon" tabindex="-1" title="zurück zur Startseite!" href="/home">
+        <h1 id="logo">Sharing is Caring</h1>
+        <p>Ing. Three Weeks a Slave GmbH</p>
+    </a>
+</header>
+
+<main>
+    <nav  id="navigation">
+         <ul>
+             <li><a href="/home">Home</a></li>
+             <li><a th:href="@{'/profile'}">Profile</a></li>
+             <li><a href="/products">View Products</a></li>
+             <li><a href="/lend">Add Product</a>
+             <li><a th:href="@{'/requests'}">Requests</a></li>
+             <li th:if="${admin}"><a href="/conflicts">Conflicts</a></li>
+             <li><a href="/logout" role="button">Log Out</a></li>
+         </ul>
+     </nav>
+
+        <h2>Imprint</h2>
+        <section class="spalte">
+            ThreeWeeksASlave <br/>
+            <br/>
+            Universitätsstr. 1<br/>
+            40225 Düsseldorf <br/>
+            <br/>
+            Phone: +49 777 00 00 7-0<br/>
+            Fax: +49 777 00 00 7-77<br/>
+            <br/>
+            E-Mail: threeWeeksASlave@gmx.de<br/>
+            <br/>
+            Executive Board: Jens Bendisposto<br/>
+            <br/>
+            Register: Amtsgericht Köln<br/>
+            Registration number: ABC77777
+            VAT ID according to § 27a UstG: DE 123456789<br/>
+            <br/>
+            Responsible according to $ 10 Abs. 3 MDStV: (Address as above)<br/>
+            <br/>
+            <h3>Indication of source of used photos and graphics:</h3>
+            rhino picture: designed by Sarah Krabs
+            dummy picture: https://dummyimage.com/600x400/7d377d/ffffff&text=-No+image-
+            <br/>
+            <br/>
+             <h3>STATEMENT ON PRIVACY</h3>
+             ThreeWeeksASlave collect personal data online on legal bases of online sharing portals. Without express permission,
+             these data will not be forwarded to any external party. There is a connection to the payment Service ProPay.
+        </section>
+        <section class="spalte">
+            Your data will just transfer to this external service as part of your Transactionals. Other Users of our SharingIsCaring portal are able
+            to see following profile data: Name, Email-address and address.
+            <p style="font-weight: bold">RIGHT OF REVOCATION</p>
+            You can not revoke collecting personal data base on legal requirements. For all the other personal
+            data you can always revoke granted consent to collect, process, and use your personal data with
+            effect for the future. In this case, your data will be deleted.
+            <p style="font-weight: bold">Data Protection Officer</p>
+            The Data Protection Officer of ThreeWeeksASlave can be contacted at dataprotection@threeweeksaslave.com
+            <br/>
+            <br/>
+            <h3>LIABILITY NOTES</h3>
+            Though we carefully review the contents, we do not accept any liability for the contents of external links.
+            The sole responsibility for the content of linked pages lies with their operators.<br/>
+            <br/>
+            ThreeWeeksASlave AG continually reviews and updates the information on its Web pages. Despite all care,
+            the data may have changed in the meantime. Therefore, no liability is accepted and no guarantee is provided
+            for the timeliness, correctness, and completeness of the provided information. In particular, no liability
+            is accepted for damage caused directly or indirectly. Furthermore, ThreeWeeksASlave AG reserves the right
+            to modify or supplement the provided information.
+
+        </section>
+</main>
+
+<footer class="grid">
+    <ul id="footer-nav">
+    		<li><a href="/faqs" title="FAQs">FAQs</a></li>
+    		<li><a href="/imprint" title="Imprint">Imprint</a></li>
+    		<li><a href="/privacyPolicy">Privacy policy</a></li>
+    </ul>
+    <p>
+        Design: ThreeWeeksASlave<br>
+        technical implementation: ThreeWeeksASlave
+    </p>
+</footer>
+
+
+</body>
+</html>
