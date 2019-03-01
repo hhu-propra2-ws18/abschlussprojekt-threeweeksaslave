@@ -14,12 +14,5 @@ public class SharingIsCaringApplication {
     public static void main(String[] args) {
         SpringApplication.run(SharingIsCaringApplication.class, args);
     }
- /*   @Bean
-    CommandLineRunner init(StorageService storageService) {
-        return (args) -> {
-            storageService.deleteAll();
-            storageService.init();
-        };
-    }*/
 }
 

@@ -57,7 +57,7 @@ public class ProductController {
      */
     @GetMapping("/products")
     public String showProducts(Model model, Principal user) {
-		addUserAndAdmin(user, model);
+        addUserAndAdmin(user, model);
 
         return searchProducts("", "all", model, user);
     }
@@ -88,6 +88,7 @@ public class ProductController {
 
     /**
      * return owner of a product
+     *
      * @param customerId
      * @param model
      * @param user
@@ -97,7 +98,7 @@ public class ProductController {
     public String searchForOwner(@PathVariable Long customerId, Model model, Principal user) {
         Customer owner = customerRepo.findById(customerId).get();
         model.addAttribute("owner", owner);
-		addUserAndAdmin(user, model);
+        addUserAndAdmin(user, model);
         return "customer";
     }
 
@@ -167,64 +168,67 @@ public class ProductController {
 
     /**
      * get base template to edit a product find bei its id
+     *
      * @param user
      * @param model
      * @param id
      * @return
      */
-	@GetMapping("/product/edit/{id}")
-	public String editProduct(Principal user, Model model, @PathVariable Long id) {
-		addUserAndAdmin(user, model);
-		Optional<Product> productOptional = productRepo.findById(id);
-		if(productOptional.isPresent()){
-		    Product product = productOptional.get();
-		    if(product.getOwner().getCustomerId().equals(getUserId(user)) && product.isEditingAllowed(orderProcessRepository)){
-				model.addAttribute("product",product);
-				return "editProduct";
-			}
-		}
-		return "redirect:/home";
-	}
+    @GetMapping("/product/edit/{id}")
+    public String editProduct(Principal user, Model model, @PathVariable Long id) {
+        addUserAndAdmin(user, model);
+        Optional<Product> productOptional = productRepo.findById(id);
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+            if (product.getOwner().getCustomerId().equals(getUserId(user)) && product.isEditingAllowed(orderProcessRepository)) {
+                model.addAttribute("product", product);
+                return "editProduct";
+            }
+        }
+        return "redirect:/home";
+    }
 
     /**
      * save the new product, get base template to add a product image
+     *
      * @param user
      * @param product
      * @param address
      * @param productId
      * @return
      */
-	@PostMapping("/product/edit/{productId}")
-	public String saveProduct(Principal user, Product product, final Address address, @PathVariable Long productId) {
-		Product oldProduct = productRepo.findById(productId).get();
-		Customer owner = oldProduct.getOwner();
-		if(owner.getCustomerId().equals(getUserId(user))){
-			product.setOwner(owner);
-			product.setAvailable(oldProduct.isAvailable());
-			product.setForSale(oldProduct.isForSale());
-			product.setAddress(address);
-			product.setId(productId);
+    @PostMapping("/product/edit/{productId}")
+    public String saveProduct(Principal user, Product product, final Address address, @PathVariable Long productId) {
+        Product oldProduct = productRepo.findById(productId).get();
+        Customer owner = oldProduct.getOwner();
+        if (owner.getCustomerId().equals(getUserId(user))) {
+            product.setOwner(owner);
+            product.setAvailable(oldProduct.isAvailable());
+            product.setForSale(oldProduct.isForSale());
+            product.setAddress(address);
+            product.setId(productId);
             productRepo.save(product);
-			return "editProductImage";
-		}
-		return "redirect:/home";
-	}
+            return "editProductImage";
+        }
+        return "redirect:/home";
+    }
 
     /**
      * delete a product and its image
+     *
      * @param model
      * @param user
      * @param productId
      * @return
      */
-	@PostMapping("/product/delete")
-    public String deleteProduct(Model model,Principal user, Long productId){
+    @PostMapping("/product/delete")
+    public String deleteProduct(Model model, Principal user, Long productId) {
         Product product = productRepo.findById(productId).get();
-		StorageService storageService = new FileSystemStorageService(new StorageProperties());
-		storageService.deleteFile(productId);
+        StorageService storageService = new FileSystemStorageService(new StorageProperties());
+        storageService.deleteFile(productId);
         orderProcessRepository.deleteAllByProduct(product);
         productRepo.deleteById(productId);
-        model.addAttribute("note","Product successfully deleted.");
+        model.addAttribute("note", "Product successfully deleted.");
         return showProducts(model, user);
     }
 
@@ -235,15 +239,15 @@ public class ProductController {
         return id;
     }
 
-    private void addUserAndAdmin(Principal user, Model model){
-		Customer customer = customerRepo.findByUsername(user.getName()).get();
-		model.addAttribute("user", customer);
-		boolean admin = false;
-		if (customer.getRole().equals("ADMIN")) {
-			admin = true;
-		}
-		model.addAttribute("admin", admin);
-	}
+    private void addUserAndAdmin(Principal user, Model model) {
+        Customer customer = customerRepo.findByUsername(user.getName()).get();
+        model.addAttribute("user", customer);
+        boolean admin = false;
+        if (customer.getRole().equals("ADMIN")) {
+            admin = true;
+        }
+        model.addAttribute("admin", admin);
+    }
 
     /**
      * return a list of products with a specific title
@@ -259,6 +263,7 @@ public class ProductController {
 
     /**
      * get details to a specific product
+     *
      * @param id
      * @param user
      * @param model
@@ -307,10 +312,10 @@ public class ProductController {
 
         orderProcess.setStatus(OrderProcessStatus.SOLD);
 
-        boolean finishedSuccessful = orderProcessHandler.updateOrderProcess(null ,orderProcess);
+        boolean finishedSuccessful = orderProcessHandler.updateOrderProcess(null, orderProcess);
         if (finishedSuccessful) {
             int sellingPrice = orderProcess.getProduct().getSellingPrice();
-            if(sellingPrice>0){
+            if (sellingPrice > 0) {
                 String rentingAccount = customerRepo.findById(orderProcess.getRequestId()).get().getUsername();
                 String ownerAccount = customerRepo.findById(orderProcess.getOwnerId()).get().getUsername();
                 userHandler.saveTransaction(sellingPrice, TransactionType.BUYPAYMENT, rentingAccount);
@@ -321,20 +326,20 @@ public class ProductController {
             productRepo.save(product);
             orderProcessRepository.save(orderProcess);
             return "redirect:/home";
-        }
-        else {
+        } else {
             model.addAttribute("note", "Sorry, connection to your ProPayAccount failed. Please try it again later.");
             return getProductDetails(id, user, model);
         }
     }
 
     /**
-    * get base template to check availability of a product
-    * @param user
-    * @param model
-    * @param id
-    * @return
-    */
+     * get base template to check availability of a product
+     *
+     * @param user
+     * @param model
+     * @param id
+     * @return
+     */
     @GetMapping("/product/availability/{id}")
     public String getAvailability(Principal user, Model model, @PathVariable Long id) {
         Long userId = getUserId(user);
@@ -353,6 +358,7 @@ public class ProductController {
 
     /**
      * check availability of a product
+     *
      * @param user
      * @param model
      * @param id

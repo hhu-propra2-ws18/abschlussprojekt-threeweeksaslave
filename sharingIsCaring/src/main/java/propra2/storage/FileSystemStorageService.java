@@ -24,7 +24,7 @@ public class FileSystemStorageService implements StorageService {
 
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
-    	this.properties = properties;
+        this.properties = properties;
         this.rootLocation = Paths.get(properties.getLocation());
     }
 
@@ -42,18 +42,16 @@ public class FileSystemStorageService implements StorageService {
                                 + filename);
             }
             try (InputStream inputStream = file.getInputStream()) {
-            	Path currentRootLocation = Paths.get(properties.getLocation() + "/" + productId);
-				try {
-					Files.createDirectories(currentRootLocation);
-				}
-				catch (IOException e) {
-					throw new StorageException("Could not initialize storage", e);
-				}
+                Path currentRootLocation = Paths.get(properties.getLocation() + "/" + productId);
+                try {
+                    Files.createDirectories(currentRootLocation);
+                } catch (IOException e) {
+                    throw new StorageException("Could not initialize storage", e);
+                }
                 Files.copy(inputStream, currentRootLocation.resolve(filename),
-                    StandardCopyOption.REPLACE_EXISTING);
+                        StandardCopyOption.REPLACE_EXISTING);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new StorageException("Failed to store file " + filename, e);
         }
     }
@@ -61,15 +59,15 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public Path load(String filename, Long productId) {
-		Path currentRootLocation = Paths.get(properties.getLocation() + "/" + productId);
-		for(String fileEnding : properties.fileEndings) {
-			Path runningCurrentRootLocation = Paths.get(currentRootLocation.toString() + "/" + filename + fileEnding);
-			if (Files.exists(runningCurrentRootLocation) || Files.isReadable(runningCurrentRootLocation)) {
-				return runningCurrentRootLocation;
-			}
-		}
-		currentRootLocation = Paths.get("src/main/resources/static/img");
-		return currentRootLocation.resolve("dummyProductPicture.JPG");
+        Path currentRootLocation = Paths.get(properties.getLocation() + "/" + productId);
+        for (String fileEnding : properties.fileEndings) {
+            Path runningCurrentRootLocation = Paths.get(currentRootLocation.toString() + "/" + filename + fileEnding);
+            if (Files.exists(runningCurrentRootLocation) || Files.isReadable(runningCurrentRootLocation)) {
+                return runningCurrentRootLocation;
+            }
+        }
+        currentRootLocation = Paths.get("src/main/resources/static/img");
+        return currentRootLocation.resolve("dummyProductPicture.JPG");
 
     }
 
@@ -78,8 +76,7 @@ public class FileSystemStorageService implements StorageService {
         try {
             Path file = load(filename, productId);
             return new UrlResource(file.toUri());
-        }
-        catch (MalformedURLException e) {
+        } catch (MalformedURLException e) {
             throw new StorageFileNotFoundException("Could not read file: " + filename, e);
         }
     }
@@ -90,8 +87,8 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public void deleteFile(Long productId){
-        Path fileLocation = Paths.get(rootLocation.toString()+ "/"+ productId);
+    public void deleteFile(Long productId) {
+        Path fileLocation = Paths.get(rootLocation.toString() + "/" + productId);
         FileSystemUtils.deleteRecursively(fileLocation.toFile());
     }
 
@@ -99,8 +96,7 @@ public class FileSystemStorageService implements StorageService {
     public void init() {
         try {
             Files.createDirectories(rootLocation);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new StorageException("Could not initialize storage", e);
         }
     }

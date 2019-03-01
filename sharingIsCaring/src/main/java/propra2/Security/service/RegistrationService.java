@@ -31,10 +31,9 @@ public class RegistrationService {
         customer.setUsername(user.getUserName());
         customer.setMail(user.getEmailAddress());
         customer.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        if(userHandler.getProPayAccount(user.getUserName())!=null) {
+        if (userHandler.getProPayAccount(user.getUserName()) != null) {
             customer.setProPay(userHandler.getProPayAccount(user.getUserName()));
-        }
-        else{
+        } else {
             ProPayAccount proPayAccount = new ProPayAccount();
             proPayAccount.setReservations(new ArrayList<>());
             proPayAccount.setAccount(user.getUserName());
